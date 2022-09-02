@@ -37,9 +37,13 @@ export const SceneComponent = (props: {
     // This attaches the camera to the canvas
     camera.attachControl(canvas, true);
 
-    const ground = MeshBuilder.CreateGround(
+    const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
+
+    light.intensity = 1;
+
+    MeshBuilder.CreateGround(
       "ground",
-      { height: 100, width: 100, subdivisions: 10 },
+      { height: 100, width: 100, },
       scene
     );
 
