@@ -2,7 +2,6 @@ import {
   ApolloClient,
   InMemoryCache,
   gql,
-  HttpLink,
 } from '@apollo/client'
 
 import { EXPLORE_PUBLICATIONS, } from "./gqlQueries";
