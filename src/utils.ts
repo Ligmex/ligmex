@@ -1,5 +1,11 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { gql } from '@apollo/client'
+import {
+  ApolloClient,
+  InMemoryCache,
+  gql,
+  HttpLink,
+} from '@apollo/client'
+
+import { EXPLORE_PUBLICATIONS, } from "./gqlQueries";
 
 const APIURL = 'https://api-mumbai.lens.dev/';
 
@@ -8,15 +14,34 @@ const apolloClient= new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-const query  = `
-  query {
-    ping
-  }
-`
-
-export const queryExample = async () => {
+export const explorePublications = async (explorePublicationQueryRequest: any) => {
    const response = await apolloClient.query({
-    query: gql(query),
-  })
-  console.log('Lens example data: ', response)
+    query: gql(EXPLORE_PUBLICATIONS),
+    variables: {
+      request: explorePublicationQueryRequest
+    },
+  });
+
+  const publications = response.data.explorePublications.items;
+  console.log('Lens Publication Data', publications);
+
+  publications.forEach((publication: any) => {
+    switch (publication.__typename) {
+      case "Mirror":
+        break;
+      case "Post":
+        console.log(
+          publication.metadata.content,
+          publication.metadata.media.length
+        );
+        break;
+      case "Comment":
+        console.log(
+          publication.mainPost.metadata.content,
+          publication.mainPost.metadata.media.length
+        );
+        break;
+    };
+    console.log(publication.__typename);
+  });
 }

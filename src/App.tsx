@@ -5,12 +5,16 @@ import {
   Vector3,
 } from "@babylonjs/core";
 import { SceneComponent } from "./components/SceneComponent";
-import { queryExample } from "./utils";
+import { explorePublications } from "./utils";
 
 const App = () => {
 
   useEffect(() => {
-    queryExample();
+    explorePublications({
+      sortCriteria: "LATEST",
+      publicationTypes: ["POST", "COMMENT", "MIRROR"],
+      limit: 10
+    });
   }, []);
 
   const onSceneReady = (scene: Scene) => {
