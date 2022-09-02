@@ -1,44 +1,49 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect } from "react";
 
-import { Camera } from "@babylonjs/core";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { Nullable } from '@babylonjs/core/types';
-import { Texture } from "@babylonjs/core/Materials/Textures/texture";
-import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import "@babylonjs/core/Materials/standardMaterial";
+import { Scene } from "@babylonjs/core";
 
-import { Scene, Engine } from 'react-babylonjs';
+import { SceneComponent } from "./components/SceneComponent";
+
 
 import "./App.css";
 
 const App: React.FC = () => {
-  //let sphereRef = useRef(null);
-  const sphereRef = useRef<Nullable<Mesh>>(null);
+  const onSceneReady = (scene: Scene) => {
 
-  const [camera, setCamera] = useState<Camera>();
+    try {
+      if ((navigator as any).xr) {
+        console.log(scene);
+        /*
+        scene.createDefaultXRExperienceAsync().then(
+          (xrexp) => {
+            if (xrexp.baseExperience) {
+              xrexp.teleportation.attach();
+              scene.onDataLoadedObservable.addOnce(
+                (scene: Scene) => {
+                  const ground = scene.getMeshByName("ground");
+                    xrexp.teleportation.addFloorMesh(ground!);
+                });
+            }
+        });
+      */
+
+      }
+    } catch(e) {
+      console.log(e);
+    }
+  };
 
   return (
     <div className="App">
       <header className="App-header">
-        <Engine antialias adaptToDeviceRatio canvasId="babylonJs">
-          <Scene>
-            <arcRotateCamera
-              name="camera1"
-              target={Vector3.Zero()}
-              alpha={Math.PI / 2}
-              beta={Math.PI / 4}
-              radius={4}
-              onCreated={camera => setCamera(camera)}
-            />
-            <hemisphericLight name='hemi' direction={Vector3.Up()} intensity={0.8} />
-            <sphere ref={sphereRef} name="sphere1" diameter={5} segments={16} position={new Vector3(0, 5, 0)}>
-              <standardMaterial name='material1' specularPower={16}
-                  diffuseColor={Color3.Black()}
-                  emissiveColor={new Color3(0.5, 0.5, 0.5)}
-              />
-            </sphere>
-          </Scene>
-        </Engine>
+        <SceneComponent
+          adaptToDeviceRatio
+          antialias
+          onSceneReady={onSceneReady}
+          id="root-canvas"
+          style={{ width: "100%", height: "100%" }}
+        />
       </header>
     </div>
   );
