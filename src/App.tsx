@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect, } from "react";
 import {
   ArcRotateCamera,
   Scene,
   Vector3,
 } from "@babylonjs/core";
 import { SceneComponent } from "./components/SceneComponent";
+import { queryExample } from "./utils";
 
 const App = () => {
+
+  useEffect(() => {
+    queryExample();
+  }, []);
+
   const onSceneReady = (scene: Scene) => {
     const camera = new ArcRotateCamera("camera1",Math.PI, Math.PI / 2.0, 20, new Vector3(0, 5, -10), scene);
 
