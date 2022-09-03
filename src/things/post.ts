@@ -3,14 +3,15 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Texture } from "@babylonjs/core/Materials/Textures";
 import { Scene } from "@babylonjs/core/scene";
 
-export const Posts = (props: {
-  id: string,
+export const addPost = (
   scene: Scene,
-  angle: number,
+  x: number,
+  y: number,
+  h: number,
+  id: string,
   url: string,
-} & React.CanvasHTMLAttributes<HTMLCanvasElement>) => {
-
-  const { id, scene, angle, url } = props;
+) => {
+  // scene
 
   const cylinder = MeshBuilder.CreateCylinder(
     id,
@@ -18,11 +19,11 @@ export const Posts = (props: {
     scene
   );
 
-  cylinder.position.y = Math.sin(angle);
-  cylinder.position.x = Math.cos(angle);
-  cylinder.rotation.x = Math.PI/2;
+  cylinder.position.y = y;
+  cylinder.position.x = x;
   cylinder.addRotation(0, Math.PI, 0);
 
   cylinder.material = new StandardMaterial("mat"+id, scene);
   (cylinder.material as StandardMaterial).diffuseTexture = new Texture(url);
+
 }

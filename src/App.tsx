@@ -1,36 +1,39 @@
-import React, { useEffect, } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArcRotateCamera,
   Scene,
   Vector3,
 } from "@babylonjs/core";
-import { SceneComponent } from "./components/SceneComponent";
+import { SceneComponent } from "./Scene";
 import { explorePublications } from "./utils";
+import { addPost } from "./things/post";
 
 const App = () => {
 
   useEffect(() => {
     explorePublications({
       sortCriteria: "LATEST",
-      publicationTypes: ["POST", "COMMENT", "MIRROR"],
+      publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
       limit: 10
     });
   }, []);
 
-  const onSceneReady = (scene: Scene) => {
-    const camera = new ArcRotateCamera("camera1",Math.PI, Math.PI / 2.0, 20, new Vector3(0, 5, -10), scene);
+  const onSceneReady = (newScene: Scene) => {
+    const camera = new ArcRotateCamera("camera1",Math.PI, Math.PI / 2.0, 20, new Vector3(0, 5, -10), newScene);
 
     camera.setTarget(Vector3.Zero());
 
+    addPost(newScene, 20, 20, 20, "newpost", "https://i.imgur.com/Pox1X97.png");
+
     try {
       if ((navigator as any).xr) {
-        scene.createDefaultXRExperienceAsync().then(
+        newScene.createDefaultXRExperienceAsync().then(
           (xrexp) => {
             if (xrexp.baseExperience) {
               xrexp.teleportation.attach();
-              scene.onDataLoadedObservable.addOnce(
-                (scene: Scene) => {
-                  const ground = scene.getMeshByName("ground");
+              newScene.onDataLoadedObservable.addOnce(
+                (newerScene: Scene) => {
+                  const ground = newerScene.getMeshByName("ground");
                   xrexp.teleportation.addFloorMesh(ground!);
                 });
             };

@@ -55,7 +55,6 @@ export const SceneComponent = (props: {
       });
     }
 
-
     engine.runRenderLoop(() => {
       if (typeof(onRender) === "function") onRender(scene);
       scene.render(true);
@@ -77,6 +76,6 @@ export const SceneComponent = (props: {
       }
     };
   }, [antialias, engineOptions, adaptToDeviceRatio, sceneOptions, onRender, onSceneReady]);
-  
+
   return <canvas ref={reactCanvas} id={id} {...rest} />;
 }
