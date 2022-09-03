@@ -5,7 +5,7 @@ import {
   Vector3,
 } from "@babylonjs/core";
 import { SceneComponent } from "./Scene";
-import { explorePublications, getPost } from "./utils";
+import { explorePublications, getPost } from "./apollo";
 import { addPost } from "./things/post";
 
 const App = () => {
