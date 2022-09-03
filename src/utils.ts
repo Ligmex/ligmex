@@ -13,6 +13,20 @@ const apolloClient= new ApolloClient({
   cache: new InMemoryCache(),
 })
 
+export const getPost = async () => {
+   const response = await apolloClient.query({
+    query: gql(EXPLORE_PUBLICATIONS),
+    variables: {
+      request: {
+        sortCriteria: "LATEST",
+        publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
+        limit: 1
+      }
+    },
+  });
+  return response.data.explorePublications.items[0]?.metadata.content;
+};
+
 export const explorePublications = async (explorePublicationQueryRequest: any) => {
    const response = await apolloClient.query({
     query: gql(EXPLORE_PUBLICATIONS),

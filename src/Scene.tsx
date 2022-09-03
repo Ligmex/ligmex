@@ -29,7 +29,14 @@ export const SceneComponent = (props: {
 
     const engine = new Engine(canvas, antialias, engineOptions, adaptToDeviceRatio);
     const scene = new Scene(engine, sceneOptions);
-    const camera = new ArcRotateCamera("camera1",Math.PI, Math.PI / 2.0, 20, new Vector3(0, 5, -10), scene);
+    const camera = new ArcRotateCamera(
+      "camera1",
+      (Math.PI / 2),
+      Math.PI / 2,
+      0,
+      new Vector3(0, 5, -10),
+      scene,
+    );
 
     // This targets the camera to scene origin
     camera.setTarget(Vector3.Zero());
@@ -43,7 +50,7 @@ export const SceneComponent = (props: {
 
     MeshBuilder.CreateGround(
       "ground",
-      { height: 100, width: 100, },
+      { height: 10, width: 10, },
       scene
     );
 

@@ -5,25 +5,36 @@ import {
   Vector3,
 } from "@babylonjs/core";
 import { SceneComponent } from "./Scene";
-import { explorePublications } from "./utils";
+import { explorePublications, getPost } from "./utils";
 import { addPost } from "./things/post";
 
 const App = () => {
+  const [post, setPost] = useState("");
 
   useEffect(() => {
-    explorePublications({
-      sortCriteria: "LATEST",
-      publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
-      limit: 10
-    });
+    (async () => {
+      setPost(await getPost());
+      explorePublications({
+        sortCriteria: "LATEST",
+        publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
+        limit: 10
+      });
+    })();
   }, []);
 
   const onSceneReady = (newScene: Scene) => {
-    const camera = new ArcRotateCamera("camera1",Math.PI, Math.PI / 2.0, 20, new Vector3(0, 5, -10), newScene);
+    const camera = new ArcRotateCamera(
+      "camera1", // name
+      0, // Math.PI, // alpha
+      0, // Math.PI / 2.0, // beta
+      2, // radius
+      new Vector3(10, 10, -1), // target
+      newScene // scene
+    );
 
     camera.setTarget(Vector3.Zero());
 
-    addPost(newScene, 20, 20, 20, "newpost", "https://i.imgur.com/Pox1X97.png");
+    addPost(newScene, 0, 0, 1, "newpost", "https://i.imgur.com/Pox1X97.png", post);
 
     try {
       if ((navigator as any).xr) {
