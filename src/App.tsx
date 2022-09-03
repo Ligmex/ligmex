@@ -5,32 +5,37 @@ import {
   Vector3,
 } from "@babylonjs/core";
 import { SceneComponent } from "./Scene";
-import { explorePublications, getGallery, getPost } from "./apollo";
+import { explorePublications, getGallery, getPost, getPosts } from "./apollo";
 import { addGallery } from "./things/gallery";
 import { addPost } from "./things/post";
 
 const App = () => {
-  const [post, setPost] = useState("");
-  const [gallery, setGallery] = useState({} as any);
+  // const [post, setPost] = useState("");
+  const [posts, setPosts] = useState([] as any);
+  // const [gallery, setGallery] = useState({} as any);
 
   useEffect(() => {
     (async () => {
 
-      const post = await getPost()
-      console.log(`Got post: ${JSON.stringify(post, null, 2)}`);
-      setPost(post);
+      // const post = await getPost()
+      // console.log(`Got post: ${JSON.stringify(post, null, 2)}`);
+      // setPost(post);
 
-      const gallery = await getGallery("0x1006"); // "bohendo.eth")
-      console.log(`Got gallery: ${JSON.stringify(gallery, null, 2)}`);
-      setGallery(gallery);
+      const posts = await getPosts()
+      console.log(`Got posts: ${JSON.stringify(posts, null, 2)}`);
+      setPosts(posts);
 
-      /*
+      // const gallery = await getGallery("0x1006"); // "bohendo.eth")
+      // console.log(`Got gallery: ${JSON.stringify(gallery, null, 2)}`);
+      // setGallery(gallery);
+
+      // /*
       explorePublications({
         sortCriteria: "LATEST",
         publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
         limit: 10
       });
-      */
+      // */
 
     })();
   }, []);
@@ -47,9 +52,11 @@ const App = () => {
 
     camera.setTarget(Vector3.Zero());
 
-    addGallery(newScene, 0, 0, 1, "gallery", gallery);
+    // addGallery(newScene, 0, 0, 1, "gallery", gallery);
 
-    // addPost(newScene, 0, 0, 1, "newpost", "https://i.imgur.com/Pox1X97.png", post);
+    posts.forEach((post: any, i: number) => {
+      addPost(newScene, 0 + i, 0 + i, 1, `newpost_${i}`, "https://i.imgur.com/Pox1X97.png", post.metadata.content);
+    }); 
 
     try {
       if ((navigator as any).xr) {
