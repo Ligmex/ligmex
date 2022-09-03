@@ -5,20 +5,33 @@ import {
   Vector3,
 } from "@babylonjs/core";
 import { SceneComponent } from "./Scene";
-import { explorePublications, getPost } from "./apollo";
+import { explorePublications, getGallery, getPost } from "./apollo";
+import { addGallery } from "./things/gallery";
 import { addPost } from "./things/post";
 
 const App = () => {
   const [post, setPost] = useState("");
+  const [gallery, setGallery] = useState({} as any);
 
   useEffect(() => {
     (async () => {
-      setPost(await getPost());
+
+      const post = await getPost()
+      console.log(`Got post: ${JSON.stringify(post, null, 2)}`);
+      setPost(post);
+
+      const gallery = await getGallery("0x1006"); // "bohendo.eth")
+      console.log(`Got gallery: ${JSON.stringify(gallery, null, 2)}`);
+      setGallery(gallery);
+
+      /*
       explorePublications({
         sortCriteria: "LATEST",
         publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
         limit: 10
       });
+      */
+
     })();
   }, []);
 
@@ -34,7 +47,9 @@ const App = () => {
 
     camera.setTarget(Vector3.Zero());
 
-    addPost(newScene, 0, 0, 1, "newpost", "https://i.imgur.com/Pox1X97.png", post);
+    addGallery(newScene, 0, 0, 1, "gallery", gallery);
+
+    // addPost(newScene, 0, 0, 1, "newpost", "https://i.imgur.com/Pox1X97.png", post);
 
     try {
       if ((navigator as any).xr) {
