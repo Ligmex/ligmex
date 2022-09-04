@@ -41,8 +41,12 @@ dev: proxy node-modules
 prod: proxy webserver
 all: dev prod
 
-start: dev
+qs: quickstart
+quickstart: node-modules
 	npm run start
+
+start: dev
+	bash ops/start.sh
 
 start-prod:
 	LIGMEX_PROD=true bash ops/start.sh
