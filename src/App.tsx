@@ -7,6 +7,7 @@ import {
 import { SceneComponent } from "./Scene";
 import { explorePublications, getGallery, getPost } from "./apollo";
 import { addGallery } from "./things/gallery";
+import { addNewPostButton } from "./things/newPost";
 import { addPost } from "./things/post";
 
 const App = () => {
@@ -49,6 +50,7 @@ const App = () => {
 
     addGallery(newScene, 0, 0, 1, "gallery", gallery);
 
+    addNewPostButton(newScene);
     // addPost(newScene, 0, 0, 1, "newpost", "https://i.imgur.com/Pox1X97.png", post);
 
     try {

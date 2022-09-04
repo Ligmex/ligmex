@@ -144,7 +144,3 @@ export const createPost = async () => {
 
   return result.data;
 };
-
-(async () => {
-  await createPost();
-})();
