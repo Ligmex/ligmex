@@ -1,6 +1,7 @@
-FROM haproxy:2.3.14-alpine3.14
+FROM haproxy:2.6.4-alpine3.16
 WORKDIR /root
 ENV HOME /root
+USER root
 RUN apk add --update --no-cache bash ca-certificates certbot curl iputils openssl
 RUN curl https://raw.githubusercontent.com/vishnubob/wait-for-it/ed77b63706ea721766a62ff22d3a251d8b4a6a30/wait-for-it.sh > /bin/wait-for && chmod +x /bin/wait-for
 COPY . .
