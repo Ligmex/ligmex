@@ -18,45 +18,41 @@ fi
 # shellcheck disable=SC1091
 if [[ -f .env ]]; then source .env; fi
 
-VM_ALCHEMY_PROVIDER="${VM_ALCHEMY_PROVIDER:-}"
-VM_COVALENT_KEY="${VM_COVALENT_KEY:-}"
-VM_DOMAINNAME="${VM_DOMAINNAME:-}"
-VM_EMAIL="${VM_EMAIL:-noreply@gmail.com}"
-VM_ETHERSCAN_KEY="${VM_ETHERSCAN_KEY:-}"
-VM_LOG_LEVEL="${VM_LOG_LEVEL:-info}"
-VM_POLYGONSCAN_KEY="${VM_POLYGONSCAN_KEY:-}"
-VM_PORT="${VM_PORT:-3000}"
-VM_PROD="${VM_PROD:-false}"
-VM_SEMVER="${VM_SEMVER:-false}"
+LIGMEX_ALCHEMY_PROVIDER="${LIGMEX_ALCHEMY_PROVIDER:-}"
+LIGMEX_DOMAINNAME="${LIGMEX_DOMAINNAME:-}"
+LIGMEX_EMAIL="${LIGMEX_EMAIL:-noreply@gmail.com}"
+LIGMEX_LOG_LEVEL="${LIGMEX_LOG_LEVEL:-info}"
+LIGMEX_POLYGONSCAN_KEY="${LIGMEX_POLYGONSCAN_KEY:-}"
+LIGMEX_PORT="${LIGMEX_PORT:-3000}"
+LIGMEX_PROD="${LIGMEX_PROD:-false}"
+LIGMEX_SEMVER="${LIGMEX_SEMVER:-false}"
 
 # alias env var to override what's in .env
-VM_LOG_LEVEL="${LOG_LEVEL:-$VM_LOG_LEVEL}";
+LIGMEX_LOG_LEVEL="${LOG_LEVEL:-$LIGMEX_LOG_LEVEL}";
 
 # If semver flag is given, we should ensure the prod flag is also active
-if [[ "$VM_SEMVER" == "true" ]]
-then export VM_PROD=true
+if [[ "$LIGMEX_SEMVER" == "true" ]]
+then export LIGMEX_PROD=true
 fi
 
 echo "Launching $project in env:"
-echo "- VM_ALCHEMY_PROVIDER=$VM_ALCHEMY_PROVIDER"
-echo "- VM_COVALENT_KEY=$VM_COVALENT_KEY"
-echo "- VM_DOMAINNAME=$VM_DOMAINNAME"
-echo "- VM_EMAIL=$VM_EMAIL"
-echo "- VM_ETHERSCAN_KEY=$VM_ETHERSCAN_KEY"
-echo "- VM_LOG_LEVEL=$VM_LOG_LEVEL"
-echo "- VM_POLYGONSCAN_KEY=$VM_POLYGONSCAN_KEY"
-echo "- VM_PORT=$VM_PORT"
-echo "- VM_PROD=$VM_PROD"
-echo "- VM_SEMVER=$VM_SEMVER"
+echo "- LIGMEX_ALCHEMY_PROVIDER=$LIGMEX_ALCHEMY_PROVIDER"
+echo "- LIGMEX_DOMAINNAME=$LIGMEX_DOMAINNAME"
+echo "- LIGMEX_EMAIL=$LIGMEX_EMAIL"
+echo "- LIGMEX_LOG_LEVEL=$LIGMEX_LOG_LEVEL"
+echo "- LIGMEX_POLYGONSCAN_KEY=$LIGMEX_POLYGONSCAN_KEY"
+echo "- LIGMEX_PORT=$LIGMEX_PORT"
+echo "- LIGMEX_PROD=$LIGMEX_PROD"
+echo "- LIGMEX_SEMVER=$LIGMEX_SEMVER"
 
 ####################
 # Misc Config
 
 commit=$(git rev-parse HEAD | head -c 8)
 semver="v$(grep -m 1 '"version":' "$root/package.json" | cut -d '"' -f 4)"
-if [[ "$VM_SEMVER" == "true" ]]
+if [[ "$LIGMEX_SEMVER" == "true" ]]
 then version="$semver"
-elif [[ "$VM_PROD" == "true" ]]
+elif [[ "$LIGMEX_PROD" == "true" ]]
 then version="$commit"
 else version="latest"
 fi
@@ -69,49 +65,11 @@ common="networks:
           max-size: '100m'"
 
 ########################################
-# Server config
-
-server_internal_port=8080
-server_env="environment:
-      VM_ALCHEMY_PROVIDER: '$VM_ALCHEMY_PROVIDER'
-      VM_COVALENT_KEY: '$VM_COVALENT_KEY'
-      VM_ETHERSCAN_KEY: '$VM_ETHERSCAN_KEY'
-      VM_LOG_LEVEL: '$VM_LOG_LEVEL'
-      VM_POLYGONSCAN_KEY: '$VM_POLYGONSCAN_KEY'
-      VM_PORT: '$server_internal_port'
-      VM_PROD: '$VM_PROD'
-"
-
-if [[ "$VM_PROD" == "true" ]]
-then
-  server_image="${project}:$version"
-  server_service="server:
-    image: '$server_image'
-    $common
-    $server_env
-    volumes:
-      - 'data:/data'"
-
-else
-  server_image="${project}_builder:$version"
-  server_service="server:
-    image: '$server_image'
-    $common
-    $server_env
-    entrypoint: 'bash modules/server/ops/entry.sh'
-    volumes:
-      - '$root:/root'
-      - '$root/.server-db:/data'"
-
-fi
-bash "$root/ops/pull-images.sh" "$server_image"
-
-########################################
 # Webserver config
 
 webserver_internal_port=3000
 
-if [[ "$VM_PROD" == "true" ]]
+if [[ "$LIGMEX_PROD" == "true" ]]
 then
   webserver_image="${project}_webserver:$version"
   webserver_service="webserver:
@@ -139,9 +97,9 @@ bash "$root/ops/pull-images.sh" "$webserver_image"
 proxy_image="${project}_proxy:$version"
 bash "$root/ops/pull-images.sh" "$proxy_image"
 
-if [[ -n "$VM_DOMAINNAME" ]]
+if [[ -n "$LIGMEX_DOMAINNAME" ]]
 then
-  public_url="https://$VM_DOMAINNAME"
+  public_url="https://$LIGMEX_DOMAINNAME"
   proxy_ports="ports:
       - '80:80'
       - '443:443'"
@@ -178,16 +136,13 @@ services:
     $common
     $proxy_ports
     environment:
-      DOMAINNAME: '$VM_DOMAINNAME'
-      EMAIL: '$VM_EMAIL'
-      SERVER_URL: 'server:$server_internal_port'
+      DOMAINNAME: '$LIGMEX_DOMAINNAME'
+      EMAIL: '$LIGMEX_EMAIL'
       WEBSERVER_URL: 'webserver:$webserver_internal_port'
     volumes:
       - 'certs:/etc/letsencrypt'
 
   $webserver_service
-
-  $server_service
 
 EOF
 
@@ -209,7 +164,7 @@ do
 done
 
 # Delete old images in prod to prevent the disk from filling up (only on prod server)
-if [[ "$VM_PROD" == "true" && "$(hostname)" == "$VM_DOMAINNAME" ]]
+if [[ "$LIGMEX_PROD" == "true" && "$(hostname)" == "$LIGMEX_DOMAINNAME" ]]
 then
   docker container prune --force;
   echo "Removing ${project} images that aren't tagged as $commit or $semver or latest"

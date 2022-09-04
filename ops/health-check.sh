@@ -35,4 +35,5 @@ then
 else
   echo "The $target service looks healthy"
   docker service logs "$service_id" --tail 50 2>&1 | sort -s -k 1,1
+  exit 0
 fi

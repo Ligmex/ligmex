@@ -22,12 +22,9 @@ if [[ "$response" == "y" ]]
 then
   find \
     Makefile \
-    modules/*/ops \
-    modules/*/package.json \
-    modules/*/rollup.config.js \
-    modules/*/src \
     ops \
     package.json \
+    src \
     -type f -not -name "*.swp" -exec sed -i "s|$old|$new|g" {} \;
 else echo "Goodbye"
 fi
