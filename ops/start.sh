@@ -18,17 +18,12 @@ fi
 # shellcheck disable=SC1091
 if [[ -f .env ]]; then source .env; fi
 
-LIGMEX_ALCHEMY_PROVIDER="${LIGMEX_ALCHEMY_PROVIDER:-}"
+LIGMEX_POLYGON_RPC_URL="${LIGMEX_POLYGON_RPC_URL:-}"
 LIGMEX_DOMAINNAME="${LIGMEX_DOMAINNAME:-}"
 LIGMEX_EMAIL="${LIGMEX_EMAIL:-noreply@gmail.com}"
-LIGMEX_LOG_LEVEL="${LIGMEX_LOG_LEVEL:-info}"
-LIGMEX_POLYGONSCAN_KEY="${LIGMEX_POLYGONSCAN_KEY:-}"
 LIGMEX_PORT="${LIGMEX_PORT:-3000}"
 LIGMEX_PROD="${LIGMEX_PROD:-false}"
 LIGMEX_SEMVER="${LIGMEX_SEMVER:-false}"
-
-# alias env var to override what's in .env
-LIGMEX_LOG_LEVEL="${LOG_LEVEL:-$LIGMEX_LOG_LEVEL}";
 
 # If semver flag is given, we should ensure the prod flag is also active
 if [[ "$LIGMEX_SEMVER" == "true" ]]
@@ -36,11 +31,9 @@ then export LIGMEX_PROD=true
 fi
 
 echo "Launching $project in env:"
-echo "- LIGMEX_ALCHEMY_PROVIDER=$LIGMEX_ALCHEMY_PROVIDER"
+echo "- LIGMEX_POLYGON_RPC_URL=$LIGMEX_POLYGON_RPC_URL"
 echo "- LIGMEX_DOMAINNAME=$LIGMEX_DOMAINNAME"
 echo "- LIGMEX_EMAIL=$LIGMEX_EMAIL"
-echo "- LIGMEX_LOG_LEVEL=$LIGMEX_LOG_LEVEL"
-echo "- LIGMEX_POLYGONSCAN_KEY=$LIGMEX_POLYGONSCAN_KEY"
 echo "- LIGMEX_PORT=$LIGMEX_PORT"
 echo "- LIGMEX_PROD=$LIGMEX_PROD"
 echo "- LIGMEX_SEMVER=$LIGMEX_SEMVER"
@@ -86,7 +79,7 @@ else
       NODE_ENV: 'development'
     volumes:
       - '$root:/root'
-    working_dir: '/root/'"
+    working_dir: '/root'"
 
 fi
 bash "$root/ops/pull-images.sh" "$webserver_image"
@@ -99,14 +92,13 @@ bash "$root/ops/pull-images.sh" "$proxy_image"
 
 if [[ -n "$LIGMEX_DOMAINNAME" ]]
 then
-  public_url="https://$LIGMEX_DOMAINNAME"
   proxy_ports="ports:
       - '80:80'
       - '443:443'"
   echo "${project}_proxy will be exposed on *:80 and *:443"
 
 else
-  public_port=${public_port:-3000}
+  public_port=${LIGMEX_PORT:-3000}
   public_url="http://127.0.0.1:$public_port"
   proxy_ports="ports:
       - '$public_port:80'"
@@ -139,6 +131,7 @@ services:
       DOMAINNAME: '$LIGMEX_DOMAINNAME'
       EMAIL: '$LIGMEX_EMAIL'
       WEBSERVER_URL: 'webserver:$webserver_internal_port'
+      POLYGON_RPC_URL: '$LIGMEX_POLYGON_RPC_URL'
     volumes:
       - 'certs:/etc/letsencrypt'
 

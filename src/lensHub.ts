@@ -3,7 +3,8 @@ import { ethers } from 'ethers';
 import LENS_HUB_ABI from "./abis/lens-hub-contract-abi.json";
 import LENS_PERIPHERY_ABI from "./abis/lens-periphery-data-provider.json";
 
-const MUMBAI_RPC_URL = "https://rpc-mumbai.matic.today";
+// const MUMBAI_RPC_URL = "https://rpc-mumbai.matic.today";
+const MUMBAI_RPC_URL = `${window.location.origin}/polygon`;
 const provider = new ethers.providers.JsonRpcProvider(MUMBAI_RPC_URL);
 
 console.log(`LENS_HUB_ABI: ${JSON.stringify(LENS_HUB_ABI)}`)

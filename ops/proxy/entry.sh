@@ -2,13 +2,37 @@
 
 null_ui=localhost
 
+if [[ "${POLYGON_RPC_URL%%://*}" == "https" ]]
+then export POLGON_RPC_PROTOCOL="ssl"
+else export POLGON_RPC_PROTOCOL=""
+fi
+
+POLYGON_RPC_URL=${POLYGON_RPC_URL#*://}
+
+if [[ "$POLGON_RPC_PROTOCOL" == "ssl" ]]
+then export POLGON_RPC_HOST="${POLYGON_RPC_URL%%/*}:443"
+else export POLGON_RPC_HOST="${POLYGON_RPC_URL%%/*}"
+fi
+
+if [[ "$POLYGON_RPC_URL" == *"/"* ]]
+then export POLGON_RPC_PATH="/${POLYGON_RPC_URL#*/}"
+else export POLGON_RPC_PATH="/"
+fi
+
+
 EMAIL="${EMAIL:-noreply@gmail.com}"
 WEBSERVER_URL="${WEBSERVER_URL:-$null_ui}"
+POLYGON_RPC_URL="${POLYGON_RPC_URL#https://}"
 
 echo "Proxy container launched in env:"
 echo "DOMAINNAME=$DOMAINNAME"
 echo "EMAIL=$EMAIL"
 echo "WEBSERVER_URL=$WEBSERVER_URL"
+echo "POLYGON_RPC_URL=$POLYGON_RPC_URL"
+echo "POLGON_RPC_HOST=$POLGON_RPC_HOST"
+echo "POLGON_RPC_PATH=$POLGON_RPC_PATH"
+echo "POLGON_RPC_PROTOCOL=$POLGON_RPC_PROTOCOL"
+
 
 # Provide a message indicating that we're still waiting for everything to wake up
 function loading_msg {
