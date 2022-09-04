@@ -49,3 +49,4 @@ coverage
 .project
 .settings/
 .vscode
+.*sw[op]
