@@ -6,12 +6,9 @@ project=$(grep -m 1 '"name":' "$root/package.json" | cut -d '"' -f 4)
 registry=$(grep -m 1 '"registry":' "$root/package.json" | cut -d '"' -f 4)
 commit=$(git rev-parse HEAD | head -c 8)
 
-for name in builder proxy server webserver
+for name in builder proxy webserver
 do
-  if [[ "$name" == "server" ]]
-  then image=${project}
-  else image=${project}_$name
-  fi
+  image=${project}_$name
   for version in ${1:-$commit latest}
   do
     echo "Tagging image $image:$version as $registry/$image:$version"

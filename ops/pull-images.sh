@@ -11,7 +11,7 @@ commit=$(git rev-parse HEAD | head -c 8)
 registry="$registryRoot/$organization"
 
 default_images=$(
-  echo 'server builder webserver proxy' |\
+  echo 'builder webserver proxy' |\
     sed "s/^/${project}_/g" |\
     sed "s/ / ${project}_/g"
 )
@@ -32,12 +32,7 @@ for image in $images
 do
   for version in $versions
   do
-
-    if [[ "$image" == "${project}_server" ]]
-    then name="${project}:$version"
-    else name="$image:$version"
-    fi
-
+    name="$image:$version"
     if grep -qs "$version" <<<"$(docker image ls | grep "$image\>")"
     then echo "Image $name already exists locally"
     else

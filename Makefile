@@ -73,6 +73,7 @@ reset-images:
 purge: clean
 	rm -rf package-lock.json
 
+push: push-commit
 push-commit:
 	bash ops/push-images.sh latest
 	bash ops/push-images.sh $(commit)
@@ -80,6 +81,7 @@ push-semver:
 	bash ops/tag-images.sh $(semver)
 	bash ops/push-images.sh $(semver)
 
+pull: pull-commit
 pull-latest:
 	bash ops/pull-images.sh latest
 pull-commit:
