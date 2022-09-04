@@ -5,7 +5,7 @@ import axios from "axios";
  * @param data - Data to upload to ipfs
  * @returns ipfs hash id
  */
-export const uploadToIpfs = async (data: any): Promise<string> => {
+export const uploadToIpfs = async <T>(data: T): Promise<string> => {
   try {
     const upload = await axios({
       url: "shivhendo.com/ipfs", 

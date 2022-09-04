@@ -52,7 +52,7 @@ export const login = async (address = getAddressFromSigner()) => {
 
   const accessTokens = await authenticate(address, signature);
 
-  setAuthenticationToken(accessTokens.data.authenticate.accessToken);
+  // setAuthenticationToken(accessTokens.data.authenticate.accessToken);
 
   return accessTokens.data;
 };

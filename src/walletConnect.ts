@@ -1,6 +1,7 @@
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "@walletconnect/qrcode-modal";
 import { utils } from "ethers";
+import omitDeep from 'omit-deep';
 
 let accounts: Array<any> = [];
 
@@ -58,7 +59,26 @@ export const getAddressFromSigner = () => {
 export const signText = (text: string) => {
   const msgParams = [
    accounts[0],
-   utils.keccak256("\x19Ethereum Signed Message:\n" + len(text) + text)
+   utils.keccak256("\x19Ethereum Signed Message:\n" + text)
   ];
   return connector.signMessage(msgParams);
 }
+
+export const signedTypeData = async (
+  domain: any, // TypedDataDomain,
+  types: Record<string, any[]>, // TypedDataField[]>,
+  value: Record<string, any>
+) => {
+  // remove the __typedname from the signature!
+  const typedData = omitDeep({
+    domain,
+    types,
+    value
+  }, "__typedname");
+
+  const msgParams = [
+    accounts[0],
+    JSON.stringify(typedData)
+  ];
+  return connector.signTypedData(msgParams);
+}; 
