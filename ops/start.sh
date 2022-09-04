@@ -86,7 +86,7 @@ else
       NODE_ENV: 'development'
     volumes:
       - '$root:/root'
-    working_dir: '/root/modules/client'"
+    working_dir: '/root/'"
 
 fi
 bash "$root/ops/pull-images.sh" "$webserver_image"
