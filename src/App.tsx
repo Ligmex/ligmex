@@ -8,6 +8,7 @@ import { SceneComponent } from "./Scene";
 import { explorePublications, getGallery, getPost } from "./apollo";
 import { addGallery } from "./things/gallery";
 import { addPost } from "./things/post";
+import { addFrame } from "./things/frame";
 
 const App = () => {
   const [post, setPost] = useState("");
@@ -48,6 +49,7 @@ const App = () => {
     camera.setTarget(Vector3.Zero());
 
     addGallery(newScene, 0, 0, 1, "gallery", gallery);
+    addFrame(newScene);
 
     // addPost(newScene, 0, 0, 1, "newpost", "https://i.imgur.com/Pox1X97.png", post);
 
