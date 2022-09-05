@@ -1,7 +1,5 @@
 #!/bin/bash
 
-null_ui=localhost
-
 if [[ "${POLYGON_RPC_URL%%://*}" == "https" ]]
 then export POLGON_RPC_PROTOCOL="ssl"
 else export POLGON_RPC_PROTOCOL=""
@@ -19,13 +17,13 @@ then export POLGON_RPC_PATH="/${POLYGON_RPC_URL#*/}"
 else export POLGON_RPC_PATH="/"
 fi
 
-
+null_ui=localhost
 EMAIL="${EMAIL:-noreply@gmail.com}"
 WEBSERVER_URL="${WEBSERVER_URL:-$null_ui}"
 POLYGON_RPC_URL="${POLYGON_RPC_URL#https://}"
 
 echo "Proxy container launched in env:"
-echo "DOMAINNAME=$DOMAINNAME"
+echo "DOMAINNAME=${DOMAINNAME:-$null_ui}"
 echo "EMAIL=$EMAIL"
 echo "WEBSERVER_URL=$WEBSERVER_URL"
 echo "POLYGON_RPC_URL=$POLYGON_RPC_URL"
