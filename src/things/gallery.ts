@@ -42,7 +42,7 @@ export const addGallery = (
   pfp.position.y = h + h/2;
   pfp.position.z = z;
   pfp.material = new StandardMaterial(`${id}-pillar`, scene);
-  const picUrl = `https://lens.infura-ipfs.io/ipfs/${gallery.picture.original.url.replace("ipfs://", "")}`;
+  const picUrl = `https://lens.infura-ipfs.io/ipfs/${gallery?.picture?.original?.url?.replace("ipfs://", "")}`;
   (pfp.material as StandardMaterial).diffuseTexture = new Texture(picUrl);
 
   const dynamicTexture = new DynamicTexture("DynamicTexture", 50, scene, true);

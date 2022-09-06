@@ -41,6 +41,20 @@ export const getPost = async () => {
   return response.data.explorePublications.items[0]?.metadata.content;
 };
 
+export const getPosts = async () => {
+   const response = await apolloClient.query({
+    query: gql(EXPLORE_PUBLICATIONS),
+    variables: {
+      request: {
+        sortCriteria: "LATEST",
+        publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
+        limit: 10
+      }
+    },
+  });
+  return response.data.explorePublications.items;
+};
+
 export const explorePublications = async (explorePublicationQueryRequest: any) => {
    const response = await apolloClient.query({
     query: gql(EXPLORE_PUBLICATIONS),
