@@ -1,7 +1,12 @@
 import { explorePublications } from "../apollo";
 import {
+  Mesh,
+  MeshBuilder,
   Scene,
   Sound,
+  StandardMaterial,
+  Texture,
+  Vector4
 } from "@babylonjs/core";
 
 export const createTrendingCorner = async (scene: Scene) => {
@@ -19,6 +24,8 @@ export const createTrendingCorner = async (scene: Scene) => {
   // EMBED: If glb/gltf, render 3D object, else 'not supported yet'
   // TEXT_ONLY: Text bubble
   // VIDEO/IMAGE/AUDIO
+  
+  let postLocation = 2;
   latestPosts.forEach((post: any) => {
     console.log(typeof(post.metadata.mainContentFocus), post.id)
     switch (post?.metadata?.mainContentFocus) {
@@ -36,6 +43,20 @@ export const createTrendingCorner = async (scene: Scene) => {
         console.log("Embed: ", post.metadata);
         break;
       case "IMAGE":
+        const f = new Vector4(0,0, 1, 1);
+        const b = new Vector4(0,0, 1, 0);
+        const plane = MeshBuilder.CreatePlane(post.id, {
+          height: 1,
+          width: 0.5,
+          sideOrientation: Mesh.DOUBLESIDE,
+          frontUVs: f,
+          backUVs: b
+        }, scene);
+        const material = new StandardMaterial(post.id, scene);
+        material.diffuseTexture = new Texture(post.metadata.media[0]?.original?.url, scene);
+        plane.material = material;
+        plane.position.x = postLocation;
+        postLocation+=2;
         console.log("Image: ", post.metadata);
         break;
       case "LINK":
