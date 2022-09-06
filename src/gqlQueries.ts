@@ -219,6 +219,7 @@ export const EXPLORE_PUBLICATIONS = `
     name
     description
     content
+    mainContentFocus
     media {
       original {
         ...MediaFields

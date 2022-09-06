@@ -9,10 +9,11 @@ import { explorePublications, getGallery, getPost, getPosts } from "./apollo";
 import { addGallery } from "./things/gallery";
 import { addPost } from "./things/post";
 import { addFrame } from "./things/frame";
+import { createTrendingCorner } from "./utils/hallOfFame";
 
 const App = () => {
   // const [post, setPost] = useState("");
-  const [posts, setPosts] = useState([] as any);
+  const [latestPosts, setLatestPosts] = useState([] as any);
   // const [gallery, setGallery] = useState({} as any);
 
   useEffect(() => {
@@ -22,21 +23,22 @@ const App = () => {
       // console.log(`Got post: ${JSON.stringify(post, null, 2)}`);
       // setPost(post);
 
-      const posts = await getPosts()
-      console.log(`Got posts: ${JSON.stringify(posts, null, 2)}`);
-      setPosts(posts);
+      const latestPosts = await getPosts()
+      // console.log(`Got latestPosts: ${JSON.stringify(latestPosts, null, 2)}`);
+      console.log("Latest Posts: ", latestPosts);
+      setLatestPosts(latestPosts);
 
       // const gallery = await getGallery("0x1006"); // "bohendo.eth")
       // console.log(`Got gallery: ${JSON.stringify(gallery, null, 2)}`);
       // setGallery(gallery);
 
-      // /*
+      /*
       explorePublications({
         sortCriteria: "LATEST",
         publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
         limit: 10
       });
-      // */
+      */
 
     })();
   }, []);
@@ -53,12 +55,15 @@ const App = () => {
 
     camera.setTarget(Vector3.Zero());
 
-    addFrame(newScene);
+    // addFrame(newScene);
     // addGallery(newScene, 0, 0, 1, "gallery", gallery);
 
-    posts.forEach((post: any, i: number) => {
+    createTrendingCorner(newScene);
+    /*
+    latestPosts.forEach((post: any, i: number) => {
       addPost(newScene, 0 + i, 0 + i, 1, `newpost_${i}`, "https://i.imgur.com/Pox1X97.png", post.metadata.content);
     }); 
+    */
 
     try {
       if ((navigator as any).xr) {

@@ -63,26 +63,5 @@ export const explorePublications = async (explorePublicationQueryRequest: any) =
     },
   });
 
-  const publications = response.data.explorePublications.items;
-  console.log('Lens Publication Data', publications);
-
-  publications.forEach((publication: any) => {
-    switch (publication.__typename) {
-      case "Mirror":
-        break;
-      case "Post":
-        console.log(
-          publication.metadata.content,
-          publication.metadata.media.length
-        );
-        break;
-      case "Comment":
-        console.log(
-          publication.mainPost.metadata.content,
-          publication.mainPost.metadata.media.length
-        );
-        break;
-    };
-    console.log(publication.__typename);
-  });
+  return response.data.explorePublications.items
 }
