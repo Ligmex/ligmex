@@ -46,12 +46,16 @@ export const createTrendingCorner = async (scene: Scene) => {
         console.log("Embed: ", post.metadata);
         break;
       case "IMAGE":
+        //const faceUV = new Array<Vector4>;
+        //faceUV[0] = new Vector4(0,0, 1, 1);
         const f = new Vector4(0,0, 1, 1);
-        const b = new Vector4(0,0, 0, 0);
-        const plane = MeshBuilder.CreatePlane(post.id, {
+        const b = new Vector4(0,0, 0.5, 1);
+        const plane = MeshBuilder.CreateBox(post.id, {
+          depth: 0.03,
           height: post.metadata.media[0]?.original?.height || 1,
           width: post.metadata.media[0]?.original?.width || 0.5,
-          sideOrientation: Mesh.DOUBLESIDE,
+          //faceUV
+          //sideOrientation: Mesh.DOUBLESIDE,
           frontUVs: f,
           backUVs: b
         }, scene);

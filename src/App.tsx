@@ -9,7 +9,7 @@ import { explorePublications, getGallery, getPost, getPosts } from "./apollo";
 import { addGallery } from "./things/gallery";
 import { addPost } from "./things/post";
 import { addFrame } from "./things/frame";
-import { createTrendingCorner } from "./utils/hallOfFame";
+import { createTrendingCorner } from "./things/trendingCorner";
 
 const App = () => {
   // const [post, setPost] = useState("");
