@@ -16,6 +16,7 @@ const connector = new WalletConnect({
 // Subscribe to connection events
 connector.on("connect", (error, payload) => {
   if (error) {
+    console.log(error);
     throw error;
   }
 
@@ -23,10 +24,12 @@ connector.on("connect", (error, payload) => {
   const { a, cid } = payload.params[0];
   accounts = a;
   chainId = cid
+  console.log("connected: ", accounts, chainId);
 });
 
 connector.on("session_update", (error, payload) => {
   if (error) {
+    console.log(error);
     throw error;
   }
 
@@ -44,10 +47,11 @@ connector.on("disconnect", (error, payload) => {
   // Delete connector
 });
 
-export const connect = () => {
+export const connect = async () => {
   // Check if connection is already established
   if (!connector.connected) {
     // create new session
+    console.log("Creating Session");
     connector.createSession();
   }
 }

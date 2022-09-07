@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { apolloClient } from "./apollo";
 import { login } from "./login";
 import { CREATE_POST_TYPED_DATA } from "./gqlQueries";
-import { getAddressFromSigner, signedTypeData, } from "./walletConnect";
+import { connect, getAddressFromSigner, signedTypeData, } from "./walletConnect";
 import { pollUntilIndexed } from "./poller";
 import { Metadata } from "./publication";
 import { uploadToIpfs } from "./ipfs";
@@ -29,11 +29,14 @@ export const createPost = async () => {
     throw new Error("Must define PROFILE_ID in the .env to run this");
   }
 
+  await connect();
+
   const address = getAddressFromSigner();
   console.log("create post: address", address);
 
   await login(address);
 
+  return;
   const ipfsResult = await uploadToIpfs<Metadata>({
     version: "1.0.0",
     metadata_id: uuidv4(),

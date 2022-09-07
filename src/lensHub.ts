@@ -6,8 +6,9 @@ import LENS_PERIPHERY_ABI from "./abis/lens-periphery-data-provider.json";
 // const MUMBAI_RPC_URL = "https://rpc-mumbai.matic.today";
 const MUMBAI_RPC_URL = `${window.location.origin}/polygon`;
 const provider = new ethers.providers.JsonRpcProvider(MUMBAI_RPC_URL);
+console.log(provider);
 
-console.log(`LENS_HUB_ABI: ${JSON.stringify(LENS_HUB_ABI)}`)
+//console.log(`LENS_HUB_ABI: ${JSON.stringify(LENS_HUB_ABI)}`)
 
 export const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 export const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";

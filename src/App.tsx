@@ -11,6 +11,7 @@ import { addNewPostButton } from "./things/newPost";
 import { addPost } from "./things/post";
 import { addFrame } from "./things/frame";
 import { createTrendingCorner } from "./things/trendingCorner";
+import { Providers } from "./Providers";
 
 const App = () => {
   // const [post, setPost] = useState("");
@@ -59,7 +60,8 @@ const App = () => {
     // addFrame(newScene);
     // addGallery(newScene, 0, 0, 1, "gallery", gallery);
 
-    createTrendingCorner(newScene);
+    addNewPostButton(newScene);
+    //createTrendingCorner(newScene);
     /*
     latestPosts.forEach((post: any, i: number) => {
       addPost(newScene, 0 + i, 0 + i, 1, `newpost_${i}`, "https://i.imgur.com/Pox1X97.png", post.metadata.content);
@@ -88,6 +90,7 @@ const App = () => {
 
   return (
     <div style={{height:"100vh", width:"100%"}}>
+    <Providers>
       <SceneComponent
         adaptToDeviceRatio
         antialias
@@ -95,6 +98,7 @@ const App = () => {
         id="my-canvas"
         style={{ width: "100%", height: "100%" }}
     />
+    </Providers>
     </div>
   );
 };
