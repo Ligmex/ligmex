@@ -7,7 +7,7 @@ import {
 import { SceneComponent } from "./components/Scene";
 import { explorePublications, getGallery, getPost, getPosts } from "./apollo";
 import { addGallery } from "./things/gallery";
-import { addNewPostButton } from "./things/newPost";
+// import { addNewPostButton } from "./things/newPost";
 import { addPost } from "./things/post";
 import { addFrame } from "./things/frame";
 import { createTrendingCorner } from "./things/trendingCorner";
@@ -64,7 +64,6 @@ const App = () => {
     // addFrame(newScene);
     // addGallery(newScene, 0, 0, 1, "gallery", gallery);
 
-    //addNewPostButton(newScene);
     //createTrendingCorner(newScene);
     /*
     latestPosts.forEach((post: any, i: number) => {

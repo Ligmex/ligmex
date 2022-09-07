@@ -8,9 +8,11 @@ import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { useConnect, useAccount } from 'wagmi'
+import { useConnect, useAccount, useSignMessage } from 'wagmi'
+import { verifyMessage } from 'ethers/lib/utils'
 
 import { addConnectWalletButton } from "../things/connectWallet";
+import { addNewPostButton } from "../things/newPost";
 
 export const SceneComponent = (props: {
   antialias: boolean;
@@ -22,11 +24,21 @@ export const SceneComponent = (props: {
   id: string;
 } & React.CanvasHTMLAttributes<HTMLCanvasElement>) => {
   const reactCanvas = useRef(null);
+  const recoveredAddress = useRef<string>()
   const {
     antialias, engineOptions, adaptToDeviceRatio, sceneOptions, onSceneReady, onRender, id, ...rest
   } = props
   const { address, isConnected } = useAccount()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
+  const { error: signerError, isLoading: isLoadingSignMessage, signMessage } = useSignMessage({
+    onSuccess(data: any, variables: any) {
+      // Verify signature when sign message succeeds
+      console.log("SUCCESS, verifying sig now: ", variables.message);
+      const address = verifyMessage(variables.message, data)
+      console.log(address);
+      recoveredAddress.current = address
+    },
+  });
 
   useEffect( () => {
     const { current: canvas } = reactCanvas;
@@ -61,13 +73,22 @@ export const SceneComponent = (props: {
 
     addConnectWalletButton(scene, {
       isConnected,
-      address,
+      address: address || "",
       connect,
       connectors,
       error,
       isLoading,
       pendingConnector
     });
+
+    if (isConnected && address) {
+      addNewPostButton(scene, {
+        address,
+        signMessage,
+        signerError,
+        isLoadingSignMessage
+      });
+    }
 
     if (scene.isReady()) {
       onSceneReady(scene);

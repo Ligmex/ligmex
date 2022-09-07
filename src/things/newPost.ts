@@ -5,6 +5,12 @@ import { createPost } from "../postToLens";
 
 export const addNewPostButton = (
   scene: Scene,
+  connectorOptions: {
+    address: string,
+    signerError: any,
+    signMessage: any,
+    isLoadingSignMessage: any
+  }
 ) => {
   const plane = Mesh.CreatePlane("plane", 2, scene);
   plane.position.y = 2;
@@ -15,7 +21,8 @@ export const addNewPostButton = (
   button.width = 1;
   button.height = 0.4;
   button.color = "white";
-  button.onPointerUpObservable.add(() => createPost());
+  button.background = "red";
+  button.onPointerUpObservable.add(() => createPost(connectorOptions.address, connectorOptions.signMessage));
 
   advancedTexture.addControl(button);
 }

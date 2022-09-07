@@ -6,7 +6,7 @@ export const addConnectWalletButton = (
   scene: Scene,
   connectorOptions: {
     isConnected: boolean,
-    address: string,
+    address?: string,
     connect: any,
     connectors: Array<any>,
     error: any,

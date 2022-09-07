@@ -23,19 +23,10 @@ const createPostTypedData = (createPostTypedDataRequest: any) => {
   });
 };
 
-export const createPost = async () => {
-  const profileId = PROFILE_ID;
-  if (!profileId) {
-    throw new Error("Must define PROFILE_ID in the .env to run this");
-  }
+export const createPost = async (address: string, signMessage: any) => {
+  login(address, signMessage);
 
-  await connect();
-
-  const address = getAddressFromSigner();
-  console.log("create post: address", address);
-
-  await login(address);
-
+  /*
   return;
   const ipfsResult = await uploadToIpfs<Metadata>({
     version: "1.0.0",
@@ -63,27 +54,7 @@ export const createPost = async () => {
     profileId,
     contentURI: "ipfs://" + ipfsResult,
     collectModule: {
-      // feeCollectModule: {
-      //   amount: {
-      //     currency: currencies.enabledModuleCurrencies.map(
-      //       (c: any) => c.address
-      //     )[0],
-      //     value: "0.000001",
-      //   },
-      //   recipient: address,
-      //   referralFee: 10.5,
-      // },
-      // revertCollectModule: true,
       freeCollectModule: { followerOnly: true },
-      // limitedFeeCollectModule: {
-      //   amount: {
-      //     currency: "0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889",
-      //     value: "2",
-      //   },
-      //   collectLimit: "20000",
-      //   recipient: "0x3A5bd1E37b099aE3386D13947b6a90d97675e5e3",
-      //   referralFee: 0,
-      // },
     },
     referenceModule: {
       followerOnlyReferenceModule: false,
@@ -146,4 +117,5 @@ export const createPost = async () => {
   );
 
   return result.data;
+  */
 };

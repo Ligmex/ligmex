@@ -40,7 +40,7 @@ const authenticate = (address: string, signature: string) => {
   });
 };
 
-export const login = async (address = getAddressFromSigner()) => {
+export const login = async (address: string, signMessage: any) => {
 
   console.log('login: address', address);
 
@@ -48,15 +48,13 @@ export const login = async (address = getAddressFromSigner()) => {
   const challengeResponse = await generateChallenge(address);
 
   // sign the text with the wallet
-  const signature = await signText(challengeResponse.data.challenge.text);
+  const signature = await signMessage(
+    { message: challengeResponse.data.challenge.text} );
 
-  const accessTokens = await authenticate(address, signature);
+  console.log(signature);
+  // const accessTokens = await authenticate(address, signature);
 
   // setAuthenticationToken(accessTokens.data.authenticate.accessToken);
 
-  return accessTokens.data;
+  // return accessTokens.data;
 };
-
-(async () => {
-  await login();
-})();
