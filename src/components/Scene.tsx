@@ -8,6 +8,9 @@ import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
+import { useConnect } from 'wagmi'
+
+import { addConnectWalletButton } from "../things/connectWallet";
 
 export const SceneComponent = (props: {
   antialias: boolean;
@@ -22,6 +25,7 @@ export const SceneComponent = (props: {
   const {
     antialias, engineOptions, adaptToDeviceRatio, sceneOptions, onSceneReady, onRender, id, ...rest
   } = props
+  const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
 
   useEffect( () => {
     const { current: canvas } = reactCanvas;
@@ -53,6 +57,8 @@ export const SceneComponent = (props: {
       { height: 10, width: 10, },
       scene
     );
+
+    addConnectWalletButton(scene, connect, connectors);
 
     if (scene.isReady()) {
       onSceneReady(scene);

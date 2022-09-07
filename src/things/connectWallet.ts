@@ -17,7 +17,7 @@ export const addConnectWalletButton = (
   button.width = 1;
   button.height = 0.4;
   button.color = "white";
-  //button.onPointerUpObservable.add(() => connect({ connector: connectors[0]}));
+  button.onPointerUpObservable.add(() => connect({ connector: connectors[0]}));
 
   advancedTexture.addControl(button);
 }

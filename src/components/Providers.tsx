@@ -5,7 +5,6 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 import { publicProvider } from 'wagmi/providers/public'
-import { Wallet } from "./Wallet";
 import { apolloClient } from '../apollo';
 
 global.Buffer = global.Buffer || require("buffer").Buffer
@@ -44,7 +43,6 @@ export const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <WagmiConfig client={wagmiClient}>
       <ApolloProvider client={apolloClient}>
-        <Wallet />
         {children}
       </ApolloProvider>
     </WagmiConfig>
