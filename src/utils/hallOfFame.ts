@@ -6,8 +6,11 @@ import {
   Sound,
   StandardMaterial,
   Texture,
-  Vector4
+  Vector3,
+  Vector4,
 } from "@babylonjs/core";
+
+const LIMIT = 10;
 
 export const createTrendingCorner = async (scene: Scene) => {
 
@@ -16,7 +19,7 @@ export const createTrendingCorner = async (scene: Scene) => {
   const latestPosts = await explorePublications({
     sortCriteria: "LATEST",
     publicationTypes: ["POST"],
-    limit: 10
+    limit: LIMIT,
   });
   console.log("Got posts: ", latestPosts);
 
@@ -25,8 +28,8 @@ export const createTrendingCorner = async (scene: Scene) => {
   // TEXT_ONLY: Text bubble
   // VIDEO/IMAGE/AUDIO
   
-  let postLocation = 2;
-  latestPosts.forEach((post: any) => {
+  latestPosts.forEach((post: any, i: number) => {
+    const t = i/LIMIT * 2 * Math.PI;
     console.log(typeof(post.metadata.mainContentFocus), post.id)
     switch (post?.metadata?.mainContentFocus) {
       case "ARTICLE":
@@ -44,10 +47,10 @@ export const createTrendingCorner = async (scene: Scene) => {
         break;
       case "IMAGE":
         const f = new Vector4(0,0, 1, 1);
-        const b = new Vector4(0,0, 1, 0);
+        const b = new Vector4(0,0, 0, 0);
         const plane = MeshBuilder.CreatePlane(post.id, {
-          height: 1,
-          width: 0.5,
+          height: post.metadata.media[0]?.original?.height || 1,
+          width: post.metadata.media[0]?.original?.width || 0.5,
           sideOrientation: Mesh.DOUBLESIDE,
           frontUVs: f,
           backUVs: b
@@ -55,8 +58,7 @@ export const createTrendingCorner = async (scene: Scene) => {
         const material = new StandardMaterial(post.id, scene);
         material.diffuseTexture = new Texture(post.metadata.media[0]?.original?.url, scene);
         plane.material = material;
-        plane.position.x = postLocation;
-        postLocation+=2;
+        plane.position = new Vector3(Math.cos( t ) * 1,0.5, Math.sin( t ) * 1);
         console.log("Image: ", post.metadata);
         break;
       case "LINK":
@@ -72,7 +74,6 @@ export const createTrendingCorner = async (scene: Scene) => {
         console.log(`Unsuported content focus: ${post.metadata.mainContentFocus}`)
         break;
     };
-    console.log(post.__typename);
   });
 
 }
