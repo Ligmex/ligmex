@@ -8,12 +8,17 @@ import { SceneComponent } from "./Scene";
 import { explorePublications, getGallery, getPost, getPosts } from "./apollo";
 import { addGallery } from "./things/gallery";
 import { addNewPostButton } from "./things/newPost";
+import { addConnectWalletButton } from "./things/connectWallet";
 import { addPost } from "./things/post";
 import { addFrame } from "./things/frame";
 import { createTrendingCorner } from "./things/trendingCorner";
-import { Providers } from "./Providers";
+import { Providers } from "./components/Providers";
+import { useConnect } from 'wagmi'
 
 const App = () => {
+  const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
+  console.log(connect);
+
   // const [post, setPost] = useState("");
   const [latestPosts, setLatestPosts] = useState([] as any);
   // const [gallery, setGallery] = useState({} as any);
@@ -60,7 +65,8 @@ const App = () => {
     // addFrame(newScene);
     // addGallery(newScene, 0, 0, 1, "gallery", gallery);
 
-    addNewPostButton(newScene);
+    //addConnectWalletButton(newScene, connect, connectors);
+    //addNewPostButton(newScene);
     //createTrendingCorner(newScene);
     /*
     latestPosts.forEach((post: any, i: number) => {
