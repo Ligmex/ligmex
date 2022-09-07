@@ -129,7 +129,7 @@ proxy: $(shell find ops/proxy $(find_options))
 	docker tag $(project)_proxy $(project)_proxy:$(commit)
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
-webserver: client $(shell find ops $(find_options))
+webserver: client $(shell find ops/webserver $(find_options))
 	$(log_start)
 	docker build --file ops/webserver/Dockerfile $(cache_from) --tag $(project)_webserver:latest .
 	docker tag $(project)_webserver:latest $(project)_webserver:$(commit)

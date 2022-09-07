@@ -3,6 +3,7 @@
 # Set default email & domain name
 DOMAINNAME="${DOMAINNAME:-localhost}"
 EMAIL="${EMAIL:-noreply@gmail.com}"
+WEBSERVER_URL="${WEBSERVER_URL:-http://webserver:3000}"
 POLYGON_RPC_URL="${POLYGON_RPC_URL:-http://ethprovider:8545}"
 MODE="${MODE:-dev}"
 
