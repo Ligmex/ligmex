@@ -12,6 +12,7 @@ import { useConnect, useAccount, useSignMessage } from 'wagmi'
 import { verifyMessage } from 'ethers/lib/utils'
 
 import { addConnectWalletButton } from "../things/connectWallet";
+import { authenticate } from "../login";
 import { addNewPostButton } from "../things/newPost";
 
 export const SceneComponent = (props: {
@@ -27,15 +28,18 @@ export const SceneComponent = (props: {
   const recoveredAddress = useRef<string>()
   const {
     antialias, engineOptions, adaptToDeviceRatio, sceneOptions, onSceneReady, onRender, id, ...rest
-  } = props
+  } = props;
+
   const { address, isConnected } = useAccount()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
   const { error: signerError, isLoading: isLoadingSignMessage, signMessage } = useSignMessage({
-    onSuccess(data: any, variables: any) {
-      // Verify signature when sign message succeeds
-      console.log("SUCCESS, verifying sig now: ", variables.message);
-      const address = verifyMessage(variables.message, data)
-      console.log(address);
+    async onSuccess(sig: any, variables: any) {
+      if (address && sig) {
+        const accessTokens = await authenticate(address, sig)
+        console.log(accessTokens);
+      }
+      //const address = verifyMessage(variables.message, sig)
+      //console.log(address);
       recoveredAddress.current = address
     },
   });
