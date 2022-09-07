@@ -8,7 +8,7 @@ import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { useConnect } from 'wagmi'
+import { useConnect, useAccount } from 'wagmi'
 
 import { addConnectWalletButton } from "../things/connectWallet";
 
@@ -25,6 +25,7 @@ export const SceneComponent = (props: {
   const {
     antialias, engineOptions, adaptToDeviceRatio, sceneOptions, onSceneReady, onRender, id, ...rest
   } = props
+  const { address, isConnected } = useAccount()
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
 
   useEffect( () => {
@@ -58,7 +59,15 @@ export const SceneComponent = (props: {
       scene
     );
 
-    addConnectWalletButton(scene, connect, connectors);
+    addConnectWalletButton(scene, {
+      isConnected,
+      address,
+      connect,
+      connectors,
+      error,
+      isLoading,
+      pendingConnector
+    });
 
     if (scene.isReady()) {
       onSceneReady(scene);

@@ -4,8 +4,15 @@ import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
 
 export const addConnectWalletButton = (
   scene: Scene,
-  connect: any,
-  connectors: any
+  connectorOptions: {
+    isConnected: boolean,
+    address: string,
+    connect: any,
+    connectors: Array<any>,
+    error: any,
+    isLoading: boolean,
+    pendingConnector: any
+  }
 ) => {
   const plane = Mesh.CreatePlane("plane", 2, scene);
   plane.position.y = 2;
@@ -13,11 +20,20 @@ export const addConnectWalletButton = (
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
 
-  const button = Button.CreateSimpleButton("newPost", "📡 connect wallet");
-  button.width = 1;
-  button.height = 0.4;
+  let button: Button;
+  if (connectorOptions.isConnected) {
+    button = Button.CreateSimpleButton("disconnet", "❌ disconnet wallet");
+    button.background = "black";
+    console.log(connectorOptions.address);
+    // TODO add disconnect 
+  } else {
+    button = Button.CreateSimpleButton("newPost", "📡 connect wallet");
+    button.background = "green";
+    button.onPointerUpObservable.add(() => connectorOptions.connect({ connector: connectorOptions.connectors[0]}));
+  }
+  button.width = 0.2;
+  button.height = 0.1;
   button.color = "white";
-  button.onPointerUpObservable.add(() => connect({ connector: connectors[0]}));
 
   advancedTexture.addControl(button);
 }
