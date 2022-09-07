@@ -5,6 +5,7 @@
 **/.env
 **/.server-db
 **/TODO*
+agent
 
 # Cache
 **/*.docker-compose.yml
