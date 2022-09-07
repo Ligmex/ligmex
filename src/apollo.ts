@@ -9,7 +9,7 @@ import { EXPLORE_PUBLICATIONS, GET_PROFILE } from "./gqlQueries";
 // const TESTNET_URL = 'https://api-mumbai.lens.dev/';
 const MAINNET_URL = 'https://api.lens.dev/';
 
-const apolloClient= new ApolloClient({
+export const apolloClient= new ApolloClient({
   uri: MAINNET_URL,
   cache: new InMemoryCache(),
 })

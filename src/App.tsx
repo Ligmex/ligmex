@@ -7,6 +7,7 @@ import {
 import { SceneComponent } from "./Scene";
 import { explorePublications, getGallery, getPost, getPosts } from "./apollo";
 import { addGallery } from "./things/gallery";
+import { addNewPostButton } from "./things/newPost";
 import { addPost } from "./things/post";
 import { addFrame } from "./things/frame";
 
