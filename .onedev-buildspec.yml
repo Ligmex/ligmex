@@ -18,6 +18,13 @@ jobs:
       - make all
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PushRepository
+    name: push to github
+    remoteUrl: https://github.com/Ligmex/ligmex.git
+    userName: bohendo
+    withLfs: false
+    force: false
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
   - !BranchUpdateTrigger
     branches: main
