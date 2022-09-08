@@ -14,7 +14,7 @@ import { AuthenticateResponse } from "../utils";
 
 import { addConnectWalletButton } from "../things/connectWallet";
 import { authenticate } from "../apollo";
-import { addNewPostButton } from "../things/newPost";
+import { addLoginButton, addNewPostButton } from "../things/newPost";
 
 export const SceneComponent = (props: {
   antialias: boolean;
@@ -89,6 +89,12 @@ export const SceneComponent = (props: {
     });
 
     if (isConnected && address) {
+      addLoginButton(scene, {
+        address,
+        signMessage,
+        signerError,
+        isLoadingSignMessage
+      });
       addNewPostButton(scene, {
         address,
         signMessage,

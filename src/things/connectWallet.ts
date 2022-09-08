@@ -23,12 +23,12 @@ export const addConnectWalletButton = (
   let button: Button;
   if (connectorOptions.isConnected) {
     button = Button.CreateSimpleButton("disconnet", "❌ disconnet wallet");
-    button.background = "black";
+    button.background = "green";
     console.log(connectorOptions.address);
     // TODO add disconnect 
   } else {
     button = Button.CreateSimpleButton("newPost", "📡 connect wallet");
-    button.background = "green";
+    button.background = "black";
     button.onPointerUpObservable.add(() => connectorOptions.connect({ connector: connectorOptions.connectors[0]}));
   }
   button.width = 0.2;
