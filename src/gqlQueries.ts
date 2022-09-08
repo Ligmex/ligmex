@@ -3,6 +3,22 @@ export const query  = `
     ping
   }
 `
+
+export const GET_CHALLENGE = `
+  query($request: ChallengeRequest!) {
+    challenge(request: $request) { text }
+  }
+`;
+
+export const AUTHENTICATION = `
+  mutation($request: SignedAuthChallenge!) { 
+    authenticate(request: $request) {
+      accessToken
+      refreshToken
+    }
+ }
+`;
+
 export const CREATE_POST_TYPED_DATA = `
   mutation($request: CreatePublicPostRequest!) { 
     createPostTypedData(request: $request) {

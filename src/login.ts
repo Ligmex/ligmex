@@ -1,44 +1,6 @@
-import { gql } from '@apollo/client/core';
-import { apolloClient } from './apollo';
 import { getAddressFromSigner, signText } from './walletConnect';
+import { generateChallenge } from "./apollo";
 
-const GET_CHALLENGE = `
-  query($request: ChallengeRequest!) {
-    challenge(request: $request) { text }
-  }
-`;
-
-export const generateChallenge = (address: string) => {
-  return apolloClient.query({
-    query: gql(GET_CHALLENGE),
-    variables: {
-      request: {
-        address,
-      },
-    },
-  });
-};
-
-const AUTHENTICATION = `
-  mutation($request: SignedAuthChallenge!) { 
-    authenticate(request: $request) {
-      accessToken
-      refreshToken
-    }
- }
-`;
-
-export const authenticate = (address: string, signature: string) => {
-  return apolloClient.mutate({
-    mutation: gql(AUTHENTICATION),
-    variables: {
-      request: {
-        address,
-        signature,
-      },
-    },
-  });
-};
 
 export const login = async (address: string, signMessage: any) => {
 
@@ -48,10 +10,8 @@ export const login = async (address: string, signMessage: any) => {
   const challengeResponse = await generateChallenge(address);
 
   // sign the text with the wallet
-  const signature = await signMessage(
-    { message: challengeResponse.data.challenge.text} );
+  signMessage({ message: challengeResponse.data.challenge.text});
 
-  console.log(signature);
   // const accessTokens = await authenticate(address, signature);
 
   // setAuthenticationToken(accessTokens.data.authenticate.accessToken);

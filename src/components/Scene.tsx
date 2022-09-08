@@ -10,9 +10,10 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { useConnect, useAccount, useSignMessage } from 'wagmi'
 import { verifyMessage } from 'ethers/lib/utils'
+import { AuthenticateResponse } from "../utils";
 
 import { addConnectWalletButton } from "../things/connectWallet";
-import { authenticate } from "../login";
+import { authenticate } from "../apollo";
 import { addNewPostButton } from "../things/newPost";
 
 export const SceneComponent = (props: {
@@ -35,8 +36,10 @@ export const SceneComponent = (props: {
   const { error: signerError, isLoading: isLoadingSignMessage, signMessage } = useSignMessage({
     async onSuccess(sig: any, variables: any) {
       if (address && sig) {
-        const accessTokens = await authenticate(address, sig)
-        console.log(accessTokens);
+        const jwtTokens = (await authenticate(address, sig) as AuthenticateResponse).data.authenticate;
+        console.log(jwtTokens);
+        localStorage.setItem('ACCESS_TOKEN', jwtTokens.accessToken);
+        localStorage.setItem('REFRESH_TOKEN', jwtTokens.refreshToken);
       }
       //const address = verifyMessage(variables.message, sig)
       //console.log(address);

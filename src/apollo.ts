@@ -4,7 +4,12 @@ import {
   gql,
 } from '@apollo/client'
 
-import { EXPLORE_PUBLICATIONS, GET_PROFILE } from "./gqlQueries";
+import {
+  AUTHENTICATION,
+  EXPLORE_PUBLICATIONS,
+  GET_CHALLENGE,
+  GET_PROFILE,
+} from "./gqlQueries";
 
 const TESTNET_URL = 'https://api-mumbai.lens.dev/';
 // const MAINNET_URL = 'https://api.lens.dev/';
@@ -13,6 +18,29 @@ export const apolloClient= new ApolloClient({
   uri: TESTNET_URL,
   cache: new InMemoryCache(),
 })
+
+export const generateChallenge = (address: string) => {
+  return apolloClient.query({
+    query: gql(GET_CHALLENGE),
+    variables: {
+      request: {
+        address,
+      },
+    },
+  });
+};
+
+export const authenticate = (address: string, signature: string) => {
+  return apolloClient.mutate({
+    mutation: gql(AUTHENTICATION),
+    variables: {
+      request: {
+        address,
+        signature,
+      },
+    },
+  });
+};
 
 // 4102 - "bohendo"
 export const getGallery = async (profileId: string) => {
