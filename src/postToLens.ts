@@ -30,6 +30,8 @@ export const login = async (address: string, signMessage: any) => {
   signMessage({ message: challengeResponse.data.challenge.text});
 };
 
+const uploadFile = async () => {};
+
 export const createPost = async (address: string, signMessage: any) => {
 
   /*

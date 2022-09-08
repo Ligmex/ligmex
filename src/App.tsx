@@ -31,7 +31,7 @@ const App = () => {
 
       const latestPosts = await getPosts()
       // console.log(`Got latestPosts: ${JSON.stringify(latestPosts, null, 2)}`);
-      console.log("Latest Posts: ", latestPosts);
+      // console.log("Latest Posts: ", latestPosts);
       setLatestPosts(latestPosts);
 
       // const gallery = await getGallery("0x1006"); // "bohendo.eth")
@@ -64,7 +64,7 @@ const App = () => {
     // addFrame(newScene);
     // addGallery(newScene, 0, 0, 1, "gallery", gallery);
 
-    //createTrendingCorner(newScene);
+    createTrendingCorner(newScene);
     /*
     latestPosts.forEach((post: any, i: number) => {
       addPost(newScene, 0 + i, 0 + i, 1, `newpost_${i}`, "https://i.imgur.com/Pox1X97.png", post.metadata.content);

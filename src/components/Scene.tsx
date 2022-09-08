@@ -125,6 +125,7 @@ export const SceneComponent = (props: {
     }
 
     return () => {
+      console.log("Disposing Scene");
       scene.getEngine().dispose();
 
       if (window) {

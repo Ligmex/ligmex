@@ -1,8 +1,12 @@
-import { Tools } from "@babylonjs/core";
+import { SceneLoader, FilesInput, Tools } from "@babylonjs/core";
+//import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
+import { GLTFFileLoader } from "babylonjs-loaders";
 import { Scene } from "@babylonjs/core/scene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
 import { login } from "../postToLens";
+
+SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const addLoginButton = (
   scene: Scene,
@@ -63,10 +67,36 @@ export const addNewPostButton = (
   });
 */
 
-   Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", ()=>{
+  //const assetsManager = new AssetsManager(scene);
+
+   Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
     let input = document.createElement("input")
-    input.type = "file"
-    input.id = "import"
+    input.type = "file";
+    input.id = "import";
+    input.hidden = true;
+    input.onchange = (event: any) => {
+      console.log("loading file");
+      const fileList = event.target.files;
+      const filename = fileList[0].name;
+      console.log(filename)
+      console.log(fileList);
+      const blob = new Blob([fileList[0]]);
+
+      FilesInput.FilesToLoad[filename.toLowerCase()] = blob as any;
+      
+      console.log(FilesInput.FilesToLoad);
+
+      SceneLoader.LoadAssetContainer("file:", filename,  scene,
+        (container) => {
+          console.log(scene);
+
+          container.addAllToScene();
+          console.log(container.meshes);
+        }, (progress) => console.log , (error) => console.log("error: ", error), "glb");
+      //assetsManager.addMeshTask(`uploadFile-${filename}`, "", "file:", filename);
+      //assetsManager.load();
+    }
+
     input.style.position = "fixed";
     input.style.top = "calc(100% - 10%)";
     //input.accept = "0px"//".json,.png";
@@ -74,8 +104,9 @@ export const addNewPostButton = (
     document.body.appendChild(input)
 
     button.onPointerDownObservable.add(()=>{
-          $("#import").trigger('click')
+      $("#import").trigger('click')
     })
+   });
 
 
 

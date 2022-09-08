@@ -60,7 +60,8 @@ export const createTrendingCorner = async (scene: Scene) => {
           backUVs: b
         }, scene);
         const material = new StandardMaterial(post.id, scene);
-        material.diffuseTexture = new Texture(post.metadata.media[0]?.original?.url, scene);
+        let url = post.metadata.media[0]?.original?.url.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
+        material.diffuseTexture = new Texture(url, scene);
         plane.material = material;
         plane.position = new Vector3(Math.cos( t ) * 1,0.5, Math.sin( t ) * 1);
         console.log("Image: ", post.metadata);
