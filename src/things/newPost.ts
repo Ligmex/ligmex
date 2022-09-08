@@ -1,7 +1,7 @@
 import { Scene } from "@babylonjs/core/scene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
-import { createPost } from "../postToLens";
+import { login } from "../postToLens";
 
 export const addNewPostButton = (
   scene: Scene,
@@ -22,7 +22,7 @@ export const addNewPostButton = (
   button.height = 0.4;
   button.color = "white";
   button.background = "red";
-  button.onPointerUpObservable.add(() => createPost(connectorOptions.address, connectorOptions.signMessage));
+  button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signMessage));
 
   advancedTexture.addControl(button);
 }

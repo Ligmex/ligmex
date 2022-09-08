@@ -2,13 +2,12 @@ import { gql } from "@apollo/client/core";
 import { BigNumber, utils } from "ethers";
 import { v4 as uuidv4 } from "uuid";
 import { apolloClient } from "./apollo";
-import { login } from "./login";
 import { CREATE_POST_TYPED_DATA } from "./gqlQueries";
-import { connect, getAddressFromSigner, signedTypeData, } from "./walletConnect";
 import { pollUntilIndexed } from "./poller";
 import { Metadata } from "./publication";
 import { uploadToIpfs } from "./ipfs";
 import { lensHub } from "./lensHub";
+import { generateChallenge } from "./apollo";
 
 
 const PROFILE_ID = "0x1006";
@@ -23,8 +22,15 @@ const createPostTypedData = (createPostTypedDataRequest: any) => {
   });
 };
 
+export const login = async (address: string, signMessage: any) => {
+  // request a challenge from the server
+  const challengeResponse = await generateChallenge(address);
+
+  // sign the text with the wallet
+  signMessage({ message: challengeResponse.data.challenge.text});
+};
+
 export const createPost = async (address: string, signMessage: any) => {
-  login(address, signMessage);
 
   /*
   return;

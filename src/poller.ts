@@ -1,7 +1,5 @@
 import { gql } from '@apollo/client/core';
 import { apolloClient } from './apollo';
-import { login } from './login';
-import { getAddressFromSigner } from './walletConnect';
 
 const HAS_TX_BEEN_INDEXED = `
   query($request: HasTxHashBeenIndexedRequest!) {
