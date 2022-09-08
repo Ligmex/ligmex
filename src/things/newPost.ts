@@ -1,6 +1,5 @@
 import { SceneLoader, FilesInput, Tools } from "@babylonjs/core";
-//import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
-import { GLTFFileLoader } from "babylonjs-loaders";
+import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 import { Scene } from "@babylonjs/core/scene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
@@ -42,6 +41,7 @@ export const addNewPostButton = (
     isLoadingSignMessage: any
   }
 ) => {
+
   const plane = Mesh.CreatePlane("plane", 2, scene);
   plane.position.y = 2;
 
@@ -76,12 +76,29 @@ export const addNewPostButton = (
     input.hidden = true;
     input.onchange = (event: any) => {
       console.log("loading file");
-      const fileList = event.target.files;
-      const filename = fileList[0].name;
-      console.log(filename)
-      console.log(fileList);
-      const blob = new Blob([fileList[0]]);
+      console.log(event.target.value);
+      const file = event.target.files[0];
+      const filename = file.name;
 
+       const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          const imageDataUrl = reader.result as string;
+          SceneLoader.LoadAssetContainer(imageDataUrl, "",  scene,
+            (container) => {
+              console.log(scene);
+
+              container.addAllToScene();
+              console.log(container.meshes);
+            }, (progress) => console.log , (error) => console.log("error: ", error));
+        };
+
+
+
+      /*
+      const blob = new Blob([file]);
+
+      console.log(blob);
       FilesInput.FilesToLoad[filename.toLowerCase()] = blob as any;
       
       console.log(FilesInput.FilesToLoad);
@@ -92,7 +109,8 @@ export const addNewPostButton = (
 
           container.addAllToScene();
           console.log(container.meshes);
-        }, (progress) => console.log , (error) => console.log("error: ", error), "glb");
+        }, (progress) => console.log , (error) => console.log("error: ", error), "glTF");
+       */
       //assetsManager.addMeshTask(`uploadFile-${filename}`, "", "file:", filename);
       //assetsManager.load();
     }

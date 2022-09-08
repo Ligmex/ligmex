@@ -3,7 +3,10 @@ import {
   ArcRotateCamera,
   Scene,
   Vector3,
+//  SceneLoader,
 } from "@babylonjs/core";
+// import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
+
 import { SceneComponent } from "./components/Scene";
 import { explorePublications, getGallery, getPost, getPosts } from "./apollo";
 import { addGallery } from "./things/gallery";
@@ -14,6 +17,7 @@ import { createTrendingCorner } from "./things/trendingCorner";
 import { Providers } from "./components/Providers";
 import { useConnect } from 'wagmi'
 
+// SceneLoader.RegisterPlugin(new GLTFFileLoader());
 const App = () => {
   //const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
   //console.log(connect);
@@ -61,10 +65,13 @@ const App = () => {
 
     camera.setTarget(Vector3.Zero());
 
+    // SceneLoader.LoadAssetContainer( "./", "seagulf.glb", newScene, (container) => {
+    //  container.addAllToScene();
+    // });
     // addFrame(newScene);
     // addGallery(newScene, 0, 0, 1, "gallery", gallery);
 
-    createTrendingCorner(newScene);
+    // createTrendingCorner(newScene);
     /*
     latestPosts.forEach((post: any, i: number) => {
       addPost(newScene, 0 + i, 0 + i, 1, `newpost_${i}`, "https://i.imgur.com/Pox1X97.png", post.metadata.content);
