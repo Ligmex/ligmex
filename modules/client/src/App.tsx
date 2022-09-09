@@ -19,6 +19,7 @@ import { addFrame } from "./things/frame";
 import { createTrendingCorner } from "./things/trendingCorner";
 import { Providers } from "./components/Providers";
 import { useConnect } from 'wagmi'
+import './ipfs'
 
 // SceneLoader.RegisterPlugin(new GLTFFileLoader());
 const App = () => {

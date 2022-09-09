@@ -5,7 +5,7 @@ import { apolloClient } from "./apollo";
 import { CREATE_POST_TYPED_DATA } from "./gqlQueries";
 import { pollUntilIndexed } from "./poller";
 import { Metadata } from "./publication";
-import { uploadToIpfs } from "./ipfs";
+import { ipfs } from "./ipfs";
 import { lensHub } from "./lensHub";
 import { generateChallenge } from "./apollo";
 
@@ -36,7 +36,7 @@ export const createPost = async (address: string, signMessage: any) => {
 
   /*
   return;
-  const ipfsResult = await uploadToIpfs<Metadata>({
+  const ipfsResult = await ipfs.upload<Metadata>({
     version: "1.0.0",
     metadata_id: uuidv4(),
     description: "Description",
