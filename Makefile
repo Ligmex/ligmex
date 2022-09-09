@@ -37,8 +37,8 @@ $(shell mkdir -p .flags)
 # Command & Control Aliases
 
 default: dev
-dev: proxy node-modules
-prod: proxy webserver
+dev: proxy server
+prod: proxy webserver server
 all: dev prod
 
 qs: quickstart
@@ -61,11 +61,15 @@ restart-prod: stop
 	LIGMEX_PROD=true bash ops/start.sh
 
 clean: stop
+	docker container prune -f
+	rm -rf .flags/*
+	rm -rf .rollup.cache
 	rm -rf build
 	rm -rf dist
-	rm -rf .rollup.cache
-	rm -rf .flags/*
-	docker container prune -f
+	rm -rf modules/**/.rollup.cache
+	rm -rf modules/**/build
+	rm -rf modules/**/dist
+
 
 reset-images:
 	rm -f .flags/proxy .flags/webserver
@@ -109,15 +113,20 @@ builder: $(shell find ops/builder $(find_options))
 
 node-modules: builder package.json
 	$(log_start)
-	$(docker_run) "npm install"
+	$(docker_run) "lerna bootstrap --hoist --no-progress"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
 ########################################
 # Typescript -> Javascript
 
-client: node-modules $(shell find src $(find_options))
+client-bundle: node-modules $(shell find modules/client $(find_options))
 	$(log_start)
-	$(docker_run) "npm run build"
+	$(docker_run) "cd modules/client && npm run build"
+	$(log_finish) && mv -f $(totalTime) .flags/$@
+
+server-bundle: node-modules $(shell find modules/server $(find_options))
+	$(log_start)
+	$(docker_run) "cd modules/server && npm run build"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
 ########################################
@@ -129,8 +138,15 @@ proxy: $(shell find ops/proxy $(find_options))
 	docker tag $(project)_proxy $(project)_proxy:$(commit)
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
-webserver: client $(shell find ops/webserver $(find_options))
+webserver: client-bundle $(shell find modules/client/ops $(find_options))
 	$(log_start)
-	docker build --file ops/webserver/Dockerfile $(cache_from) --tag $(project)_webserver:latest .
+	docker build --file modules/client/ops/Dockerfile $(cache_from) --tag $(project)_webserver:latest modules/client
 	docker tag $(project)_webserver:latest $(project)_webserver:$(commit)
+	$(log_finish) && mv -f $(totalTime) .flags/$@
+
+
+server: server-bundle $(shell find modules/server/ops $(find_options))
+	$(log_start)
+	docker build --file modules/server/ops/Dockerfile $(cache_from) --tag $(project)_server:latest modules/server
+	docker tag $(project)_server:latest $(project)_server:$(commit)
 	$(log_finish) && mv -f $(totalTime) .flags/$@
