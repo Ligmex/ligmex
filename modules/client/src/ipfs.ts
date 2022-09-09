@@ -1,20 +1,19 @@
 import axios from "axios";
 
 /**
- *
  * @param data - Data to upload to ipfs
  * @returns ipfs hash id
  */
-export const uploadToIpfs = async <T>(data: T): Promise<string> => {
+const upload = async <T>(data: T): Promise<string> => {
   try {
-    const authToken = "abc123"; // TODO: ask user for auth token
+    const vipToken = "abc123"; // TODO: ask user for auth token
     const upload = await axios({
       url: `${window.location.origin}/ipfs`, 
       method: "POST",
       data,
       headers: {
         "content-type": "application/octet-stream",
-        "authorization": `Basic ${btoa(`ligmex:${authToken}`)}`,
+        "authorization": `Basic ${btoa(`ligmex:${vipToken}`)}`,
       }
     });
     const id = upload?.data || "";
@@ -24,30 +23,32 @@ export const uploadToIpfs = async <T>(data: T): Promise<string> => {
   }
 };
 
-export default uploadToIpfs;
-
-/*
-import { create } from "ipfs-http-client";
-
-const authToken = AUTH_TOKEN;
-
-if (!authToken) {
-  throw new Error("No Auth token");
-}
-
-const client = create({
-  host: "ipfs.infura.io",
-  port: 5001,
-  protocol: "https",
-  headers: {
-    authorization: `Basic ${btoa(`admin:${authToken}`)}`,
-  },
-});
-
-export const uploadIpfs = async <T>(data: T) => {
-  const result = await client.add(JSON.stringify(data));
-
-  console.log("upload result ipfs", result);
-  return result;
+/**
+ * @param ipfs hash id
+ * @returns content string of data
+ */
+const download = async (hash: string): Promise<string> => {
+  const res = await axios({
+    url: `${window.location.origin}/ipfs/${hash.replace(/^\/?ipfs\//, "")}`, 
+    method: "GET",
+    headers: { "content-type": "application/octet-stream" }
+  });
+  console.log(`ipfs hello world res`, res);
+  return res?.data || "";
 };
+
+export const ipfs = { download, upload };
+
+/* Test upload & download
+(async () => {
+  const testText = `hello again, world! It's ${(new Date()).toTimeString()}`
+  const hash = await upload(testText);
+  console.log(`Got hash: ${hash}`);
+  const response = await download(hash);
+  if (testText !== response) {
+    console.error(`Failed to upload & download test text: ${testText} !== ${response}`);
+  } else {
+    console.log(`Successfully uploaded & downloaded test text: ${testText}`);
+  }
+})()
 */
