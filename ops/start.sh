@@ -58,6 +58,14 @@ common="networks:
           max-size: '100m'"
 
 ########################################
+# IPFS config
+
+ipfs_internal_port=5001
+
+ipfs_image="ipfs/go-ipfs:v0.15.0"
+bash "$root/ops/pull-images.sh" "$ipfs_image"
+
+########################################
 # Webserver config
 
 webserver_internal_port=3000
@@ -100,9 +108,9 @@ then
 
 else
   public_port=${LIGMEX_PORT:-3000}
-  public_url="https://127.0.0.1:$public_port"
+  public_url="http://127.0.0.1:$public_port"
   proxy_ports="ports:
-      - '$public_port:443'"
+      - '$public_port:80'"
   echo "${project}_proxy will be exposed on *:$public_port"
 fi
 
@@ -119,8 +127,8 @@ networks:
     external: true
 
 volumes:
-  data:
   certs:
+  ipfs:
 
 services:
 
@@ -132,11 +140,20 @@ services:
       DOMAINNAME: '$LIGMEX_DOMAINNAME'
       EMAIL: '$LIGMEX_EMAIL'
       WEBSERVER_URL: 'http://webserver:$webserver_internal_port'
+      IPFS_URL: 'http://ipfs:$ipfs_internal_port'
       POLYGON_RPC_URL: '$LIGMEX_POLYGON_RPC_URL'
     volumes:
       - 'certs:/etc/letsencrypt'
 
   $webserver_service
+
+  ipfs:
+    image: '$ipfs_image'
+    $common
+    ports:
+      - '4001:4001'
+    volumes:
+      - 'ipfs:/data/ipfs'
 
 EOF
 

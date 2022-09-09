@@ -22,12 +22,15 @@ null_ui=localhost
 EMAIL="${EMAIL:-noreply@gmail.com}"
 WEBSERVER_URL="${WEBSERVER_URL:-$null_ui}"
 WEBSERVER_URL="${WEBSERVER_URL#*://}"
+IPFS_URL="${IPFS_URL#*://}"
+IPFS_URL="ipfs:8080" # TODO remove
 POLYGON_RPC_URL="${POLYGON_RPC_URL#https://}"
 
 echo "Proxy container launched in env:"
 echo "DOMAINNAME=${DOMAINNAME:-$null_ui}"
 echo "EMAIL=$EMAIL"
 echo "WEBSERVER_URL=$WEBSERVER_URL"
+echo "IPFS_URL=$IPFS_URL"
 echo "POLYGON_RPC_URL=$POLYGON_RPC_URL"
 echo "POLYGON_RPC_HOST=$POLYGON_RPC_HOST"
 echo "POLYGON_RPC_PATH=$POLYGON_RPC_PATH"
@@ -126,7 +129,9 @@ function renewcerts {
   done
 }
 
-renewcerts &
+if [[ "$DOMAINNAME" != "localhost" ]]
+then renewcerts &
+fi
 
 copycerts
 
