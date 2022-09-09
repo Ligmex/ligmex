@@ -4,6 +4,7 @@ import { Scene } from "@babylonjs/core/scene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
 import { login } from "../postToLens";
+import { uploadToIpfs } from "../ipfs";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
@@ -52,83 +53,45 @@ export const addNewPostButton = (
   button.height = 0.1;
   button.color = "white";
   button.background = "red";
-  /*
-  button.onPointerUpObservable.add(() => {
-    console.log("Create New Post")
-    let input = document.createElement("input");
-    input.setAttribute("id", "loadFile");
-    input.setAttribute("type", "file");
-    input.style.position = "absolute";
-    input.style.top = "80px";
-    input.style.width = "200px"
-    input.style.height = "100px";
-    input.style.right = "40px"
-    document.body.children[0].appendChild(input);
-  });
-*/
 
-  //const assetsManager = new AssetsManager(scene);
-
-   Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
+  Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
     let input = document.createElement("input")
     input.type = "file";
     input.id = "import";
     input.hidden = true;
+    // input.accept = "0px"//".json,.png";
     input.onchange = (event: any) => {
       console.log("loading file");
-      console.log(event.target.value);
+      // console.log(event.target.value);
       const file = event.target.files[0];
-      const filename = file.name;
 
        const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => {
+        reader.onload = async () => {
           const imageDataUrl = reader.result as string;
-          SceneLoader.LoadAssetContainer(imageDataUrl, "",  scene,
-            (container) => {
-              console.log(scene);
+          try {
+            const id = await uploadToIpfs(await (await fetch(imageDataUrl)).arrayBuffer());
+            console.log(id);
+          } catch (e) {
+            console.log(e);
+          } finally {
+            SceneLoader.LoadAssetContainer(imageDataUrl, "",  scene,
+              (container) => {
+                console.log(container);
+                console.log(scene);
+                container.addAllToScene();
 
-              container.addAllToScene();
-              console.log(container.meshes);
-            }, (progress) => console.log , (error) => console.log("error: ", error));
+              }, (progress) => console.log , (error) => console.log("error: ", error));
+          }
         };
-
-
-
-      /*
-      const blob = new Blob([file]);
-
-      console.log(blob);
-      FilesInput.FilesToLoad[filename.toLowerCase()] = blob as any;
-      
-      console.log(FilesInput.FilesToLoad);
-
-      SceneLoader.LoadAssetContainer("file:", filename,  scene,
-        (container) => {
-          console.log(scene);
-
-          container.addAllToScene();
-          console.log(container.meshes);
-        }, (progress) => console.log , (error) => console.log("error: ", error), "glTF");
-       */
-      //assetsManager.addMeshTask(`uploadFile-${filename}`, "", "file:", filename);
-      //assetsManager.load();
+        /*
+        const blob = new Blob([file]);
+         */
     }
-
-    input.style.position = "fixed";
-    input.style.top = "calc(100% - 10%)";
-    //input.accept = "0px"//".json,.png";
-  //  input.style.display = "block"
     document.body.appendChild(input)
-
     button.onPointerDownObservable.add(()=>{
       $("#import").trigger('click')
     })
    });
-
-
-
-
-
   advancedTexture.addControl(button);
 }

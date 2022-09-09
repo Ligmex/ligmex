@@ -8,21 +8,25 @@ import axios from "axios";
 export const uploadToIpfs = async <T>(data: T): Promise<string> => {
   try {
     const upload = await axios({
-      url: "shivhendo.com/ipfs", 
+      url: "https://shivhendo.com/ipfs", 
       method: "POST",
       data,
       headers: { "content-type": "application/octet-stream" }
     });
 
-    const { id }: { id: string } = upload?.data;
-
-    return id;
+    if (upload.status === 200) {
+      console.log(upload.data);
+      return upload?.data;
+    } else {
+      console.log("Unsuccessful upload");
+      throw upload.status;
+    }
+    // const { id }: { id: string } = upload?.data;
   } catch (e){
+    console.log("failed");
     throw e;
   }
 };
-
-export default uploadToIpfs;
 
 /*
 import { create } from "ipfs-http-client";

@@ -39,7 +39,7 @@ const wagmiClient = createClient({
 
 export const Providers = ({ children }: { children: ReactNode }) => {
   console.log("Chains: ", chains, "provider: ", provider);
-  console.log(wagmiClient);
+  // console.log(wagmiClient);
   return (
     <WagmiConfig client={wagmiClient}>
       <ApolloProvider client={apolloClient}>

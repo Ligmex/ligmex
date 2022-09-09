@@ -24,7 +24,7 @@ export const addConnectWalletButton = (
   if (connectorOptions.isConnected) {
     button = Button.CreateSimpleButton("disconnet", "❌ disconnet wallet");
     button.background = "green";
-    console.log(connectorOptions.address);
+    // console.log(connectorOptions.address);
     // TODO add disconnect 
   } else {
     button = Button.CreateSimpleButton("newPost", "📡 connect wallet");
