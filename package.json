@@ -8,8 +8,6 @@
     "@babylonjs/core": "5.22.1",
     "@babylonjs/gui": "5.22.1",
     "@babylonjs/loaders": "5.22.1",
-    "@walletconnect/client": "^1.8.0",
-    "@walletconnect/qrcode-modal": "^1.8.0",
     "axios": "^0.27.2",
     "babylonjs-loaders": "^5.23.0",
     "ethers": "5.7.0",

@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+
+// Components
+import { Home } from "./components/Home";
+
 import {
   ArcRotateCamera,
   Scene,
@@ -7,7 +11,6 @@ import {
 } from "@babylonjs/core";
 // import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 
-import { SceneComponent } from "./components/Scene";
 import { explorePublications, getGallery, getPost, getPosts } from "./apollo";
 import { addGallery } from "./things/gallery";
 // import { addNewPostButton } from "./things/newPost";
@@ -54,17 +57,6 @@ const App = () => {
   }, []);
 
   const onSceneReady = (newScene: Scene) => {
-    const camera = new ArcRotateCamera(
-      "camera1", // name
-      0, // Math.PI, // alpha
-      0, // Math.PI / 2.0, // beta
-      2, // radius
-      new Vector3(10, 10, -1), // target
-      newScene // scene
-    );
-
-    camera.setTarget(Vector3.Zero());
-
     // SceneLoader.LoadAssetContainer( "./", "seagulf.glb", newScene, (container) => {
     //  container.addAllToScene();
     // });
@@ -77,37 +69,12 @@ const App = () => {
       addPost(newScene, 0 + i, 0 + i, 1, `newpost_${i}`, "https://i.imgur.com/Pox1X97.png", post.metadata.content);
     }); 
     */
-
-    try {
-      if ((navigator as any).xr) {
-        newScene.createDefaultXRExperienceAsync().then(
-          (xrexp) => {
-            if (xrexp.baseExperience) {
-              xrexp.teleportation.attach();
-              newScene.onDataLoadedObservable.addOnce(
-                (newerScene: Scene) => {
-                  const ground = newerScene.getMeshByName("ground");
-                  xrexp.teleportation.addFloorMesh(ground!);
-                });
-            };
-        });
-
-      }
-    } catch(e) {
-      console.log(e);
-    }
   }
 
   return (
     <div style={{height:"100vh", width:"100%"}}>
     <Providers>
-      <SceneComponent
-        adaptToDeviceRatio
-        antialias
-        onSceneReady={onSceneReady}
-        id="my-canvas"
-        style={{ width: "100%", height: "100%" }}
-    />
+      <Home />
     </Providers>
     </div>
   );

@@ -8,13 +8,7 @@ import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { useConnect, useAccount, useSignMessage } from 'wagmi'
 import { verifyMessage } from 'ethers/lib/utils'
-import { AuthenticateResponse } from "../utils";
-
-import { addConnectWalletButton } from "../things/connectWallet";
-import { authenticate } from "../apollo";
-import { addLoginButton, addNewPostButton } from "../things/newPost";
 
 export const SceneComponent = (props: {
   antialias: boolean;
@@ -26,26 +20,9 @@ export const SceneComponent = (props: {
   id: string;
 } & React.CanvasHTMLAttributes<HTMLCanvasElement>) => {
   const reactCanvas = useRef(null);
-  const recoveredAddress = useRef<string>()
   const {
     antialias, engineOptions, adaptToDeviceRatio, sceneOptions, onSceneReady, onRender, id, ...rest
   } = props;
-
-  const { address, isConnected } = useAccount()
-  const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
-  const { error: signerError, isLoading: isLoadingSignMessage, signMessage } = useSignMessage({
-    async onSuccess(sig: any, variables: any) {
-      if (address && sig) {
-        const jwtTokens = (await authenticate(address, sig) as AuthenticateResponse).data.authenticate;
-        console.log(jwtTokens);
-        localStorage.setItem('ACCESS_TOKEN', jwtTokens.accessToken);
-        localStorage.setItem('REFRESH_TOKEN', jwtTokens.refreshToken);
-      }
-      //const address = verifyMessage(variables.message, sig)
-      //console.log(address);
-      recoveredAddress.current = address
-    },
-  });
 
   useEffect( () => {
     const { current: canvas } = reactCanvas;
@@ -77,31 +54,6 @@ export const SceneComponent = (props: {
       { height: 10, width: 10, },
       scene
     );
-
-    addConnectWalletButton(scene, {
-      isConnected,
-      address: address || "",
-      connect,
-      connectors,
-      error,
-      isLoading,
-      pendingConnector
-    });
-
-    if (isConnected && address) {
-      addLoginButton(scene, {
-        address,
-        signMessage,
-        signerError,
-        isLoadingSignMessage
-      });
-      addNewPostButton(scene, {
-        address,
-        signMessage,
-        signerError,
-        isLoadingSignMessage
-      });
-    }
 
     if (scene.isReady()) {
       onSceneReady(scene);
