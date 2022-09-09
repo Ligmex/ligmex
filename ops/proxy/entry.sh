@@ -23,7 +23,7 @@ EMAIL="${EMAIL:-noreply@gmail.com}"
 WEBSERVER_URL="${WEBSERVER_URL:-$null_ui}"
 WEBSERVER_URL="${WEBSERVER_URL#*://}"
 IPFS_URL="${IPFS_URL#*://}"
-IPFS_URL="ipfs:8080" # TODO remove
+IPFS_URL="server:8080" # TODO remove
 POLYGON_RPC_URL="${POLYGON_RPC_URL#https://}"
 
 echo "Proxy container launched in env:"

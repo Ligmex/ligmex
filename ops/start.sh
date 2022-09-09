@@ -87,10 +87,45 @@ else
       NODE_ENV: 'development'
     volumes:
       - '$root:/root'
-    working_dir: '/root'"
+    working_dir: '/root/modules/client'"
 
 fi
 bash "$root/ops/pull-images.sh" "$webserver_image"
+
+########################################
+# Server config
+
+server_internal_port=8080
+server_env="environment:
+      LIGMEX_VIP_TOKEN: '$LIGMEX_VIP_TOKEN'
+      LIGMEX_LOG_LEVEL: '$LIGMEX_LOG_LEVEL'
+      LIGMEX_MAX_UPLOAD_SIZE: '$LIGMEX_MAX_UPLOAD_SIZE'
+      LIGMEX_PORT: '$server_internal_port'
+      LIGMEX_PROD: '$LIGMEX_PROD'
+      IPFS_URL: 'ipfs:$ipfs_internal_port'"
+
+if [[ "$LIGMEX_PROD" == "true" ]]
+then
+  server_image="${project}_server:$version"
+  server_service="server:
+    image: '$server_image'
+    $common
+    $server_env"
+
+else
+  server_image="${project}_builder:$version"
+  server_service="server:
+    image: '$server_image'
+    $common
+    $server_env
+    entrypoint: 'bash modules/server/ops/entry.sh'
+    ports:
+      - '5000:5000'
+    volumes:
+      - '$root:/root'"
+
+fi
+bash "$root/ops/pull-images.sh" "$server_image"
 
 ########################################
 # Proxy config
@@ -140,20 +175,20 @@ services:
       DOMAINNAME: '$LIGMEX_DOMAINNAME'
       EMAIL: '$LIGMEX_EMAIL'
       WEBSERVER_URL: 'http://webserver:$webserver_internal_port'
-      IPFS_URL: 'http://ipfs:$ipfs_internal_port'
+      IPFS_URL: 'http://server:$server_internal_port'
       POLYGON_RPC_URL: '$LIGMEX_POLYGON_RPC_URL'
     volumes:
       - 'certs:/etc/letsencrypt'
 
-  $webserver_service
-
   ipfs:
     image: '$ipfs_image'
     $common
-    ports:
-      - '4001:4001'
     volumes:
       - 'ipfs:/data/ipfs'
+
+  $webserver_service
+
+  $server_service
 
 EOF
 

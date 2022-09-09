@@ -7,15 +7,17 @@ import axios from "axios";
  */
 export const uploadToIpfs = async <T>(data: T): Promise<string> => {
   try {
+    const authToken = "abc123"; // TODO: ask user for auth token
     const upload = await axios({
-      url: "shivhendo.com/ipfs", 
+      url: `${window.location.origin}/ipfs`, 
       method: "POST",
       data,
-      headers: { "content-type": "application/octet-stream" }
+      headers: {
+        "content-type": "application/octet-stream",
+        "authorization": `Basic ${btoa(`ligmex:${authToken}`)}`,
+      }
     });
-
-    const { id }: { id: string } = upload?.data;
-
+    const id = upload?.data || "";
     return id;
   } catch (e){
     throw e;
