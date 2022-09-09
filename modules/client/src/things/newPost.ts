@@ -9,7 +9,7 @@ import { Scene } from "@babylonjs/core/scene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
 import { login } from "../postToLens";
-import { uploadToIpfs } from "../ipfs";
+import { ipfs } from "../ipfs";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
@@ -77,7 +77,7 @@ export const addNewPostButton = (
           const imageDataUrl = reader.result as string;
           const imageData = await (await fetch(imageDataUrl)).arrayBuffer();
           try {
-            const id = await uploadToIpfs(imageData);
+            const id = await ipfs.upload(imageData);
             console.log(id);
           } catch (e) {
             console.log(e);

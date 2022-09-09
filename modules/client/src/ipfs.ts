@@ -15,17 +15,16 @@ const upload = async <T>(data: T): Promise<string> => {
         "content-type": "application/octet-stream",
         "authorization": `Basic ${btoa(`ligmex:${vipToken}`)}`,
       }
+    });
 
     if (upload.status === 200) {
       console.log(upload.data);
       return upload?.data;
     } else {
-      console.log("Unsuccessful upload");
+      console.log("Unsuccessful upload", upload);
       throw upload.status;
     }
-    });
-    const id = upload?.data || "";
-    return id;
+
   } catch (e){
     throw e;
   }
