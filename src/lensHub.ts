@@ -8,6 +8,14 @@ const MUMBAI_RPC_URL = `${window.location.origin}/polygon`;
 const provider = new ethers.providers.JsonRpcProvider(MUMBAI_RPC_URL);
 console.log(provider);
 
+(async () => {
+  provider.getBalance("0xada083a3c06ee526F827b43695F2DcFf5C8C892B").then((res: any) => {
+    console.log(`Successfully fetched ada balance: ${JSON.stringify(res, null, 2)}`);
+  }).catch((err: any) => {
+    console.log(`Failed to fetch ada balance: ${err?.message || "unknown error"}`);
+  });
+})()
+
 //console.log(`LENS_HUB_ABI: ${JSON.stringify(LENS_HUB_ABI)}`)
 
 export const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";

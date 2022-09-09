@@ -92,6 +92,7 @@ bash "$root/ops/pull-images.sh" "$proxy_image"
 
 if [[ -n "$LIGMEX_DOMAINNAME" ]]
 then
+  public_url="https://$LIGMEX_DOMAINNAME:433"
   proxy_ports="ports:
       - '80:80'
       - '443:443'"
@@ -99,9 +100,9 @@ then
 
 else
   public_port=${LIGMEX_PORT:-3000}
-  public_url="http://127.0.0.1:$public_port"
+  public_url="https://127.0.0.1:$public_port"
   proxy_ports="ports:
-      - '$public_port:80'"
+      - '$public_port:443'"
   echo "${project}_proxy will be exposed on *:$public_port"
 fi
 
