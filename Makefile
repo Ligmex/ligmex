@@ -119,12 +119,12 @@ node-modules: builder package.json
 ########################################
 # Typescript -> Javascript
 
-client-bundle: node-modules $(shell find modules/client $(find_options))
+client-bundle: node-modules $(shell find modules/client/src $(find_options))
 	$(log_start)
 	$(docker_run) "cd modules/client && npm run build"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
-server-bundle: node-modules $(shell find modules/server $(find_options))
+server-bundle: node-modules $(shell find modules/server/src $(find_options))
 	$(log_start)
 	$(docker_run) "cd modules/server && npm run build"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
@@ -143,7 +143,6 @@ webserver: client-bundle $(shell find modules/client/ops $(find_options))
 	docker build --file modules/client/ops/Dockerfile $(cache_from) --tag $(project)_webserver:latest modules/client
 	docker tag $(project)_webserver:latest $(project)_webserver:$(commit)
 	$(log_finish) && mv -f $(totalTime) .flags/$@
-
 
 server: server-bundle $(shell find modules/server/ops $(find_options))
 	$(log_start)

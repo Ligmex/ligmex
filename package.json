@@ -1,6 +1,10 @@
 {
   "name": "ligmex",
   "registry": "hendonode:5000",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Ligmex/ligmex.git"
+  },
   "version": "0.1.0",
   "devDependencies": {
     "david": "12.0.0"

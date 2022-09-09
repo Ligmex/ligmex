@@ -97,12 +97,12 @@ bash "$root/ops/pull-images.sh" "$webserver_image"
 
 server_internal_port=8080
 server_env="environment:
-      LIGMEX_VIP_TOKEN: '$LIGMEX_VIP_TOKEN'
+      IPFS_URL: 'ipfs:$ipfs_internal_port'
       LIGMEX_LOG_LEVEL: '$LIGMEX_LOG_LEVEL'
       LIGMEX_MAX_UPLOAD_SIZE: '$LIGMEX_MAX_UPLOAD_SIZE'
       LIGMEX_PORT: '$server_internal_port'
       LIGMEX_PROD: '$LIGMEX_PROD'
-      IPFS_URL: 'ipfs:$ipfs_internal_port'"
+      LIGMEX_VIP_TOKEN: '$LIGMEX_VIP_TOKEN'"
 
 if [[ "$LIGMEX_PROD" == "true" ]]
 then
