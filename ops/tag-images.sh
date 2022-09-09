@@ -10,10 +10,7 @@ tag="${1:-$semver}"
 
 for name in builder proxy server webserver
 do
-  if [[ "$name" == "server" ]]
-  then image=${project}
-  else image=${project}_$name
-  fi
+  image=${project}_$name
   echo "Tagging image $image:$commit as $image:$tag"
   docker tag "$image:$commit" "$image:$tag" || true
 done

@@ -78,7 +78,6 @@ purge: clean
 
 push: push-commit
 push-commit:
-	bash ops/push-images.sh latest
 	bash ops/push-images.sh $(commit)
 push-semver:
 	bash ops/tag-images.sh $(semver)
