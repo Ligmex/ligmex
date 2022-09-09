@@ -70,9 +70,8 @@ clean: stop
 	rm -rf modules/**/build
 	rm -rf modules/**/dist
 
-
 reset-images:
-	rm -f .flags/proxy .flags/webserver
+	rm -f .flags/proxy .flags/server .flags/webserver
 
 purge: clean
 	rm -rf package-lock.json

@@ -3,10 +3,13 @@ set -e
 
 root=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )
 project=$(grep -m 1 '"name":' "$root/package.json" | cut -d '"' -f 4)
-registry=$(grep -m 1 '"registry":' "$root/package.json" | cut -d '"' -f 4)
+registryRoot=$(grep -m 1 '"registry":' "$root/package.json" | cut -d '"' -f 4)
+organization="${DOCKER_USER:-$(whoami)}"
 commit=$(git rev-parse HEAD | head -c 8)
 
-for name in builder proxy webserver
+registry="$registryRoot/$organization"
+
+for name in builder proxy webserver server
 do
   image=${project}_$name
   for version in ${1:-$commit latest}

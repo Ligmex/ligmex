@@ -1,6 +1,6 @@
 {
   "name": "ligmex",
-  "registry": "hendonode:5000",
+  "registry": "docker.io",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Ligmex/ligmex.git"
