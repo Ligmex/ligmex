@@ -52,6 +52,7 @@ export const addNewPostButton = (
   plane.position.y = 2;
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
+  const assetsManager = new AssetsManager(scene);
 
   const button = Button.CreateSimpleButton("newPost", "📡 Create New Post");
   button.width = 0.2;
@@ -59,50 +60,48 @@ export const addNewPostButton = (
   button.color = "white";
   button.background = "red";
 
-  Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
-    let input = document.createElement("input")
-    input.type = "file";
-    input.id = "import";
-    input.hidden = true;
-    // input.accept = "0px"//".json,.png";
-    input.onchange = (event: any) => {
-      console.log("loading file");
-      // console.log(filename);
-      const file = event.target.files[0];
-      const filename = event.target.value;
+  let input = document.createElement("input")
+  input.type = "file";
+  input.id = "import";
+  input.hidden = true;
+  // input.accept = "0px"//".json,.png";
+  document.body.children[0].appendChild(input);
 
-       const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = async () => {
-          const imageDataUrl = reader.result as string;
-          const imageData = await (await fetch(imageDataUrl)).arrayBuffer();
-          try {
-            const id = await ipfs.upload(imageData);
-            console.log(id);
-          } catch (e) {
-            console.log(e);
-          } finally {
-            /*
-            const assetsManager = new AssetsManager(scene);
-            FilesInput.FilesToLoad[filename] = imageData;
-            assetsManager.addMeshTask(`loader-${filename}`, "", imageDataUrl, "");
-            //assetsManager.addMeshTask(`loader-${filename}`, "", imageDataUrl, "");
-            assetsManager.load();
-            SceneLoader.LoadAssetContainer(imageDataUrl, "",  scene,
-              (container) => {
-                console.log(container);
-                console.log(scene);
-                container.addAllToScene();
+  input.onchange = (event: any) => {
+    console.log("loading file");
 
-              }, (progress) => console.log , (error) => console.log("error: ", error));
-            */
-          }
-        };
+    const file = event.target.files[0];
+    const blob = new Blob([file]);
+    const filename = file.name.toLowerCase();
+
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      const imageDataUrl = reader.result as string;
+      const imageData = await (await fetch(imageDataUrl)).arrayBuffer();
+      try {
+        const id = await ipfs.upload(imageData);
+        console.log(id);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        FilesInput.FilesToLoad[filename] = blob as any;
+        assetsManager.addMeshTask(`loader-${filename}`, "", "file:", filename);
         /*
-        const blob = new Blob([file]);
-         */
-    }
-    document.body.appendChild(input)
+        SceneLoader.LoadAssetContainer(imageDataUrl, "",  scene,
+          (container) => {
+            console.log(container);
+            console.log(scene);
+            //container.addAllToScene();
+
+          }, (progress) => console.log , (error) => console.log("error: ", error));
+        */
+      }
+    };
+    assetsManager.load();
+  }
+  Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
     button.onPointerDownObservable.add(()=>{
       $("#import").trigger('click')
     })
