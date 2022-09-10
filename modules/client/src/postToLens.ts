@@ -30,12 +30,31 @@ export const login = async (address: string, signMessage: any) => {
   signMessage({ message: challengeResponse.data.challenge.text});
 };
 
-const uploadFile = async () => {};
+export const getPostMetadata = async () => {
+  return {
+    version: "1.0.0",
+    metadata_id: uuidv4(),
+    description: "Description",
+    content: "Content",
+    external_url: null,
+    image: null,
+    imageMimeType: null,
+    name: "Name",
+    attributes: [],
+    media: [
+      // {
+      //   item: "https://scx2.b-cdn.net/gfx/news/hires/2018/lion.jpg",
+      //   // item: "https://assets-global.website-files.com/5c38aa850637d1e7198ea850/5f4e173f16b537984687e39e_AAVE%20ARTICLE%20website%20main%201600x800.png",
+      //   type: "image/jpeg",
+      // },
+    ],
+    appId: "testing123",
+  };
+};
 
 export const createPost = async (address: string, signMessage: any) => {
 
   /*
-  return;
   const ipfsResult = await ipfs.upload<Metadata>({
     version: "1.0.0",
     metadata_id: uuidv4(),
