@@ -7,9 +7,12 @@ import {
 import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 import { Scene } from "@babylonjs/core/scene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { v4 as uuid } from "uuid";
 import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
 import { login } from "../postToLens";
 import { ipfs } from "../ipfs";
+import { PublicationMainFocus } from "../utils";
+import { createPost } from "../postToLens";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
@@ -80,9 +83,37 @@ export const addNewPostButton = (
     reader.onload = async () => {
       const imageDataUrl = reader.result as string;
       const imageData = await (await fetch(imageDataUrl)).arrayBuffer();
+
+
+      // createPostMetadata
+      // upload it to ipfs
+      // set contentURI
+      // post to lens
+
       try {
-        const id = await ipfs.upload(imageData);
-        console.log(id);
+        const glbIpfsHash = await ipfs.upload(imageData);
+
+        const metaDataIpfsHash = await ipfs.upload({
+          version: '2.0.0',
+          metadata_id: uuid(),
+          description: "Test glb upload description",
+          content: "Test glb upload content",
+          external_url: null,
+          animation_url: glbIpfsHash,
+          image: null,
+          imageMimeType: null,
+          name: "Test glb upload name",
+          mainContentFocus: PublicationMainFocus.EMBED,
+          contentWarning: null,
+          attributes: [],
+          media: [],
+          locale: 'en',
+          createdOn: new Date(),
+          appId: "ligmex"
+        });
+        console.log(glbIpfsHash);
+        createPost(metaDataIpfsHash);
+
       } catch (e) {
         console.log(e);
       } finally {

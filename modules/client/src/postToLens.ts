@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client/core";
 import { BigNumber, utils } from "ethers";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
 import { apolloClient } from "./apollo";
 import { CREATE_POST_TYPED_DATA } from "./gqlQueries";
 import { pollUntilIndexed } from "./poller";
@@ -31,57 +31,15 @@ export const login = async (address: string, signMessage: any) => {
 };
 
 export const getPostMetadata = async () => {
-  return {
-    version: "1.0.0",
-    metadata_id: uuidv4(),
-    description: "Description",
-    content: "Content",
-    external_url: null,
-    image: null,
-    imageMimeType: null,
-    name: "Name",
-    attributes: [],
-    media: [
-      // {
-      //   item: "https://scx2.b-cdn.net/gfx/news/hires/2018/lion.jpg",
-      //   // item: "https://assets-global.website-files.com/5c38aa850637d1e7198ea850/5f4e173f16b537984687e39e_AAVE%20ARTICLE%20website%20main%201600x800.png",
-      //   type: "image/jpeg",
-      // },
-    ],
-    appId: "testing123",
-  };
 };
 
-export const createPost = async (address: string, signMessage: any) => {
+export const createPost = async (metaDataIpfsHash: string) => {
 
-  /*
-  const ipfsResult = await ipfs.upload<Metadata>({
-    version: "1.0.0",
-    metadata_id: uuidv4(),
-    description: "Description",
-    content: "Content",
-    external_url: null,
-    image: null,
-    imageMimeType: null,
-    name: "Name",
-    attributes: [],
-    media: [
-      // {
-      //   item: "https://scx2.b-cdn.net/gfx/news/hires/2018/lion.jpg",
-      //   // item: "https://assets-global.website-files.com/5c38aa850637d1e7198ea850/5f4e173f16b537984687e39e_AAVE%20ARTICLE%20website%20main%201600x800.png",
-      //   type: "image/jpeg",
-      // },
-    ],
-    appId: "testing123",
-  });
-  console.log("create post: ipfs result", ipfsResult);
-
-  // hard coded to make the code example clear
   const createPostRequest = {
-    profileId,
-    contentURI: "ipfs://" + ipfsResult,
+    profileId: '0x458f',
+    contentURI: metaDataIpfsHash,
     collectModule: {
-      freeCollectModule: { followerOnly: true },
+      freeCollectModule: { followerOnly: false },
     },
     referenceModule: {
       followerOnlyReferenceModule: false,
@@ -90,6 +48,9 @@ export const createPost = async (address: string, signMessage: any) => {
 
   const result = await createPostTypedData(createPostRequest);
   console.log("create post: createPostTypedData", result);
+
+  /*
+
 
   const typedData = result.data.createPostTypedData.typedData;
   console.log("create post: typedData", typedData);
