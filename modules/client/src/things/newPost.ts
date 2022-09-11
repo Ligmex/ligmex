@@ -13,7 +13,6 @@ import { login } from "../postToLens";
 import { ipfs } from "../ipfs";
 import { PublicationMainFocus } from "../utils";
 import { createPost } from "../postToLens";
-import { lensHub } from "src/lensHub";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
@@ -49,7 +48,7 @@ export const addNewPostButton = (
     error: any,
     signer: any,
     isLoading: any,
-    lensHub: any
+    lenshubPostWithSig: any
   }
 ) => {
 
@@ -114,7 +113,7 @@ export const addNewPostButton = (
           appId: "ligmex"
         });
         console.log(glbIpfsHash);
-        createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lensHub);
+        createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
 
       } catch (e) {
         console.log(e);

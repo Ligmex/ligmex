@@ -10,7 +10,8 @@ import {
   useAccount,
   useSignMessage,
   useSigner,
-  useSignTypedData
+  useSignTypedData,
+  useContractWrite
 } from 'wagmi'
 
 import { SceneComponent } from "./Scene";
@@ -51,11 +52,18 @@ export const Home = () => {
 
   const { data: signer, isError, isLoading: isSignerLoading } = useSigner()
 
-  const lensHub = useContract({
+  const { error: contractWriteError, write: lenshubPostWithSig, isLoading: isPostWithSigLoading } = useContractWrite({
     addressOrName: LENS_HUB_CONTRACT,
     contractInterface: LENS_HUB_ABI.abi,
-    signerOrProvider: signer
-  })
+    functionName: 'postWithSig',
+    mode: 'recklesslyUnprepared',
+    onMutate({ args, overrides }) {
+      console.log('Mutate', { args, overrides })
+    },
+    onError(error) {
+      console.log(error);
+    }
+  });
 
   const { error: createPostError, isLoading: isLoadingCreatePostMessage, signTypedDataAsync: signCreatePost } = useSignTypedData({
     onError(error) {
@@ -97,7 +105,7 @@ export const Home = () => {
         signer: signCreatePost,
         error: createPostError,
         isLoading: isLoadingCreatePostMessage,
-        lensHub
+        lenshubPostWithSig
       });
     }
 

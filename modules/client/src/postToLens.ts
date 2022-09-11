@@ -34,7 +34,7 @@ export const login = async (address: string, signMessage: any) => {
 export const getPostMetadata = async () => {
 };
 
-export const createPost = async (metaDataIpfsHash: string, signTypedData: any, lensHub: any) => {
+export const createPost = async (metaDataIpfsHash: string, signTypedData: any, lenshubPostWithSig: any) => {
 
   const createPostRequest = {
     profileId: '0x458f',
@@ -62,10 +62,11 @@ export const createPost = async (metaDataIpfsHash: string, signTypedData: any, l
   
   console.log(signature);
   const { v, r, s } = utils.splitSignature(signature);
-  console.log(v,r,s)
+  console.log(v,r,s);
+  console.log(lenshubPostWithSig);
 
-  console.log(lensHub);
-  const tx = await lensHub.postWithSig({
+  // console.log(lensHub);
+  const tx = await lenshubPostWithSig?.({recklesslySetUnpreparedArgs: {
     profileId: typedData.value.profileId,
     contentURI: typedData.value.contentURI,
     collectModule: typedData.value.collectModule,
@@ -78,7 +79,7 @@ export const createPost = async (metaDataIpfsHash: string, signTypedData: any, l
       s,
       deadline: typedData.value.deadline,
     },
-  });
+  }});
   /*
   console.log("create post: tx hash", tx.hash);
   
