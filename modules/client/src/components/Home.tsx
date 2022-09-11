@@ -4,7 +4,14 @@ import {
   Scene,
   Vector3,
 } from "@babylonjs/core"
-import { useConnect, useAccount, useSignMessage, useSignTypedData } from 'wagmi'
+import {
+  useConnect,
+  useContract,
+  useAccount,
+  useSignMessage,
+  useSigner,
+  useSignTypedData
+} from 'wagmi'
 
 import { SceneComponent } from "./Scene";
 import { AccessToken, AuthenticateResponse } from "../utils";
@@ -14,8 +21,13 @@ import { authenticate } from "../lensApi";
 import { addLoginButton, addNewPostButton } from "../things/newPost";
 import { verifyMessage } from "ethers/lib/utils";
 
+import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
+
+const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
+const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
+
 export const Home = () => {
-  const [accessToken, setAccessToken ] = useState({
+  const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
   } as AccessToken)
@@ -37,9 +49,16 @@ export const Home = () => {
     },
   });
 
-  useSignTypedData()
-  const {error: createPostError, isLoading: isLoadingCreatePostMessage, signTypedDataAsync: signCreatePost} = useSignTypedData({
-    onError(error){
+  const { data: signer, isError, isLoading: isSignerLoading } = useSigner()
+
+  const lensHub = useContract({
+    addressOrName: LENS_HUB_CONTRACT,
+    contractInterface: LENS_HUB_ABI.abi,
+    signerOrProvider: signer
+  })
+
+  const { error: createPostError, isLoading: isLoadingCreatePostMessage, signTypedDataAsync: signCreatePost } = useSignTypedData({
+    onError(error) {
       console.log(error)
     },
   })
@@ -77,7 +96,8 @@ export const Home = () => {
         address,
         signer: signCreatePost,
         error: createPostError,
-        isLoading: isLoadingCreatePostMessage
+        isLoading: isLoadingCreatePostMessage,
+        lensHub
       });
     }
 
@@ -93,10 +113,10 @@ export const Home = () => {
                   xrexp.teleportation.addFloorMesh(ground!);
                 });
             };
-        });
+          });
 
       }
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   };
@@ -105,13 +125,13 @@ export const Home = () => {
   };
 
   return (
-      <SceneComponent
-        adaptToDeviceRatio
-        antialias
-        onSceneReady={onSceneReady}
-        onRender={onRender}
-        id="my-canvas"
-        style={{ width: "100%", height: "100%" }}
-      />
+    <SceneComponent
+      adaptToDeviceRatio
+      antialias
+      onSceneReady={onSceneReady}
+      onRender={onRender}
+      id="my-canvas"
+      style={{ width: "100%", height: "100%" }}
+    />
   );
 }

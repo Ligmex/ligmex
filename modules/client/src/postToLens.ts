@@ -6,7 +6,7 @@ import { CREATE_POST_TYPED_DATA } from "./gqlQueries";
 import { pollUntilIndexed } from "./poller";
 import { Metadata } from "./publication";
 import { ipfs } from "./ipfs";
-import { lensHub } from "./lensHub";
+// import { lensHub } from "./lensHub";
 import { generateChallenge } from "./lensApi";
 import { omit } from './utils';
 
@@ -34,7 +34,7 @@ export const login = async (address: string, signMessage: any) => {
 export const getPostMetadata = async () => {
 };
 
-export const createPost = async (metaDataIpfsHash: string, signTypedData: any) => {
+export const createPost = async (metaDataIpfsHash: string, signTypedData: any, lensHub: any) => {
 
   const createPostRequest = {
     profileId: '0x458f',
@@ -61,24 +61,26 @@ export const createPost = async (metaDataIpfsHash: string, signTypedData: any) =
   });  
   
   console.log(signature);
-  
-    const { v, r, s } = utils.splitSignature(signature);
-  
-    const tx = await lensHub.postWithSig({
-      profileId: typedData.value.profileId,
-      contentURI: typedData.value.contentURI,
-      collectModule: typedData.value.collectModule,
-      collectModuleInitData: typedData.value.collectModuleInitData,
-      referenceModule: typedData.value.referenceModule,
-      referenceModuleInitData: typedData.value.referenceModuleInitData,
-      sig: {
-        v,
-        r,
-        s,
-        deadline: typedData.value.deadline,
-      },
-    });
-    console.log("create post: tx hash", tx.hash);
+  const { v, r, s } = utils.splitSignature(signature);
+  console.log(v,r,s)
+
+  console.log(lensHub);
+  const tx = await lensHub.postWithSig({
+    profileId: typedData.value.profileId,
+    contentURI: typedData.value.contentURI,
+    collectModule: typedData.value.collectModule,
+    collectModuleInitData: typedData.value.collectModuleInitData,
+    referenceModule: typedData.value.referenceModule,
+    referenceModuleInitData: typedData.value.referenceModuleInitData,
+    sig: {
+      v,
+      r,
+      s,
+      deadline: typedData.value.deadline,
+    },
+  });
+  /*
+  console.log("create post: tx hash", tx.hash);
   
     //console.log("create post: poll until indexed");
     //const indexedResult = await pollUntilIndexed(tx.hash);
@@ -89,7 +91,7 @@ export const createPost = async (metaDataIpfsHash: string, signTypedData: any) =
   
     //console.log("create post: logs", logs);
 
-  /*
+ 
 
   
 
