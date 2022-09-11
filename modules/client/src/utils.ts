@@ -1,3 +1,8 @@
+export const omit = (object: { [key: string]: any }, name: string) => {
+  delete object[name];
+  return object;
+};
+
 export type AccessToken = {
    accessToken: string;
    refreshToken: string;

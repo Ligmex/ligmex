@@ -1,27 +1,35 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   ArcRotateCamera,
   Scene,
   Vector3,
 } from "@babylonjs/core"
-import { useConnect, useAccount, useSignMessage } from 'wagmi'
+import { useConnect, useAccount, useSignMessage, useSignTypedData } from 'wagmi'
 
 import { SceneComponent } from "./Scene";
-import { AuthenticateResponse } from "../utils";
+import { AccessToken, AuthenticateResponse } from "../utils";
 
 import { addConnectWalletButton } from "../things/connectWallet";
-import { authenticate } from "../apollo";
+import { authenticate } from "../lensApi";
 import { addLoginButton, addNewPostButton } from "../things/newPost";
+import { verifyMessage } from "ethers/lib/utils";
 
 export const Home = () => {
+  const [accessToken, setAccessToken ] = useState({
+    accessToken: localStorage.getItem("ACCESS_TOKEN"),
+    refreshToken: localStorage.getItem("REFREH_TOKEN"),
+  } as AccessToken)
+
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
   const { address, isConnected } = useAccount()
-  const { error: signerError, isLoading: isLoadingSignMessage, signMessage } = useSignMessage({
+  const { error: loginError, isLoading: isLoadingLoginMessage, signMessage: signLogin } = useSignMessage({
     async onSuccess(sig: any, variables: any) {
-      // const recoveredAddress = verifyMessage(variables.message, sig)
-      // console.log(recoveredAddress);
-      if (address && sig) {
+      console.log(variables)
+      const recoveredAddress = verifyMessage(variables.message, sig)
+      if (address === recoveredAddress && sig) {
         const jwtTokens = (await authenticate(address, sig) as AuthenticateResponse).data.authenticate;
+        console.log("Setting access token");
+        setAccessToken(jwtTokens);
         console.log(jwtTokens);
         localStorage.setItem('ACCESS_TOKEN', jwtTokens.accessToken);
         localStorage.setItem('REFRESH_TOKEN', jwtTokens.refreshToken);
@@ -29,6 +37,14 @@ export const Home = () => {
     },
   });
 
+  useSignTypedData()
+  const {error: createPostError, isLoading: isLoadingCreatePostMessage, signTypedDataAsync: signCreatePost} = useSignTypedData({
+    onError(error){
+      console.log(error)
+    },
+  })
+
+  console.log(createPostError);
   const onSceneReady = (scene: Scene) => {
     const camera = new ArcRotateCamera(
       "camera1", // name
@@ -53,15 +69,15 @@ export const Home = () => {
     if (isConnected && address) {
       addLoginButton(scene, {
         address,
-        signMessage,
-        signerError,
-        isLoadingSignMessage
+        signer: signLogin,
+        error: loginError,
+        isLoading: isLoadingLoginMessage,
       });
       addNewPostButton(scene, {
         address,
-        signMessage,
-        signerError,
-        isLoadingSignMessage
+        signer: signCreatePost,
+        error: createPostError,
+        isLoading: isLoadingCreatePostMessage
       });
     }
 

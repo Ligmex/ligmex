@@ -20,9 +20,9 @@ export const addLoginButton = (
   scene: Scene,
   connectorOptions: {
     address: string,
-    signerError: any,
-    signMessage: any,
-    isLoadingSignMessage: any
+    error: any,
+    signer: any,
+    isLoading: any
   }
 ) => {
   const plane = Mesh.CreatePlane("plane", 2, scene);
@@ -36,7 +36,7 @@ export const addLoginButton = (
   button.height = 0.1;
   button.color = "white";
   button.background = "red";
-  button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signMessage));
+  button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer));
 
   advancedTexture.addControl(button);
 }
@@ -45,9 +45,9 @@ export const addNewPostButton = (
   scene: Scene,
   connectorOptions: {
     address: string,
-    signerError: any,
-    signMessage: any,
-    isLoadingSignMessage: any
+    error: any,
+    signer: any,
+    isLoading: any
   }
 ) => {
 
@@ -112,7 +112,7 @@ export const addNewPostButton = (
           appId: "ligmex"
         });
         console.log(glbIpfsHash);
-        createPost(metaDataIpfsHash);
+        createPost(metaDataIpfsHash, connectorOptions.signer);
 
       } catch (e) {
         console.log(e);

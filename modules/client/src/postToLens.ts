@@ -7,7 +7,8 @@ import { pollUntilIndexed } from "./poller";
 import { Metadata } from "./publication";
 import { ipfs } from "./ipfs";
 import { lensHub } from "./lensHub";
-import { generateChallenge } from "./apollo";
+import { generateChallenge } from "./lensApi";
+import { omit } from './utils';
 
 
 const PROFILE_ID = "0x1006";
@@ -33,7 +34,7 @@ export const login = async (address: string, signMessage: any) => {
 export const getPostMetadata = async () => {
 };
 
-export const createPost = async (metaDataIpfsHash: string) => {
+export const createPost = async (metaDataIpfsHash: string, signTypedData: any) => {
 
   const createPostRequest = {
     profileId: '0x458f',
@@ -47,43 +48,50 @@ export const createPost = async (metaDataIpfsHash: string) => {
   };
 
   const result = await createPostTypedData(createPostRequest);
-  console.log("create post: createPostTypedData", result);
-
-  /*
-
 
   const typedData = result.data.createPostTypedData.typedData;
   console.log("create post: typedData", typedData);
+  
+  console.log(signTypedData);
+  console.log("calling");
+  const signature = await signTypedData({
+    domain: omit(typedData?.domain, '__typename'),
+    types: omit(typedData?.types, '__typename'),
+    value: omit(typedData?.value, '__typename')
+  });  
+  
+  console.log(signature);
+  
+    const { v, r, s } = utils.splitSignature(signature);
+  
+    const tx = await lensHub.postWithSig({
+      profileId: typedData.value.profileId,
+      contentURI: typedData.value.contentURI,
+      collectModule: typedData.value.collectModule,
+      collectModuleInitData: typedData.value.collectModuleInitData,
+      referenceModule: typedData.value.referenceModule,
+      referenceModuleInitData: typedData.value.referenceModuleInitData,
+      sig: {
+        v,
+        r,
+        s,
+        deadline: typedData.value.deadline,
+      },
+    });
+    console.log("create post: tx hash", tx.hash);
+  
+    //console.log("create post: poll until indexed");
+    //const indexedResult = await pollUntilIndexed(tx.hash);
 
-  const signature = await signedTypeData(typedData.domain, typedData.types, typedData.value);
-  console.log("create post: signature", signature);
+    //console.log("create post: profile has been indexed", indexedResult);
+  
+    //const logs = indexedResult.txReceipt.logs;
+  
+    //console.log("create post: logs", logs);
 
-  const { v, r, s } = utils.splitSignature(signature);
+  /*
 
-  const tx = await lensHub.postWithSig({
-    profileId: typedData.value.profileId,
-    contentURI: typedData.value.contentURI,
-    collectModule: typedData.value.collectModule,
-    collectModuleInitData: typedData.value.collectModuleInitData,
-    referenceModule: typedData.value.referenceModule,
-    referenceModuleInitData: typedData.value.referenceModuleInitData,
-    sig: {
-      v,
-      r,
-      s,
-      deadline: typedData.value.deadline,
-    },
-  });
-  console.log("create post: tx hash", tx.hash);
-
-  console.log("create post: poll until indexed");
-  const indexedResult = await pollUntilIndexed(tx.hash);
-
-  console.log("create post: profile has been indexed", result);
-
-  const logs = indexedResult.txReceipt.logs;
-
-  console.log("create post: logs", logs);
+  
 
   const topicId = utils.id(
     "PostCreated(uint256,uint256,string,address,bytes,address,bytes,uint256)"

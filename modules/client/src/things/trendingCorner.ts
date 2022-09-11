@@ -1,4 +1,3 @@
-import { explorePublications } from "../apollo";
 import {
   Mesh,
   MeshBuilder,
@@ -9,6 +8,9 @@ import {
   Vector3,
   Vector4,
 } from "@babylonjs/core";
+import {
+  getPosts
+} from "../lensApi";
 
 const LIMIT = 10;
 
@@ -16,11 +18,7 @@ export const createTrendingCorner = async (scene: Scene) => {
 
   // Get Top Posts
   
-  const latestPosts = await explorePublications({
-    sortCriteria: "LATEST",
-    publicationTypes: ["POST"],
-    limit: LIMIT,
-  });
+  const latestPosts = await getPosts(LIMIT);
   console.log("Got posts: ", latestPosts);
 
   // Render Posts by mainContentFocus: VIDEO, IMAGE, ARTICLE, TEXT_ONLY, AUDIO, LINK, EMBED
