@@ -11,7 +11,7 @@ import { generateChallenge } from "./lensApi";
 import { omit } from './utils';
 
 
-const PROFILE_ID = "0x1006";
+const PROFILE_ID = "0x45dc";
 
 //TODO typings
 const createPostTypedData = (createPostTypedDataRequest: any) => {
@@ -34,11 +34,14 @@ export const login = async (address: string, signMessage: any) => {
 export const getPostMetadata = async () => {
 };
 
-export const createPost = async (metaDataIpfsHash: string, signTypedData: any, lenshubPostWithSig: any) => {
-
+export const createPost = async (
+  metaDataIpfsHash: string,
+  signTypedData: any,
+  lenshubPostWithSig: any
+  ) => {
   const createPostRequest = {
-    profileId: '0x458f',
-    contentURI: metaDataIpfsHash,
+    profileId: PROFILE_ID,
+    contentURI: `ipfs://${metaDataIpfsHash}`,
     collectModule: {
       freeCollectModule: { followerOnly: false },
     },
