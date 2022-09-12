@@ -92,15 +92,15 @@ export const addNewPostButton = (
       // post to lens
 
       try {
-        const glbIpfsHash = await ipfs.upload(imageData);
+        const glbIpfsHash = await ipfs.uploadViaInfura(imageData);
 
-        const metaDataIpfsHash = await ipfs.upload({
+        const metaDataIpfsHash = await ipfs.uploadViaInfura(JSON.stringify({
           version: '2.0.0',
           metadata_id: uuid(),
           description: "Test glb upload description",
           content: "Test glb upload content",
           external_url: null,
-          animation_url: glbIpfsHash,
+          animation_url: `ipfs://${glbIpfsHash}`,
           image: null,
           imageMimeType: null,
           name: "Test glb upload name",
@@ -111,7 +111,7 @@ export const addNewPostButton = (
           locale: 'en',
           createdOn: new Date(),
           appId: "ligmex"
-        });
+        }));
         console.log(glbIpfsHash);
         createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
 
