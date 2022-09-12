@@ -7,9 +7,10 @@ import { pollUntilIndexed } from "./poller";
 import { Metadata } from "./publication";
 import { ipfs } from "./ipfs";
 // import { lensHub } from "./lensHub";
+import { authenticate } from "./lensApi";
 import { generateChallenge } from "./lensApi";
-import { omit } from './utils';
-
+import { AuthenticateResponse, omit } from './utils';
+import { verifyMessage } from "ethers/lib/utils";
 
 const PROFILE_ID = "0x45dc";
 
@@ -23,12 +24,22 @@ const createPostTypedData = (createPostTypedDataRequest: any) => {
   });
 };
 
-export const login = async (address: string, signMessage: any) => {
+export const login = async (address: string, signMessage: any, setAccessToken: any) => {
   // request a challenge from the server
   const challengeResponse = await generateChallenge(address);
 
   // sign the text with the wallet
-  signMessage({ message: challengeResponse.data.challenge.text});
+  const sig = await signMessage({ message: challengeResponse.data.challenge.text});
+  console.log(sig);
+  const recoveredAddress = verifyMessage(challengeResponse.data.challenge.text, sig)
+      if (address === recoveredAddress && sig) {
+        const jwtTokens = (await authenticate(address, sig) as AuthenticateResponse).data.authenticate;
+        console.log("Setting access token");
+        setAccessToken(jwtTokens);
+        //console.log(jwtTokens);
+        localStorage.setItem('ACCESS_TOKEN', jwtTokens.accessToken);
+        localStorage.setItem('REFRESH_TOKEN', jwtTokens.refreshToken);
+      }
 };
 
 export const getPostMetadata = async () => {

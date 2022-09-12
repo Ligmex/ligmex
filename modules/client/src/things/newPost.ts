@@ -18,6 +18,7 @@ SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const addLoginButton = (
   scene: Scene,
+  setAccessToken: any,
   connectorOptions: {
     address: string,
     error: any,
@@ -36,7 +37,7 @@ export const addLoginButton = (
   button.height = 0.1;
   button.color = "white";
   button.background = "red";
-  button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer));
+  button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer, setAccessToken));
 
   advancedTexture.addControl(button);
 }

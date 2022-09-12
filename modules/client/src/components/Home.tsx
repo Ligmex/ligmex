@@ -6,10 +6,8 @@ import {
 } from "@babylonjs/core"
 import {
   useConnect,
-  useContract,
   useAccount,
   useSignMessage,
-  useSigner,
   useSignTypedData,
   useContractWrite
 } from 'wagmi'
@@ -18,16 +16,18 @@ import { SceneComponent } from "./Scene";
 import { AccessToken, AuthenticateResponse } from "../utils";
 
 import { addConnectWalletButton } from "../things/connectWallet";
-import { authenticate } from "../lensApi";
+
 import { addLoginButton, addNewPostButton } from "../things/newPost";
-import { verifyMessage } from "ethers/lib/utils";
+
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
+import { createTrendingCorner } from "src/things/trendingCorner";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
 
 export const Home = () => {
+  // const [scenes, setScenes] = useState([] as Array<Scene>);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
@@ -35,22 +35,7 @@ export const Home = () => {
 
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
   const { address, isConnected } = useAccount()
-  const { error: loginError, isLoading: isLoadingLoginMessage, signMessage: signLogin } = useSignMessage({
-    async onSuccess(sig: any, variables: any) {
-      console.log(variables)
-      const recoveredAddress = verifyMessage(variables.message, sig)
-      if (address === recoveredAddress && sig) {
-        const jwtTokens = (await authenticate(address, sig) as AuthenticateResponse).data.authenticate;
-        console.log("Setting access token");
-        setAccessToken(jwtTokens);
-        console.log(jwtTokens);
-        localStorage.setItem('ACCESS_TOKEN', jwtTokens.accessToken);
-        localStorage.setItem('REFRESH_TOKEN', jwtTokens.refreshToken);
-      }
-    },
-  });
-
-  const { data: signer, isError, isLoading: isSignerLoading } = useSigner()
+  const { error: loginError, isLoading: isLoadingLoginMessage, signMessageAsync: signLogin } = useSignMessage();
 
   const { error: contractWriteError, write: lenshubPostWithSig, isLoading: isPostWithSigLoading } = useContractWrite({
     addressOrName: LENS_HUB_CONTRACT,
@@ -70,7 +55,7 @@ export const Home = () => {
       console.log(error)
     },
   })
-  
+
   const onSceneReady = (scene: Scene) => {
     const camera = new ArcRotateCamera(
       "camera1", // name
@@ -81,6 +66,8 @@ export const Home = () => {
       scene
     );
     camera.setTarget(Vector3.Zero());
+
+    // createTrendingCorner(scene);
 
     addConnectWalletButton(scene, {
       isConnected,
@@ -93,7 +80,7 @@ export const Home = () => {
     });
 
     if (isConnected && address) {
-      addLoginButton(scene, {
+      addLoginButton(scene, setAccessToken, {
         address,
         signer: signLogin,
         error: loginError,
@@ -129,6 +116,8 @@ export const Home = () => {
   };
 
   const onRender = (scene: Scene) => {
+    // console.log("hello");
+    // scene.render(false);
   };
 
   return (

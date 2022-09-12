@@ -8,6 +8,8 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { apolloClient } from '../apollo';
 
 global.Buffer = global.Buffer || require("buffer").Buffer
+// BUG: currently provider fails in case of write contract
+// HACK: pass alchecmy api url directly
 const MUMBAI_RPC_URL = `${window.location.origin}/polygon`;
 const chainId = 80001;
 
