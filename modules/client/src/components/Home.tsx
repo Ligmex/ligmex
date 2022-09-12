@@ -70,8 +70,7 @@ export const Home = () => {
       console.log(error)
     },
   })
-
-  console.log(createPostError);
+  
   const onSceneReady = (scene: Scene) => {
     const camera = new ArcRotateCamera(
       "camera1", // name

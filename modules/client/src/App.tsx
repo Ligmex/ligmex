@@ -15,9 +15,9 @@ const App = () => {
 
   useEffect(() => {
     (async () => {
-      const latestPosts = await getPosts()
+      // const latestPosts = await getPosts()
       // console.log(`Got latestPosts: ${JSON.stringify(latestPosts, null, 2)}`);
-      setLatestPosts(latestPosts);
+      // setLatestPosts(latestPosts);
 
     })();
   }, []);
