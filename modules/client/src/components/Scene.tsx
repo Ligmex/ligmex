@@ -36,10 +36,10 @@ export const SceneComponent = (props: {
     const scene = new Scene(engine, sceneOptions);
     const camera = new ArcRotateCamera(
       "camera1",
-      (Math.PI / 2),
-      Math.PI / 2,
       0,
-      new Vector3(0, 5, -10),
+      Math.PI / 3,
+      20,
+      new Vector3(0, 0, 0),
       scene,
     );
 
@@ -58,16 +58,6 @@ export const SceneComponent = (props: {
       { height: 10, width: 10, },
       scene
     );
-
-    // SceneLoader.Append(
-    //   "https://ligmex.infura-ipfs.io/ipfs/QmVmQa83LRATp3KAZzwdr1eWWZZKrxmVsNXpExL5xSrt1r",
-    //   "",
-    //   scene,
-    //   null,
-    //   null,
-    //   null,
-    //   '.glb'
-    // )
 
     if (scene.isReady()) {
       onSceneReady(scene);

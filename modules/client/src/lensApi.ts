@@ -57,7 +57,7 @@ export const getPosts = async (LIMIT = 10) => {
         sortCriteria: "LATEST",
         publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
         metadata: {
-          mainContentFocus: "EMBED"
+          mainContentFocus: ["EMBED", "IMAGE"]
         },
         limit: LIMIT,
       }

@@ -57,16 +57,7 @@ export const Home = () => {
   })
 
   const onSceneReady = (scene: Scene) => {
-    const camera = new ArcRotateCamera(
-      "camera1", // name
-      0, // Math.PI, // alpha
-      0, // Math.PI / 2.0, // beta
-      2, // radius
-      new Vector3(10, 10, -1), // target
-      scene
-    );
-    camera.setTarget(Vector3.Zero());
-
+   
     createTrendingCorner(scene);
 
     addConnectWalletButton(scene, {
