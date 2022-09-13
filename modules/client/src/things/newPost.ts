@@ -73,7 +73,6 @@ export const addNewPostButton = (
   document.body.children[0].appendChild(input);
 
   input.onchange = (event: any) => {
-    console.log("loading file");
 
     const file = event.target.files[0];
     const blob = new Blob([file]);
@@ -86,35 +85,29 @@ export const addNewPostButton = (
       const imageDataUrl = reader.result as string;
       const imageData = await (await fetch(imageDataUrl)).arrayBuffer();
 
-
-      // createPostMetadata
-      // upload it to ipfs
-      // set contentURI
-      // post to lens
-
       try {
-        const glbIpfsHash = await ipfs.uploadViaInfura(imageData);
+        // const glbIpfsHash = await ipfs.uploadViaInfura(imageData);
 
-        const metaDataIpfsHash = await ipfs.uploadViaInfura(JSON.stringify({
-          version: '2.0.0',
-          metadata_id: uuid(),
-          description: "Test glb upload description",
-          content: "Test glb upload content",
-          external_url: null,
-          animation_url: `ipfs://${glbIpfsHash}`,
-          image: null,
-          imageMimeType: null,
-          name: "Test glb upload name",
-          mainContentFocus: PublicationMainFocus.EMBED,
-          contentWarning: null,
-          attributes: [],
-          media: [],
-          locale: 'en',
-          createdOn: new Date(),
-          appId: "ligmex"
-        }));
-        console.log(glbIpfsHash);
-        createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
+        // const metaDataIpfsHash = await ipfs.uploadViaInfura(JSON.stringify({
+        //   version: '2.0.0',
+        //   metadata_id: uuid(),
+        //   description: "Test glb upload description",
+        //   content: "Test glb upload content",
+        //   external_url: null,
+        //   animation_url: `ipfs://${glbIpfsHash}`,
+        //   image: null,
+        //   imageMimeType: null,
+        //   name: "Test glb upload name",
+        //   mainContentFocus: PublicationMainFocus.EMBED,
+        //   contentWarning: null,
+        //   attributes: [],
+        //   media: [],
+        //   locale: 'en',
+        //   createdOn: new Date(),
+        //   appId: "ligmex"
+        // }));
+        // console.log(glbIpfsHash);
+        // createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
 
       } catch (e) {
         console.log(e);
@@ -133,6 +126,7 @@ export const addNewPostButton = (
       }
     };
     assetsManager.load();
+    assetsManager.onTaskSuccessObservable.addOnce((task) => console.log(task))
   }
   Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
     button.onPointerDownObservable.add(()=>{

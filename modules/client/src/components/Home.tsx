@@ -67,7 +67,7 @@ export const Home = () => {
     );
     camera.setTarget(Vector3.Zero());
 
-    // createTrendingCorner(scene);
+    createTrendingCorner(scene);
 
     addConnectWalletButton(scene, {
       isConnected,

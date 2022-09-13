@@ -9,6 +9,10 @@ import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { verifyMessage } from 'ethers/lib/utils'
+import { SceneLoader } from "@babylonjs/core";
+import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
+
+SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const SceneComponent = (props: {
   antialias: boolean;
@@ -54,6 +58,16 @@ export const SceneComponent = (props: {
       { height: 10, width: 10, },
       scene
     );
+
+    // SceneLoader.Append(
+    //   "https://ligmex.infura-ipfs.io/ipfs/QmVmQa83LRATp3KAZzwdr1eWWZZKrxmVsNXpExL5xSrt1r",
+    //   "",
+    //   scene,
+    //   null,
+    //   null,
+    //   null,
+    //   '.glb'
+    // )
 
     if (scene.isReady()) {
       onSceneReady(scene);

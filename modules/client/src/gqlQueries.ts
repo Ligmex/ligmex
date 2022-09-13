@@ -177,9 +177,9 @@ export const EXPLORE_PUBLICATIONS = `
       key
       value
     }
-        isFollowedByMe
+    isFollowedByMe
     isFollowing(who: null)
-        followNftAddress
+    followNftAddress
     metadata
     isDefault
     handle
@@ -372,9 +372,10 @@ export const EXPLORE_PUBLICATIONS = `
       }
     }
     appId
-        hidden
-        reaction(request: null)
-        mirrors(by: null)
+    hidden
+    onChainContentURI
+    reaction(request: null)
+    mirrors(by: null)
     hasCollectedByMe
   }
 

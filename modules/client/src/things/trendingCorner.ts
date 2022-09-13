@@ -2,15 +2,19 @@ import {
   Mesh,
   MeshBuilder,
   Scene,
+  SceneLoader,
   Sound,
   StandardMaterial,
   Texture,
   Vector3,
   Vector4,
 } from "@babylonjs/core";
+import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 import {
   getPosts
 } from "../lensApi";
+
+SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 const LIMIT = 10;
 
@@ -19,7 +23,7 @@ export const createTrendingCorner = async (scene: Scene) => {
   // Get Top Posts
   
   const latestPosts = await getPosts(LIMIT);
-  console.log("Got posts: ", latestPosts);
+  //console.log("Got posts: ", latestPosts);
 
   // Render Posts by mainContentFocus: VIDEO, IMAGE, ARTICLE, TEXT_ONLY, AUDIO, LINK, EMBED
   // EMBED: If glb/gltf, render 3D object, else 'not supported yet'
@@ -28,20 +32,40 @@ export const createTrendingCorner = async (scene: Scene) => {
   
   latestPosts.forEach((post: any, i: number) => {
     const t = i/LIMIT * 2 * Math.PI;
-    console.log(typeof(post.metadata.mainContentFocus), post.id)
+    console.log(post.metadata.mainContentFocus, post.id)
     switch (post?.metadata?.mainContentFocus) {
       case "ARTICLE":
-        console.log("Article: ", post.metadata);
+        // console.log("Article: ", post.metadata);
         break;
       case "AUDIO":
         const audio = new Sound(post.id, post.metadata.media[0]?.original?.url, scene, null, {
           loop: true,
           autoplay: false,
         });
-        console.log("Audio: ", post.metadata);
+        // console.log("Audio: ", post.metadata);
         break;
       case "EMBED":
         console.log("Embed: ", post.metadata);
+        console.log("content uri", post.onChainContentURI);
+        const metadata_url = post.onChainContentURI.replace(
+          "ipfs://",
+          "https://ligmex.infura-ipfs.io/ipfs/"
+        )
+        $.getJSON(metadata_url, (data) => {
+          let animation_url = data.animation_url as string;
+          if (animation_url.split("/").length === 1) return;
+          if (animation_url.startsWith("ipfs://")) {
+            animation_url = animation_url.replace(
+              "ipfs://", "https://ligmex.infura-ipfs.io/ipfs/"
+            );
+
+          SceneLoader.Append(animation_url, "", scene, null, null, null, '.glb');
+            
+          }
+
+          console.log(data.animation_url)
+        })
+
         break;
       case "IMAGE":
         //const faceUV = new Array<Vector4>;
@@ -65,16 +89,16 @@ export const createTrendingCorner = async (scene: Scene) => {
         console.log("Image: ", post.metadata);
         break;
       case "LINK":
-        console.log("Link: ", post.metadata);
+        // console.log("Link: ", post.metadata);
         break;
       case "TEXT_ONLY":
-        console.log("Text only: ", post.metadata);
+        // console.log("Text only: ", post.metadata);
         break;
       case "VIDEO":
-        console.log("Video: ", post.metadata);
+        // console.log("Video: ", post.metadata);
         break;
       default:
-        console.log(`Unsuported content focus: ${post.metadata.mainContentFocus}`)
+        // console.log(`Unsuported content focus: ${post.metadata.mainContentFocus}`)
         break;
     };
   });
