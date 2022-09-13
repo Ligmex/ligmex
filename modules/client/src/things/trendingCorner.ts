@@ -1,4 +1,5 @@
 import {
+  AssetContainer,
   Mesh,
   MeshBuilder,
   Scene,
@@ -11,6 +12,7 @@ import {
 } from "@babylonjs/core";
 import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 import {
+  getMyPosts,
   getPosts
 } from "../lensApi";
 
@@ -22,6 +24,7 @@ export const createTrendingCorner = async (scene: Scene) => {
 
   // Get Top Posts
   
+  // const latestPosts = await getMyPosts("0x45dc");
   const latestPosts = await getPosts(LIMIT);
   //console.log("Got posts: ", latestPosts);
 
@@ -58,10 +61,20 @@ export const createTrendingCorner = async (scene: Scene) => {
             animation_url = animation_url.replace(
               "ipfs://", "https://ligmex.infura-ipfs.io/ipfs/"
             );
+          // SceneLoader.Append(animation_url, "", scene, null, null, null, "".glb");
+          SceneLoader.LoadAssetContainer(animation_url, "", scene, (glbContainer: AssetContainer) => {
+            // glbContainer.transformNodes.forEach((rootNode) => rootNode.scaling.scaleInPlace(0.2))
+            // const entries = glbContainer.instantiateModelsToScene();
+            // console.log(entries);
+            // entries.rootNodes.forEach((rootNode) => rootNode.scaling.scaleInPlace(0.2))
+            // console.log(glbContainer);
 
-          SceneLoader.Append(animation_url, "", scene, null, null, null, '.glb');
-            
-          }
+            console.log(glbContainer.meshes);
+            glbContainer.meshes[0].scaling = new Vector3(0.02, 0.02, 0.02);
+            // glbContainer.meshes.forEach((mesh) => mesh.scaling.scaleInPlace(0.2))
+            glbContainer.addAllToScene();
+          }, null, null, ".glb");
+        }
 
           console.log(data.animation_url)
         })
