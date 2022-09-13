@@ -50,34 +50,25 @@ export const createTrendingCorner = async (scene: Scene) => {
       case "EMBED":
         console.log("Embed: ", post.metadata);
         console.log("content uri", post.onChainContentURI);
+        let animation_url = post.metadata.animatedUrl;
         const metadata_url = post.onChainContentURI.replace(
           "ipfs://",
           "https://ligmex.infura-ipfs.io/ipfs/"
         )
-        $.getJSON(metadata_url, (data) => {
-          let animation_url = data.animation_url as string;
-          if (animation_url.split("/").length === 1) return;
-          if (animation_url.startsWith("ipfs://")) {
-            animation_url = animation_url.replace(
-              "ipfs://", "https://ligmex.infura-ipfs.io/ipfs/"
-            );
-          // SceneLoader.Append(animation_url, "", scene, null, null, null, "".glb");
-          SceneLoader.LoadAssetContainer(animation_url, "", scene, (glbContainer: AssetContainer) => {
-            // glbContainer.transformNodes.forEach((rootNode) => rootNode.scaling.scaleInPlace(0.2))
-            // const entries = glbContainer.instantiateModelsToScene();
-            // console.log(entries);
-            // entries.rootNodes.forEach((rootNode) => rootNode.scaling.scaleInPlace(0.2))
-            // console.log(glbContainer);
+        // let animation_url = data.animation_url as string;
+        if (animation_url.split("/").length === 1) return;
+        if (animation_url.startsWith("ipfs://")) {
+          animation_url = animation_url.replace(
+            "ipfs://", "https://ligmex.infura-ipfs.io/ipfs/"
+          );
+        // SceneLoader.Append(animation_url, "", scene, null, null, null, "".glb");
+        SceneLoader.LoadAssetContainer(animation_url, "", scene, (glbContainer: AssetContainer) => {
+          glbContainer.meshes[0].scaling = new Vector3(0.05, 0.05, -0.05);
+          glbContainer.addAllToScene();
+        }, null, null, ".glb");
+      }
 
-            console.log(glbContainer.meshes);
-            glbContainer.meshes[0].scaling = new Vector3(0.02, 0.02, 0.02);
-            // glbContainer.meshes.forEach((mesh) => mesh.scaling.scaleInPlace(0.2))
-            glbContainer.addAllToScene();
-          }, null, null, ".glb");
-        }
-
-          console.log(data.animation_url)
-        })
+      
 
         break;
       case "IMAGE":

@@ -10,6 +10,7 @@ import {
   EXPLORE_PUBLICATIONS,
   GET_CHALLENGE,
   GET_PROFILE,
+  GET_PUBLICATION_BY_PROFILE,
 } from "./gqlQueries";
 
 export const authenticate = (address: string, signature: string) => {
@@ -35,6 +36,19 @@ export const generateChallenge = (address: string) => {
   });
 };
 
+export const getMyPosts =async (profileId: string) => {
+  const response = await apolloClient.query({
+    query: gql(GET_PUBLICATION_BY_PROFILE),
+    variables: {
+      request: {
+        profileId: profileId,
+        publicationTypes: ["POST"],
+        limit: 10
+      }
+    }
+  })
+}
+
 export const getPosts = async (LIMIT = 10) => {
    const response = await apolloClient.query({
     query: gql(EXPLORE_PUBLICATIONS),
@@ -42,6 +56,9 @@ export const getPosts = async (LIMIT = 10) => {
       request: {
         sortCriteria: "LATEST",
         publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
+        metadata: {
+          mainContentFocus: "EMBED"
+        },
         limit: LIMIT,
       }
     },
