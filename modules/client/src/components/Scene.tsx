@@ -36,15 +36,15 @@ export const SceneComponent = (props: {
     const scene = new Scene(engine, sceneOptions);
     const camera = new ArcRotateCamera(
       "camera1",
-      0,
-      Math.PI / 3,
-      20,
-      new Vector3(0, 0, 0),
+      -Math.PI/2,
+      Math.PI/3,
+      15,
+      new Vector3(0, 2, 0),
       scene,
     );
 
     // This targets the camera to scene origin
-    camera.setTarget(Vector3.Zero());
+    // camera.setTarget(Vector3.Zero());
 
     // This attaches the camera to the canvas
     camera.attachControl(canvas, true);
