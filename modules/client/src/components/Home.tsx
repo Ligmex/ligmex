@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  ArcRotateCamera,
-  EventState,
   Scene,
   SceneLoader,
   Vector3,
@@ -26,6 +24,7 @@ import { addLoginButton, addNewPostButton } from "../things/newPost";
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
 import { createTrendingCorner } from "src/things/trendingCorner";
+import { createStartVideoStreamButton, createVideoStreamDisplay } from "src/things/startVideoStream";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
@@ -37,6 +36,7 @@ export const Home = () => {
 
   let globalScene: Scene;
   const [newFile, setNewFile] = useState<any>();
+  const [startVideoStream, setStartVideoStream] = useState(false);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
@@ -50,7 +50,12 @@ export const Home = () => {
       container.addAllToScene();
     });
   }, [newFile]);
-  
+
+  useEffect(() => {
+    if (!globalScene || !startVideoStream) return;
+   
+    createVideoStreamDisplay(globalScene);
+  })
 
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
   const { address, isConnected } = useAccount()
@@ -78,7 +83,7 @@ export const Home = () => {
   const onSceneReady = (scene: Scene) => {
     globalScene = scene;
     
-    // createTrendingCorner(scene);
+    createTrendingCorner(scene);
 
     addConnectWalletButton(scene, {
       isConnected,
@@ -91,6 +96,7 @@ export const Home = () => {
     });
 
     if (isConnected && address) {
+      createStartVideoStreamButton(scene, setStartVideoStream);
       addLoginButton(scene, setAccessToken, {
         address,
         signer: signLogin,
@@ -107,7 +113,7 @@ export const Home = () => {
     }
 
     try {
-      if ((navigator as any).xr) {
+      if ("xr" in window.navigator) {
         scene.createDefaultXRExperienceAsync().then(
           (xrexp: any) => {
             if (xrexp.baseExperience) {

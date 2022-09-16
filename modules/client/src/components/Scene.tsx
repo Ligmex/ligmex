@@ -36,7 +36,7 @@ export const SceneComponent = (props: {
       "camera1",
       -Math.PI/2,
       Math.PI/3,
-      15,
+      25,
       new Vector3(0, 2, 0),
       scene,
     );
@@ -44,6 +44,7 @@ export const SceneComponent = (props: {
     // This attaches the camera to the canvas
     camera.attachControl(canvas, true);
     camera.zoomToMouseLocation = true;
+    camera.allowUpsideDown = false;
 
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
 

@@ -1,9 +1,9 @@
 import {
   FilesInput,
+  MeshBuilder,
   Tools,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { v4 as uuid } from "uuid";
 import { Button, AdvancedDynamicTexture, Container, } from "@babylonjs/gui";
 import { login } from "../postToLens";
@@ -22,7 +22,7 @@ export const addLoginButton = (
     isLoading: any
   }
 ) => {
-  const plane = Mesh.CreatePlane("plane", 2, scene);
+  const plane = MeshBuilder.CreatePlane("plane", {}, scene);
   plane.position.y = 2;
   plane.position.x = 0.5;
 
@@ -50,14 +50,14 @@ export const addNewPostButton = (
   setNewFile: any
 ) => {
 
-  const plane = Mesh.CreatePlane("plane", 2, scene);
+  const plane = MeshBuilder.CreatePlane("plane", {}, scene);
   plane.position.y = 2;
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
 
   const button = Button.CreateSimpleButton("newPost", "📡 Create New Post");
-  button.width = 0.2;
-  button.height = 0.1;
+  button.width = 0.6;
+  button.height = 0.2;
   button.color = "white";
   button.background = "red";
 
