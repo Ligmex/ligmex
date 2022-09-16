@@ -15,12 +15,23 @@ import { Button } from "@babylonjs/gui/2D/controls/button";
 // Web3 imports
 import { verifyMessage } from "ethers/lib/utils";
 
+// Livepeer imports
+import { Client } from "@livepeer/webrtmp-sdk";
+
 import { AuthenticateResponse } from './utils';
 import {
     authenticate,
     generateChallenge
 } from "./lensApi"
 
+const setupLivepeerStream = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+    })
+    const client = new Client();
+    const session = client.cast(stream, "939a-mn33-if66-zqfg" );
+}
 
 const login = async (address: string, signMessage: any, setAccessToken: any) => {
     // request a challenge from the server
@@ -84,8 +95,11 @@ export const createVideoStreamDisplay = (scene: Scene) => {
 
         videoStreamMaterial.emissiveTexture = video;
         videoStreamDisplay.material = videoStreamMaterial;
-
+        
+       
     }, {minWidth: 2, minHeight: 2, maxWidth: 256, maxHeight: 256, deviceId: "videoStream"})
+
+    setupLivepeerStream();
 }
 
 export const addConnectWalletButton = (
