@@ -18,12 +18,13 @@ import {
 import { SceneComponent } from "./Scene";
 import { AccessToken } from "../utils";
 
-import { addLoginButton, addNewPostButton } from "../things/newPost";
+import { addNewPostButton } from "../things/newPost";
 
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
 import { createTrendingCorner } from "src/things/trendingCorner";
 import {
+  addLoginButton,
   addConnectWalletButton,
   createUploadFileView,
   createStartVideoStreamButton,

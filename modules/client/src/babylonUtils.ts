@@ -7,9 +7,38 @@ import {
     Vector3,
     VideoTexture
 } from "@babylonjs/core";
+
+// Babylon GUI imports
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 import { Button } from "@babylonjs/gui/2D/controls/button";
-import { useDisconnect } from "wagmi";
+
+// Web3 imports
+import { verifyMessage } from "ethers/lib/utils";
+
+import { AuthenticateResponse } from './utils';
+import {
+    authenticate,
+    generateChallenge
+} from "./lensApi"
+
+
+const login = async (address: string, signMessage: any, setAccessToken: any) => {
+    // request a challenge from the server
+    const challengeResponse = await generateChallenge(address);
+  
+    // sign the text with the wallet
+    const sig = await signMessage({ message: challengeResponse.data.challenge.text});
+    console.log(sig);
+    const recoveredAddress = verifyMessage(challengeResponse.data.challenge.text, sig)
+        if (address === recoveredAddress && sig) {
+          const jwtTokens = (await authenticate(address, sig) as AuthenticateResponse).data.authenticate;
+          console.log("Setting access token");
+          setAccessToken(jwtTokens);
+          //console.log(jwtTokens);
+          localStorage.setItem('ACCESS_TOKEN', jwtTokens.accessToken);
+          localStorage.setItem('REFRESH_TOKEN', jwtTokens.refreshToken);
+        }
+  };
 
 export const createUploadFileView = (scene: Scene, filname: string | undefined) => {
     if (!scene || !filname) return;
@@ -102,4 +131,30 @@ export const addConnectWalletButton = (
   
     advancedTexture.addControl(button);
   }
+
+export const addLoginButton = (
+  scene: Scene,
+  setAccessToken: any,
+  connectorOptions: {
+    address: string,
+    error: any,
+    signer: any,
+    isLoading: any
+  }
+) => {
+  const plane = MeshBuilder.CreatePlane("plane", {}, scene);
+  plane.position.y = 2;
+  plane.position.x = 0.5;
+
+  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
+
+  const button = Button.CreateSimpleButton("newPost", "🔐 Login");
+  button.width = 0.2;
+  button.height = 0.1;
+  button.color = "white";
+  button.background = "red";
+  button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer, setAccessToken));
+
+  advancedTexture.addControl(button);
+}
   

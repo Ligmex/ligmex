@@ -6,37 +6,12 @@ import {
 import { Scene } from "@babylonjs/core/scene";
 import { v4 as uuid } from "uuid";
 import { Button, AdvancedDynamicTexture, Container, } from "@babylonjs/gui";
-import { login } from "../postToLens";
 import { ipfs } from "../ipfs";
 import { PublicationMainFocus } from "../utils";
 import { createPost } from "../postToLens";
 
 
-export const addLoginButton = (
-  scene: Scene,
-  setAccessToken: any,
-  connectorOptions: {
-    address: string,
-    error: any,
-    signer: any,
-    isLoading: any
-  }
-) => {
-  const plane = MeshBuilder.CreatePlane("plane", {}, scene);
-  plane.position.y = 2;
-  plane.position.x = 0.5;
 
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
-
-  const button = Button.CreateSimpleButton("newPost", "🔐 Login");
-  button.width = 0.2;
-  button.height = 0.1;
-  button.color = "white";
-  button.background = "red";
-  button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer, setAccessToken));
-
-  advancedTexture.addControl(button);
-}
 
 export const addNewPostButton = (
   scene: Scene,
