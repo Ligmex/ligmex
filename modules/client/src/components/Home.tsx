@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import {
   ArcRotateCamera,
+  EventState,
   Scene,
+  SceneLoader,
   Vector3,
 } from "@babylonjs/core"
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 import {
   useConnect,
   useAccount,
@@ -26,12 +30,27 @@ import { createTrendingCorner } from "src/things/trendingCorner";
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
 
+
+SceneLoader.RegisterPlugin(new GLTFFileLoader());
+
 export const Home = () => {
-  // const [scenes, setScenes] = useState([] as Array<Scene>);
+
+  let globalScene: Scene;
+  const [newFile, setNewFile] = useState<any>();
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
   } as AccessToken)
+  
+  useEffect(() => {
+    if (!globalScene || !newFile) return;
+    SceneLoader.LoadAssetContainer("file:", newFile, globalScene, (container) => {
+      console.log("loading scene container");
+      container.meshes[0].scaling = new Vector3(0.05, 0.05, -0.05);
+      container.addAllToScene();
+    });
+  }, [newFile]);
+  
 
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
   const { address, isConnected } = useAccount()
@@ -57,8 +76,9 @@ export const Home = () => {
   })
 
   const onSceneReady = (scene: Scene) => {
-   
-    createTrendingCorner(scene);
+    globalScene = scene;
+    
+    // createTrendingCorner(scene);
 
     addConnectWalletButton(scene, {
       isConnected,
@@ -82,8 +102,8 @@ export const Home = () => {
         signer: signCreatePost,
         error: createPostError,
         isLoading: isLoadingCreatePostMessage,
-        lenshubPostWithSig
-      });
+        lenshubPostWithSig,
+      },  setNewFile);
     }
 
     try {
