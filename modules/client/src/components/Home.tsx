@@ -9,22 +9,26 @@ import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 import {
   useConnect,
   useAccount,
+  useDisconnect,
   useSignMessage,
   useSignTypedData,
   useContractWrite
 } from 'wagmi'
 
 import { SceneComponent } from "./Scene";
-import { AccessToken, AuthenticateResponse } from "../utils";
-
-import { addConnectWalletButton } from "../things/connectWallet";
+import { AccessToken } from "../utils";
 
 import { addLoginButton, addNewPostButton } from "../things/newPost";
 
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
 import { createTrendingCorner } from "src/things/trendingCorner";
-import { createStartVideoStreamButton, createVideoStreamDisplay } from "src/things/startVideoStream";
+import {
+  addConnectWalletButton,
+  createUploadFileView,
+  createStartVideoStreamButton,
+  createVideoStreamDisplay,
+ } from "src/babylonUtils";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
@@ -35,7 +39,7 @@ SceneLoader.RegisterPlugin(new GLTFFileLoader());
 export const Home = () => {
 
   let globalScene: Scene;
-  const [newFile, setNewFile] = useState<any>();
+  const [newFile, setNewFile] = useState<string>();
   const [startVideoStream, setStartVideoStream] = useState(false);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
@@ -43,20 +47,16 @@ export const Home = () => {
   } as AccessToken)
   
   useEffect(() => {
-    if (!globalScene || !newFile) return;
-    SceneLoader.LoadAssetContainer("file:", newFile, globalScene, (container) => {
-      console.log("loading scene container");
-      container.meshes[0].scaling = new Vector3(0.05, 0.05, -0.05);
-      container.addAllToScene();
-    });
+    createUploadFileView(globalScene, newFile);
   }, [newFile]);
 
   useEffect(() => {
     if (!globalScene || !startVideoStream) return;
-   
     createVideoStreamDisplay(globalScene);
-  })
+  }, [startVideoStream])
 
+
+  const { disconnect } = useDisconnect();
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
   const { address, isConnected } = useAccount()
   const { error: loginError, isLoading: isLoadingLoginMessage, signMessageAsync: signLogin } = useSignMessage();
@@ -66,9 +66,7 @@ export const Home = () => {
     contractInterface: LENS_HUB_ABI.abi,
     functionName: 'postWithSig',
     mode: 'recklesslyUnprepared',
-    onMutate({ args, overrides }) {
-      console.log('Mutate', { args, overrides })
-    },
+
     onError(error) {
       console.log(error);
     }
@@ -87,12 +85,13 @@ export const Home = () => {
 
     addConnectWalletButton(scene, {
       isConnected,
-      address: address || "",
+      address: address,
       connect,
       connectors,
       error,
       isLoading,
-      pendingConnector
+      pendingConnector,
+      disconnect
     });
 
     if (isConnected && address) {

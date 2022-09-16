@@ -28,7 +28,7 @@ export const addLoginButton = (
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
 
-  const button = Button.CreateSimpleButton("newPost", "📡 Login");
+  const button = Button.CreateSimpleButton("newPost", "🔐 Login");
   button.width = 0.2;
   button.height = 0.1;
   button.color = "white";
@@ -57,7 +57,7 @@ export const addNewPostButton = (
 
   const button = Button.CreateSimpleButton("newPost", "📡 Create New Post");
   button.width = 0.6;
-  button.height = 0.2;
+  button.height = 0.3;
   button.color = "white";
   button.background = "red";
 
@@ -81,28 +81,28 @@ export const addNewPostButton = (
       const imageData = await (await fetch(imageDataUrl)).arrayBuffer();
 
       try {
-        const glbIpfsHash = await ipfs.uploadViaInfura(imageData);
+        // const glbIpfsHash = await ipfs.uploadViaInfura(imageData);
 
-        const metaDataIpfsHash = await ipfs.uploadViaInfura(JSON.stringify({
-          version: '2.0.0',
-          metadata_id: uuid(),
-          description: "Test glb upload description",
-          content: "Test glb upload content",
-          external_url: null,
-          animation_url: `ipfs://${glbIpfsHash}`,
-          image: null,
-          imageMimeType: null,
-          name: "Test glb upload name",
-          mainContentFocus: PublicationMainFocus.EMBED,
-          contentWarning: null,
-          attributes: [],
-          media: [],
-          locale: 'en',
-          createdOn: new Date(),
-          appId: "ligmex"
-        }));
-        console.log(glbIpfsHash);
-        createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
+        // const metaDataIpfsHash = await ipfs.uploadViaInfura(JSON.stringify({
+        //   version: '2.0.0',
+        //   metadata_id: uuid(),
+        //   description: "Test glb upload description",
+        //   content: "Test glb upload content",
+        //   external_url: null,
+        //   animation_url: `ipfs://${glbIpfsHash}`,
+        //   image: null,
+        //   imageMimeType: null,
+        //   name: "Test glb upload name",
+        //   mainContentFocus: PublicationMainFocus.EMBED,
+        //   contentWarning: null,
+        //   attributes: [],
+        //   media: [],
+        //   locale: 'en',
+        //   createdOn: new Date(),
+        //   appId: "ligmex"
+        // }));
+        // console.log(glbIpfsHash);
+        // createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
 
       } catch (e) {
         console.log(e);
