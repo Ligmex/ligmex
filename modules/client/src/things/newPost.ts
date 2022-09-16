@@ -1,20 +1,16 @@
 import {
-  AssetsManager,
-  SceneLoader,
   FilesInput,
   Tools,
 } from "@babylonjs/core";
-import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 import { Scene } from "@babylonjs/core/scene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { v4 as uuid } from "uuid";
-import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
+import { Button, AdvancedDynamicTexture, Container, } from "@babylonjs/gui";
 import { login } from "../postToLens";
 import { ipfs } from "../ipfs";
 import { PublicationMainFocus } from "../utils";
 import { createPost } from "../postToLens";
 
-SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const addLoginButton = (
   scene: Scene,
@@ -49,15 +45,15 @@ export const addNewPostButton = (
     error: any,
     signer: any,
     isLoading: any,
-    lenshubPostWithSig: any
-  }
+    lenshubPostWithSig: any,
+  },
+  setNewFile: any
 ) => {
 
   const plane = Mesh.CreatePlane("plane", 2, scene);
   plane.position.y = 2;
 
   const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
-  const assetsManager = new AssetsManager(scene);
 
   const button = Button.CreateSimpleButton("newPost", "📡 Create New Post");
   button.width = 0.2;
@@ -69,7 +65,6 @@ export const addNewPostButton = (
   input.type = "file";
   input.id = "import";
   input.hidden = true;
-  // input.accept = "0px"//".json,.png";
   document.body.children[0].appendChild(input);
 
   input.onchange = (event: any) => {
@@ -86,47 +81,36 @@ export const addNewPostButton = (
       const imageData = await (await fetch(imageDataUrl)).arrayBuffer();
 
       try {
-        // const glbIpfsHash = await ipfs.uploadViaInfura(imageData);
+        const glbIpfsHash = await ipfs.uploadViaInfura(imageData);
 
-        // const metaDataIpfsHash = await ipfs.uploadViaInfura(JSON.stringify({
-        //   version: '2.0.0',
-        //   metadata_id: uuid(),
-        //   description: "Test glb upload description",
-        //   content: "Test glb upload content",
-        //   external_url: null,
-        //   animation_url: `ipfs://${glbIpfsHash}`,
-        //   image: null,
-        //   imageMimeType: null,
-        //   name: "Test glb upload name",
-        //   mainContentFocus: PublicationMainFocus.EMBED,
-        //   contentWarning: null,
-        //   attributes: [],
-        //   media: [],
-        //   locale: 'en',
-        //   createdOn: new Date(),
-        //   appId: "ligmex"
-        // }));
-        // console.log(glbIpfsHash);
-        // createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
+        const metaDataIpfsHash = await ipfs.uploadViaInfura(JSON.stringify({
+          version: '2.0.0',
+          metadata_id: uuid(),
+          description: "Test glb upload description",
+          content: "Test glb upload content",
+          external_url: null,
+          animation_url: `ipfs://${glbIpfsHash}`,
+          image: null,
+          imageMimeType: null,
+          name: "Test glb upload name",
+          mainContentFocus: PublicationMainFocus.EMBED,
+          contentWarning: null,
+          attributes: [],
+          media: [],
+          locale: 'en',
+          createdOn: new Date(),
+          appId: "ligmex"
+        }));
+        console.log(glbIpfsHash);
+        createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
 
       } catch (e) {
         console.log(e);
       } finally {
         FilesInput.FilesToLoad[filename] = blob as any;
-        assetsManager.addMeshTask(`loader-${filename}`, "", "file:", filename);
-        /*
-        SceneLoader.LoadAssetContainer(imageDataUrl, "",  scene,
-          (container) => {
-            console.log(container);
-            console.log(scene);
-            //container.addAllToScene();
-
-          }, (progress) => console.log , (error) => console.log("error: ", error));
-        */
+        setNewFile(filename)
       }
     };
-    assetsManager.load();
-    assetsManager.onTaskSuccessObservable.addOnce((task) => console.log(task))
   }
   Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
     button.onPointerDownObservable.add(()=>{
