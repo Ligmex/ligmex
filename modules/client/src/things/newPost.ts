@@ -11,8 +11,6 @@ import { PublicationMainFocus } from "../utils";
 import { createPost } from "../postToLens";
 
 
-
-
 export const addNewPostButton = (
   scene: Scene,
   connectorOptions: {
@@ -56,28 +54,28 @@ export const addNewPostButton = (
       const imageData = await (await fetch(imageDataUrl)).arrayBuffer();
 
       try {
-        // const glbIpfsHash = await ipfs.uploadViaInfura(imageData);
+        const glbIpfsHash = await ipfs.uploadViaInfura(imageData);
 
-        // const metaDataIpfsHash = await ipfs.uploadViaInfura(JSON.stringify({
-        //   version: '2.0.0',
-        //   metadata_id: uuid(),
-        //   description: "Test glb upload description",
-        //   content: "Test glb upload content",
-        //   external_url: null,
-        //   animation_url: `ipfs://${glbIpfsHash}`,
-        //   image: null,
-        //   imageMimeType: null,
-        //   name: "Test glb upload name",
-        //   mainContentFocus: PublicationMainFocus.EMBED,
-        //   contentWarning: null,
-        //   attributes: [],
-        //   media: [],
-        //   locale: 'en',
-        //   createdOn: new Date(),
-        //   appId: "ligmex"
-        // }));
-        // console.log(glbIpfsHash);
-        // createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
+        const metaDataIpfsHash = await ipfs.uploadViaInfura(JSON.stringify({
+          version: '2.0.0',
+          metadata_id: uuid(),
+          description: "Test glb upload description",
+          content: "Test glb upload content",
+          external_url: null,
+          animation_url: `ipfs://${glbIpfsHash}`,
+          image: null,
+          imageMimeType: null,
+          name: "Test glb upload name",
+          mainContentFocus: PublicationMainFocus.EMBED,
+          contentWarning: null,
+          attributes: [],
+          media: [],
+          locale: 'en',
+          createdOn: new Date(),
+          appId: "ligmex"
+        }));
+        console.log(glbIpfsHash);
+        createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
 
       } catch (e) {
         console.log(e);
