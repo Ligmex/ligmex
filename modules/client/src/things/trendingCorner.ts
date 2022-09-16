@@ -12,6 +12,7 @@ import {
   Vector2,
   Vector3,
   Vector4,
+  VideoTexture,
 } from "@babylonjs/core";
 import {
   Control, GUI3DManager, HolographicSlate, TextBlock
@@ -66,9 +67,6 @@ export const createTrendingCorner = async (scene: Scene) => {
 
   const createHoloSlate =async (post: any) => {
     const postHoloState = new HolographicSlate(`${post.id}-holoState`);
-    // const anchor = new TransformNode(`${post.id}-tn`, scene);
-    // anchor.scaling = new Vector3(0,0,2);
-    // console.log(anchor.scaling);
     postHoloState.minDimensions = new Vector2(0.02, 0.02);
     postHoloState.position = new Vector3(0,10,0);
     console.log(postHoloState.minDimensions);
@@ -95,6 +93,7 @@ export const createTrendingCorner = async (scene: Scene) => {
     const t = i/LIMIT * 2 * Math.PI;
     const pillar_position = new Vector3(Math.cos( t ) * 3,0.5, Math.sin( t ) * 3);
     const post_position = new Vector3(Math.cos(t)*3, 1.5, Math.sin(t)*3);
+    const post_rotation = new Vector3(Math.PI/8, 0, 0);
     // console.log(post.metadata.mainContentFocus, post.id)
     createPedestal(`${post.id}-pillar`, pillar_position);
     switch (post?.metadata?.mainContentFocus) {
@@ -116,7 +115,6 @@ export const createTrendingCorner = async (scene: Scene) => {
           animation_url = animation_url.replace(
             "ipfs://", "https://ligmex.infura-ipfs.io/ipfs/"
           );
-          // SceneLoader.Append(animation_url, "", scene, null, null, null, "".glb");
           SceneLoader.LoadAssetContainer(animation_url, "", scene, (glbContainer: AssetContainer) => {
             glbContainer.meshes[0].scaling = new Vector3(0.05, 0.05, -0.05);
             glbContainer.meshes[0].position = post_position;
@@ -125,8 +123,6 @@ export const createTrendingCorner = async (scene: Scene) => {
         }
         break;
       case "IMAGE":
-        //const faceUV = new Array<Vector4>;
-        //faceUV[0] = new Vector4(0,0, 1, 1);
         const f = new Vector4(0,0, 1, 1);
         const b = new Vector4(0,0, 0.5, 1);
         const plane = MeshBuilder.CreateBox(post.id, {
@@ -141,12 +137,7 @@ export const createTrendingCorner = async (scene: Scene) => {
         material.diffuseTexture = new Texture(url, scene);
         plane.material = material;
         plane.position = post_position;
-        plane.rotation = new Vector3(Math.PI/8, 0, 0);
-        createTextPlaque(post,
-          new Vector3(Math.cos(t)*3 + 1, 1.5, Math.sin(t)*3),
-          f, b
-          );
-        // console.log("Image: ", post.metadata);
+        plane.rotation = post_rotation;
         break;
       case "LINK":
         // console.log("Link: ", post.metadata);
@@ -155,6 +146,19 @@ export const createTrendingCorner = async (scene: Scene) => {
         // console.log("Text only: ", post.metadata);
         break;
       case "VIDEO":
+        const videoPlane = MeshBuilder.CreatePlane(`${post.id}-videoPlane`, {
+          width: post.metadata.media[0]?.original?.width || 1,
+          height: post.metadata.media[0]?.original?.height || 1
+        }, scene);
+        const videoMaterial = new StandardMaterial(`${post.id}-videoMaterial`, scene);
+        let videoPostUrl = post.metadata.media[0]?.original?.url.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
+        console.log(videoPostUrl);
+        videoMaterial.diffuseTexture = new VideoTexture(`${post.id}-videoTexture`, videoPostUrl, scene);
+        (videoMaterial.diffuseTexture as VideoTexture).video.muted = true;
+        videoPlane.material = videoMaterial;
+        videoPlane.position = post_position;
+        videoPlane.rotation = post_rotation;
+
         // console.log("Video: ", post.metadata);
         break;
       default:
