@@ -9,10 +9,8 @@ import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { verifyMessage } from 'ethers/lib/utils'
-import { SceneLoader } from "@babylonjs/core";
-import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
+import { FreeCamera } from "@babylonjs/core";
 
-SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const SceneComponent = (props: {
   antialias: boolean;
@@ -43,11 +41,9 @@ export const SceneComponent = (props: {
       scene,
     );
 
-    // This targets the camera to scene origin
-    // camera.setTarget(Vector3.Zero());
-
     // This attaches the camera to the canvas
     camera.attachControl(canvas, true);
+    camera.zoomToMouseLocation = true;
 
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
 
