@@ -81,13 +81,6 @@ export const createTrendingCorner = async (scene: Scene) => {
 
   // Get Top Posts
   const latestPosts = await getPosts(LIMIT);
-  // createHoloSlate({id: "test"});
-  //console.log("Got posts: ", latestPosts);
-
-  // Render Posts by mainContentFocus: VIDEO, IMAGE, ARTICLE, TEXT_ONLY, AUDIO, LINK, EMBED
-  // EMBED: If glb/gltf, render 3D object, else 'not supported yet'
-  // TEXT_ONLY: Text bubble
-  // VIDEO/IMAGE/AUDIO
   
   latestPosts.forEach((post: any, i: number) => {
     const t = i/LIMIT * 2 * Math.PI;
@@ -95,7 +88,6 @@ export const createTrendingCorner = async (scene: Scene) => {
     const post_position = new Vector3(Math.cos(t)*3, 1.5, Math.sin(t)*3);
     const post_rotation = new Vector3(Math.PI/8, 0, 0);
     // console.log(post.metadata.mainContentFocus, post.id)
-    createPedestal(`${post.id}-pillar`, pillar_position);
     switch (post?.metadata?.mainContentFocus) {
       case "ARTICLE":
         // console.log("Article: ", post.metadata);
@@ -111,6 +103,8 @@ export const createTrendingCorner = async (scene: Scene) => {
         // console.log("Embed: ", post.metadata);
         let animation_url = post.metadata.animatedUrl;
         if (animation_url.split("/").length === 1) return;
+
+        createPedestal(`${post.id}-pillar`, pillar_position);
         if (animation_url.startsWith("ipfs://")) {
           animation_url = animation_url.replace(
             "ipfs://", "https://ligmex.infura-ipfs.io/ipfs/"
@@ -123,6 +117,8 @@ export const createTrendingCorner = async (scene: Scene) => {
         }
         break;
       case "IMAGE":
+
+        createPedestal(`${post.id}-pillar`, pillar_position);
         const f = new Vector4(0,0, 1, 1);
         const b = new Vector4(0,0, 0.5, 1);
         const plane = MeshBuilder.CreateBox(post.id, {
@@ -146,13 +142,14 @@ export const createTrendingCorner = async (scene: Scene) => {
         // console.log("Text only: ", post.metadata);
         break;
       case "VIDEO":
+
+        createPedestal(`${post.id}-pillar`, pillar_position);
         const videoPlane = MeshBuilder.CreatePlane(`${post.id}-videoPlane`, {
           width: post.metadata.media[0]?.original?.width || 1,
           height: post.metadata.media[0]?.original?.height || 1
         }, scene);
         const videoMaterial = new StandardMaterial(`${post.id}-videoMaterial`, scene);
         let videoPostUrl = post.metadata.media[0]?.original?.url.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
-        console.log(videoPostUrl);
         videoMaterial.diffuseTexture = new VideoTexture(`${post.id}-videoTexture`, videoPostUrl, scene);
         (videoMaterial.diffuseTexture as VideoTexture).video.muted = true;
         videoPlane.material = videoMaterial;
@@ -162,7 +159,7 @@ export const createTrendingCorner = async (scene: Scene) => {
         // console.log("Video: ", post.metadata);
         break;
       default:
-        // console.log(`Unsuported content focus: ${post.metadata.mainContentFocus}`)
+        console.log(`Unsuported content focus: ${post.metadata.mainContentFocus}`)
         break;
     };
   });
