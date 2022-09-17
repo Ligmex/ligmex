@@ -39,23 +39,12 @@ SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const Home = () => {
 
-  let globalScene: Scene;
   const [newFile, setNewFile] = useState<string>();
   const [startVideoStream, setStartVideoStream] = useState(false);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
   } as AccessToken)
-  
-  useEffect(() => {
-    createUploadFileView(globalScene, newFile);
-  }, [newFile]);
-
-  useEffect(() => {
-    if (!globalScene || !startVideoStream) return;
-    createVideoStreamDisplay(globalScene);
-  }, [startVideoStream])
-
 
   const { disconnect } = useDisconnect();
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
@@ -80,8 +69,15 @@ export const Home = () => {
   })
 
   const onSceneReady = (scene: Scene) => {
-    globalScene = scene;
-    
+
+    if (newFile) {
+      createUploadFileView(scene, newFile);
+    }
+
+    if (startVideoStream) {
+      createVideoStreamDisplay(scene);
+    }
+
     createTrendingCorner(scene);
 
     addConnectWalletButton(scene, {
@@ -114,6 +110,7 @@ export const Home = () => {
 
     try {
       if ("xr" in window.navigator) {
+        console.log("creating xr");
         scene.createDefaultXRExperienceAsync().then(
           (xrexp: any) => {
             if (xrexp.baseExperience) {
@@ -130,6 +127,7 @@ export const Home = () => {
     } catch (e) {
       console.log(e);
     }
+
   };
 
   const onRender = (scene: Scene) => {
