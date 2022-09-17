@@ -16,7 +16,7 @@ import { Button } from "@babylonjs/gui/2D/controls/button";
 import { verifyMessage } from "ethers/lib/utils";
 
 // Livepeer imports
-import { Client } from "@livepeer/webrtmp-sdk";
+import { Client, isSupported } from "@livepeer/webrtmp-sdk";
 
 import { AuthenticateResponse } from './utils';
 import {
@@ -24,13 +24,73 @@ import {
     generateChallenge
 } from "./lensApi"
 
-const setupLivepeerStream = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-    })
-    const client = new Client();
-    const session = client.cast(stream, "939a-mn33-if66-zqfg" );
+const LIVPEER_API_KEY = localStorage.getItem("LIVPEER_API_KEY") || "null";
+
+const setupLivepeerStream = async (videoEl: HTMLVideoElement) => {
+
+    if (!isSupported()) {
+        console.log("Browser not supported");
+        return;
+    }
+    try {
+        const response = await fetch(`https://livepeer.studio/api/stream`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${LIVPEER_API_KEY}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "name": "ligmexNewLiveStream",
+                "profiles": [
+                {
+                    "name": "720p",
+                    "bitrate": 2000000,
+                    "fps": 30,
+                    "width": 1280,
+                    "height": 720
+                },
+                {
+                    "name": "480p",
+                    "bitrate": 1000000,
+                    "fps": 30,
+                    "width": 854,
+                    "height": 480
+                },
+                {
+                    "name": "360p",
+                    "bitrate": 500000,
+                    "fps": 30,
+                    "width": 640,
+                    "height": 360
+                }
+                ]
+            })
+        });
+        const data = await response.json();
+
+        if (data?.streamKey) {
+
+            const stream = videoEl.srcObject;
+            const client = new Client();
+            const session = client.cast(stream! as MediaStream, data?.streamKey );
+
+            session.on('open', () => {
+                console.log('Stream started.')
+            })
+            
+            session.on('close', () => {
+                console.log('Stream stopped.')
+            })
+        
+            session.on('error', (err) => {
+                console.log('Stream error.', err.message)
+            })
+        }
+    } catch (e) {
+        console.log(e);
+    }
+
+    
 }
 
 const login = async (address: string, signMessage: any, setAccessToken: any) => {
@@ -91,15 +151,16 @@ export const createVideoStreamDisplay = (scene: Scene) => {
     const videoStreamMaterial = new StandardMaterial("streamingMaterial", scene);
     videoStreamMaterial.diffuseColor = Color3.Black();
 
-    VideoTexture.CreateFromWebCam(scene, (video: VideoTexture) => {
+    VideoTexture.CreateFromWebCam(scene, (videoTexture: VideoTexture) => {
 
-        videoStreamMaterial.emissiveTexture = video;
+        videoStreamMaterial.emissiveTexture = videoTexture;
         videoStreamDisplay.material = videoStreamMaterial;
         
+
+        setupLivepeerStream(videoTexture.video);
        
     }, {minWidth: 2, minHeight: 2, maxWidth: 256, maxHeight: 256, deviceId: "videoStream"})
 
-    setupLivepeerStream();
 }
 
 export const addConnectWalletButton = (
