@@ -107,7 +107,7 @@ export const createTrendingCorner = async (scene: Scene) => {
         createPedestal(`${post.id}-pillar`, pillar_position);
         if (animation_url.startsWith("ipfs://")) {
           animation_url = animation_url.replace(
-            "ipfs://", "https://ligmex.infura-ipfs.io/ipfs/"
+            "ipfs://", "https://lens.infura-ipfs.io/ipfs/"
           );
           SceneLoader.LoadAssetContainer(animation_url, "", scene, (glbContainer: AssetContainer) => {
             glbContainer.meshes[0].scaling = new Vector3(0.05, 0.05, -0.05);
