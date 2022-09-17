@@ -32,19 +32,28 @@ export const SceneComponent = (props: {
 
     const engine = new Engine(canvas, antialias, engineOptions, adaptToDeviceRatio);
     const scene = new Scene(engine, sceneOptions);
-    const camera = new ArcRotateCamera(
-      "camera1",
-      -Math.PI/2,
-      Math.PI/3,
-      25,
-      new Vector3(0, 2, 0),
-      scene,
-    );
 
-    // This attaches the camera to the canvas
-    camera.attachControl(canvas, true);
-    camera.zoomToMouseLocation = true;
-    camera.allowUpsideDown = false;
+    scene.onPointerDown = (evt) => {
+      if (evt.button === 0) engine.enterPointerlock();
+      if (evt.button === 1) engine.exitPointerlock();
+    };
+    const framesPerSecond = 60;
+    const gravity = -9.81;
+    scene.gravity = new Vector3(0, gravity / framesPerSecond, 0);
+    scene.collisionsEnabled = true;
+
+    const camera = new FreeCamera("camera", new Vector3(0, 2, 0), scene);
+    // const camera = new ArcRotateCamera(
+    //   "camera1",
+    //   -Math.PI/2,
+    //   Math.PI/3,
+    //   25,
+    //   new Vector3(0, 2, 0),
+    //   scene,
+    // );
+    // camera.attachControl(canvas, true);
+    // camera.zoomToMouseLocation = true;
+    // camera.allowUpsideDown = false;
 
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
 
@@ -52,7 +61,7 @@ export const SceneComponent = (props: {
 
     MeshBuilder.CreateGround(
       "ground",
-      { height: 10, width: 10, },
+      { height: 50, width: 50, },
       scene
     );
 

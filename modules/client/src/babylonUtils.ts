@@ -23,6 +23,7 @@ import {
     authenticate,
     generateChallenge
 } from "./lensApi"
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 
 const LIVPEER_API_KEY = localStorage.getItem("LIVPEER_API_KEY") || "null";
 
@@ -77,7 +78,7 @@ const setupLivepeerStream = async (videoEl: HTMLVideoElement) => {
             session.on('open', () => {
                 console.log('Stream started.')
             })
-            
+
             session.on('close', () => {
                 console.log('Stream stopped.')
             })
@@ -116,6 +117,9 @@ export const createUploadFileView = (scene: Scene, filname: string | undefined) 
     SceneLoader.LoadAssetContainer("file:", filname, scene, (container) => {
         console.log("loading scene container");
         container.meshes[0].scaling = new Vector3(0.05, 0.05, -0.05);
+        container.meshes.forEach((mesh: AbstractMesh) => {
+            mesh.checkCollisions = true;
+        })
         container.addAllToScene();
     });
 }

@@ -37,6 +37,7 @@ export const createTrendingCorner = async (scene: Scene) => {
       scene
     )
     pillar.position = position;
+    pillar.checkCollisions = true
   }
 
   const createTextPlaque =async (post: any, position: Vector3, f: Vector4, b: Vector4) => {

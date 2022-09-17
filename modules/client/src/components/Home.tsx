@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import {
+  AbstractMesh,
+  FreeCamera,
   Scene,
   SceneLoader,
   Vector3,
-} from "@babylonjs/core"
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+} from "@babylonjs/core";
 import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 import {
   useConnect,
@@ -70,6 +71,25 @@ export const Home = () => {
 
   const onSceneReady = (scene: Scene) => {
 
+    console.log(scene.cameras);
+    const camera = scene.cameras[0] as FreeCamera;
+    
+    camera.attachControl();
+
+    camera.applyGravity = true;
+    camera.checkCollisions = true;
+
+    camera.ellipsoid = new Vector3(1, 1, 1);
+
+    camera.minZ = 0.45;
+    camera.speed = 0.75;
+    camera.angularSensibility = 4000;
+
+    camera.keysUp.push(87);
+    camera.keysLeft.push(65);
+    camera.keysDown.push(83);
+    camera.keysRight.push(68);
+
     if (newFile) {
       createUploadFileView(scene, newFile);
     }
@@ -126,6 +146,10 @@ export const Home = () => {
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      scene.meshes.forEach((mesh: AbstractMesh) => {
+        mesh.checkCollisions = true;
+      })
     }
 
   };
