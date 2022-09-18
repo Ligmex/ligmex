@@ -71,7 +71,6 @@ export const Home = () => {
 
   const onSceneReady = (scene: Scene) => {
 
-    console.log(scene.cameras);
     const camera = scene.cameras[0] as FreeCamera;
     
     camera.attachControl();
@@ -85,10 +84,11 @@ export const Home = () => {
     camera.speed = 0.75;
     camera.angularSensibility = 4000;
 
-    camera.keysUp.push(87);
-    camera.keysLeft.push(65);
-    camera.keysDown.push(83);
-    camera.keysRight.push(68);
+    camera.keysUpward = [32];
+    camera.keysUp = [87];
+    camera.keysLeft = [65];
+    camera.keysDown = [83];
+    camera.keysRight = [68];
 
     if (newFile) {
       createUploadFileView(scene, newFile);

@@ -6,10 +6,10 @@ import { EngineOptions } from "@babylonjs/core/Engines/thinEngine";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Scene, SceneOptions } from "@babylonjs/core/scene";
-import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { verifyMessage } from 'ethers/lib/utils'
-import { FreeCamera } from "@babylonjs/core";
+import { DeviceSourceManager, DeviceType, FreeCamera, PointerInput } from "@babylonjs/core";
 
 
 export const SceneComponent = (props: {
@@ -41,7 +41,7 @@ export const SceneComponent = (props: {
     const gravity = -9.81;
     scene.gravity = new Vector3(0, gravity / framesPerSecond, 0);
     scene.collisionsEnabled = true;
-
+    
     const camera = new FreeCamera("camera", new Vector3(0, 2, 0), scene);
     // const camera = new ArcRotateCamera(
     //   "camera1",
@@ -56,8 +56,62 @@ export const SceneComponent = (props: {
     // camera.allowUpsideDown = false;
 
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
-
     light.intensity = 1;
+
+    let dsm = new DeviceSourceManager(scene.getEngine());
+
+    dsm.onDeviceConnectedObservable.add((device) => {
+        // KEYBOARD CONFIG
+      if (device.deviceType === DeviceType.Keyboard) {
+        scene.onBeforeRenderObservable.add(() => {
+
+            // Arrow keys to rotate
+            if (device.getInput(37) === 1) {
+                camera.rotation.y -= 0.01;
+            }
+            if (device.getInput(39) === 1) {
+                camera.rotation.y += 0.01;
+            }
+            if (device.getInput(38) === 1) {
+                camera.rotation.x -= 0.01;
+            }
+            if (device.getInput(40) === 1) {
+                camera.rotation.x += 0.01;
+            }
+        });
+      }
+        // POINTER CONFIG
+      else if (device.deviceType === DeviceType.Mouse || device.deviceType === DeviceType.Touch) {
+        device.onInputChangedObservable.add((deviceData) => {
+          if (deviceData.inputIndex === PointerInput.Move && device.getInput(PointerInput.LeftClick) === 1) {
+              camera.rotation.y += deviceData.movementX * 0.00175;
+              camera.rotation.x += deviceData.movementY * 0.00175;
+          }
+        });
+
+        // Move forward if 2 fingers are pressed against screen
+        if (!scene.beforeRender && device.deviceType === DeviceType.Touch ) {
+          scene.beforeRender = () => {
+            let transformMatrix = Matrix.Zero();
+            let localDirection = Vector3.Zero();
+            let transformedDirection = Vector3.Zero();
+            let isMoving = false;
+
+            if (dsm.getDeviceSources(DeviceType.Touch).length === 2) {
+                localDirection.z = 0.1;
+                isMoving = true;
+            }
+
+            if (isMoving) {
+                camera.getViewMatrix().invertToRef(transformMatrix);
+                Vector3.TransformNormalToRef(localDirection, transformMatrix, transformedDirection);
+                camera.position.addInPlace(transformedDirection);
+            }
+          };
+        }
+      }
+    });
+  
 
     MeshBuilder.CreateGround(
       "ground",
