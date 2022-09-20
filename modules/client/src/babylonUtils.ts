@@ -240,15 +240,13 @@ export const addLoginButton = (
 
 export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: AssetContainer): Mesh | undefined => {
     if (assetContainer.meshes[0] == undefined) return undefined;
-    
-
     let minimum;
     let maximum;
     let center;
 
     // Create Transparent Material
     const transparentMaterial = new StandardMaterial('boundBoxMaterial', scene);
-    transparentMaterial.alpha = 0;
+    transparentMaterial.alpha = 0.2;
 
     // Create Bounding Box Mesh
     const boundBox = MeshBuilder.CreateBox(`${id}-boundCube`, {}, scene);
@@ -299,4 +297,34 @@ export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: A
     scaleBox.scaling = new Vector3(1/localMax, 1/localMax, 1/localMax);
 
     return boundBox;
+}
+
+export const scaleNewMeshes = (newMeshes: AbstractMesh[], position: Vector3): AbstractMesh | undefined => {
+    if (newMeshes[0] == undefined) return;
+
+    const scaleBox = newMeshes[0];
+    let newMin;
+    let newMax;
+
+    for (let i = 1; i < newMeshes.length; i++){
+        let boundingInfo = newMeshes[i].getBoundingInfo();
+        if (!newMin) {
+            newMin = boundingInfo.boundingBox.minimumWorld;
+            newMax = boundingInfo.boundingBox.maximumWorld;
+        } else {
+            newMin = Vector3.Minimize(boundingInfo.boundingBox.minimumWorld, newMin);
+            newMax = Vector3.Maximize(boundingInfo.boundingBox.maximumWorld, newMax);
+        }
+    }
+
+    let localMax = 0;
+    for (let key in { x: 0, y: 0, z: 0 }) {
+        let scale = Math.abs(newMax[key] - newMin[key]);
+        if (scale > localMax)
+        localMax = scale;
+    }
+
+    scaleBox.scaling = new Vector3(1/localMax, 1/localMax, -1/localMax);
+    scaleBox.position = position;
+    return scaleBox;
 }

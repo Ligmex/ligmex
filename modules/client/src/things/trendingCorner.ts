@@ -18,7 +18,7 @@ import {
   Control, GUI3DManager, HolographicSlate, TextBlock
 } from "@babylonjs/gui"
 import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
-import { scaleAndCenterMeshes } from "src/babylonUtils";
+import { scaleAndCenterMeshes, scaleNewMeshes } from "src/babylonUtils";
 import {
   getMyPosts,
   getPosts
@@ -112,11 +112,7 @@ export const createTrendingCorner = async (scene: Scene) => {
             "ipfs://", "https://lens.infura-ipfs.io/ipfs/"
           );
           SceneLoader.LoadAssetContainer(animation_url, "", scene, (glbContainer: AssetContainer) => {
-            const boundBox = scaleAndCenterMeshes(post.id, scene, glbContainer);
-            // glbContainer.meshes[0].scaling = new Vector3(0.05, 0.05, -0.05);
-            // glbContainer.meshes[0].position = post_position;
-            if (boundBox != undefined)
-              boundBox.position = post_position;
+            scaleNewMeshes(glbContainer.meshes, post_position);
             glbContainer.addAllToScene();
           }, null, null, ".glb");
         }
