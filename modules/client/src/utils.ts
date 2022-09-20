@@ -1,3 +1,5 @@
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+
 export const omit = (object: { [key: string]: any }, name: string) => {
   delete object[name];
   return object;
@@ -13,6 +15,15 @@ export type AuthenticateResponse = {
    authenticate: AccessToken;
   }
 }
+
+export type SceneState = {
+  newFileToLoad: string;
+  videoStream: boolean;
+  camera: {
+    position: Vector3;
+    rotation: Vector3;
+  };
+};
 
 type AppId = string;
 type Url = string;

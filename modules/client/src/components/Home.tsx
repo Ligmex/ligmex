@@ -17,7 +17,7 @@ import {
 } from 'wagmi'
 
 import { SceneComponent } from "./Scene";
-import { AccessToken } from "../utils";
+import { AccessToken, SceneState } from "../utils";
 
 import { addNewPostButton } from "../things/newPost";
 
@@ -39,6 +39,8 @@ const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const Home = () => {
+
+  const [sceneState, setSceneState] = useState({} as SceneState);
 
   const [newFile, setNewFile] = useState<string>();
   const [startVideoStream, setStartVideoStream] = useState(false);
@@ -92,11 +94,22 @@ export const Home = () => {
 
     }
     
-    if (newFile) {
-      createUploadFileView(scene, newFile);
+    if (sceneState?.newFileToLoad) {
+      console.log("setting camera position and rotation", sceneState.camera)
+      if (camera && sceneState.camera?.position)
+        camera.position = sceneState.camera.position;
+      if (camera && sceneState.camera?.rotation)
+        camera.rotation = sceneState.camera.rotation;
+
+      createUploadFileView(scene, sceneState.newFileToLoad);
     }
 
-    if (startVideoStream) {
+    if (sceneState?.videoStream) {
+      console.log("setting camera position and rotation", sceneState.camera)
+      if (camera && sceneState.camera?.position)
+        camera.position = sceneState.camera.position;
+      if (camera && sceneState.camera?.rotation)
+        camera.rotation = sceneState.camera.rotation;
       createVideoStreamDisplay(scene);
     }
 
@@ -114,7 +127,7 @@ export const Home = () => {
     });
 
     if (isConnected && address) {
-      createStartVideoStreamButton(scene, setStartVideoStream);
+      createStartVideoStreamButton(scene, setSceneState);
       addLoginButton(scene, setAccessToken, {
         address,
         signer: signLogin,
@@ -127,7 +140,7 @@ export const Home = () => {
         error: createPostError,
         isLoading: isLoadingCreatePostMessage,
         lenshubPostWithSig,
-      },  setNewFile);
+      },  setSceneState);
     }
 
     try {
@@ -149,6 +162,8 @@ export const Home = () => {
     } catch (e) {
       console.log(e);
     } finally {
+
+      console.log(camera.position, camera.rotation);
       scene.meshes.forEach((mesh: AbstractMesh) => {
         mesh.checkCollisions = true;
       })

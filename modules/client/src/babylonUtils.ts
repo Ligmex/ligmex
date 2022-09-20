@@ -1,6 +1,7 @@
 import {
     AssetContainer,
     Color3,
+    FreeCamera,
     Mesh,
     MeshBuilder,
     Scene,
@@ -20,7 +21,7 @@ import { verifyMessage } from "ethers/lib/utils";
 // Livepeer imports
 import { Client, isSupported } from "@livepeer/webrtmp-sdk";
 
-import { AuthenticateResponse } from './utils';
+import { AuthenticateResponse, SceneState } from './utils';
 import {
     authenticate,
     generateChallenge
@@ -128,7 +129,7 @@ export const createUploadFileView = (scene: Scene, filname: string | undefined) 
 
 export const createStartVideoStreamButton = (
     scene: Scene,
-    setStartVideoStream: React.Dispatch<React.SetStateAction<boolean>>
+    setSceneState: React.Dispatch<React.SetStateAction<SceneState>>
 ) => {
     const videoStreamButton = MeshBuilder.CreatePlane("videoStreamButton", {}, scene);
     videoStreamButton.position = new Vector3(-1, 2, 0);
@@ -139,8 +140,15 @@ export const createStartVideoStreamButton = (
     videoStreamControl.color = "yellow";
     videoStreamControl.background = "red";
     videoStreamControl.onPointerUpObservable.add(() => {
-        console.log("Lets Stream");
-        setStartVideoStream(true);
+        const fpsCamera = scene.getCameraByName("fpsCamera") as FreeCamera;
+        setSceneState({
+            newFileToLoad: "",
+            videoStream: true,
+            camera: {
+                position: fpsCamera?.position,
+                rotation: fpsCamera?.rotation
+            }
+        });
     });
     advancedTexture.addControl(videoStreamControl);
 

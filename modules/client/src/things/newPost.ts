@@ -1,13 +1,15 @@
 import {
   FilesInput,
+  FreeCamera,
   MeshBuilder,
   Tools,
+  Vector3,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
 import { v4 as uuid } from "uuid";
 import { Button, AdvancedDynamicTexture, Container, } from "@babylonjs/gui";
 import { ipfs } from "../ipfs";
-import { PublicationMainFocus } from "../utils";
+import { PublicationMainFocus, SceneState } from "../utils";
 import { createPost } from "../postToLens";
 
 
@@ -20,7 +22,7 @@ export const addNewPostButton = (
     isLoading: any,
     lenshubPostWithSig: any,
   },
-  setNewFile: any
+  setSceneState:  React.Dispatch<React.SetStateAction<SceneState>>
 ) => {
 
   const plane = MeshBuilder.CreatePlane("plane", {}, scene);
@@ -81,12 +83,21 @@ export const addNewPostButton = (
         console.log(e);
       } finally {
         FilesInput.FilesToLoad[filename] = blob as any;
-        setNewFile(filename)
+        
+        setSceneState({
+          newFileToLoad: filename,
+          videoStream: false,
+          camera: {
+            position: new Vector3(0, 1, -3),
+            rotation: new Vector3(0, 4, 0)
+          }
+      });
       }
     };
   }
   Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
     button.onPointerDownObservable.add(()=>{
+
       $("#import").trigger('click')
     })
    });
