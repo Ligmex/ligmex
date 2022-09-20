@@ -15,7 +15,7 @@ import { scaleNewMeshes } from "../utils";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
-export const createPost = async (scene: Scene, position: Vector3, post: any) => {
+export const postMaker = async (scene: Scene, position: Vector3, post: any) => {
 
   const height = 1;
 
@@ -111,6 +111,46 @@ export const createPost = async (scene: Scene, position: Vector3, post: any) => 
       console.log(`Unsuported content focus: ${post.metadata.mainContentFocus}`)
       break;
   };
+
+  /*
+  const createTextPlaque =async (post: any, position: Vector3, f: Vector4, b: Vector4) => {
+    console.log(post.metadata.description);
+    // const plaque = MeshBuilder.CreateBox(
+    //   `${post.id}-plaque`,
+    //   {bottomBaseAt: 2, depth: 1/16, height: 1, width: 1, frontUVs: f, backUVs: b },
+    //   scene
+    // );
+    const plaque = MeshBuilder.CreatePlane(
+        `${post.id}-plaque`,
+        { height: 1, width: 1, frontUVs: new Vector4(0, 0, 1, 1), backUVs: new Vector4(0, 0, 1, 1) },
+        scene
+      )
+    plaque.position = position;
+    plaque.addRotation(Math.PI/8, 0, 0);
+    plaque.material = new StandardMaterial(`${post.id}-plaqueMaterial`, scene);
+    const dynamicTexture = new DynamicTexture(`${post.id}-dynamicTextue`, 50, scene, true);
+    console.log(dynamicTexture.scale);
+    // dynamicTexture.hasAlpha = true;
+    dynamicTexture.drawText(
+      post.metadata.description,
+      5, 10, "8x Arial", "#FFFFFF",
+      "black"
+      );
+    (plaque.material as StandardMaterial).diffuseTexture = dynamicTexture;
+  }
+  const createHoloSlate =async (post: any) => {
+    const guiManager = new GUI3DManager(scene);
+    const postHoloState = new HolographicSlate(`${post.id}-holoState`);
+    postHoloState.minDimensions = new Vector2(0.02, 0.02);
+    postHoloState.position = new Vector3(0,10,0);
+    console.log(postHoloState.minDimensions);
+    // postHoloState.linkToTransformNode(anchor)
+    postHoloState.dimensions = new Vector2(0.02,0.02);
+    guiManager.addControl(postHoloState);
+    const description = new TextBlock(`${post.id}-description`); //post.metadata.description;
+    const content = new TextBlock(`${post.id}-content`);
+  }
+  */
 
 }
 
