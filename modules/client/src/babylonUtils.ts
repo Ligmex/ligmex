@@ -117,7 +117,8 @@ const login = async (address: string, signMessage: any, setAccessToken: any) => 
 export const createUploadFileView = (scene: Scene, filname: string | undefined) => {
     if (!scene || !filname) return;
     SceneLoader.LoadAssetContainer("file:", filname, scene, (container) => {
-        container.meshes[0].scaling = new Vector3(0.05, 0.05, -0.05);
+        scaleNewMeshes(container.meshes, new Vector3(0, 4, 0));
+        // container.meshes[0].scaling = new Vector3(0.05, 0.05, -0.05);
         container.meshes.forEach((mesh: AbstractMesh) => {
             mesh.checkCollisions = true;
         })
@@ -299,7 +300,7 @@ export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: A
     return boundBox;
 }
 
-export const scaleNewMeshes = (newMeshes: AbstractMesh[], position: Vector3): AbstractMesh | undefined => {
+export const scaleNewMeshes = (newMeshes: AbstractMesh[], position = Vector3.Zero()): AbstractMesh | undefined => {
     if (newMeshes[0] == undefined) return;
 
     const scaleBox = newMeshes[0];
