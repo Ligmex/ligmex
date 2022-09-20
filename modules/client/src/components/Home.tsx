@@ -71,25 +71,27 @@ export const Home = () => {
 
   const onSceneReady = (scene: Scene) => {
 
-    const camera = scene.cameras[0] as FreeCamera;
+    const camera = scene.getCameraByName("fpsCamera") as FreeCamera;
+    if (camera) {
+      camera.attachControl();
+
+      camera.applyGravity = true;
+      camera.checkCollisions = true;
+
+      camera.ellipsoid = new Vector3(1, 1, 1);
+
+      camera.minZ = 0.45;
+      camera.speed = 0.75;
+      camera.angularSensibility = 4000;
+
+      camera.keysUpward = [32];
+      camera.keysUp = [87];
+      camera.keysLeft = [65];
+      camera.keysDown = [83];
+      camera.keysRight = [68];
+
+    }
     
-    camera.attachControl();
-
-    camera.applyGravity = true;
-    camera.checkCollisions = true;
-
-    camera.ellipsoid = new Vector3(1, 1, 1);
-
-    camera.minZ = 0.45;
-    camera.speed = 0.75;
-    camera.angularSensibility = 4000;
-
-    camera.keysUpward = [32];
-    camera.keysUp = [87];
-    camera.keysLeft = [65];
-    camera.keysDown = [83];
-    camera.keysRight = [68];
-
     if (newFile) {
       createUploadFileView(scene, newFile);
     }
