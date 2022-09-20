@@ -7,20 +7,24 @@ import { Scene } from "@babylonjs/core/scene";
 
 export const galleryMaker = (scene: Scene, position: Vector3, height: number) => {
 
+  const w = height;
+  const h = height / 2;
+  const d = height / 16;
+
   const path = [
-    new Vector3(position.x + height, 0, 0),
-    new Vector3(position.x - height, 0, 0),
-    new Vector3(position.x + height, height, 0),
-    new Vector3(position.x - height, height, 0),
+    new Vector3(-(w), -(h), 0),
+    new Vector3(w, -(h), 0),
+    new Vector3(w, h, 0),
+    new Vector3(-(w), h, 0),
   ];
 
   const profile = [
-		new Vector3(-15, 15, 0),
-		new Vector3(-15, -15, 0),
-		new Vector3(15, -15, 0),
-		new Vector3(15, 10, 0),
-		new Vector3(10, 10, 0),
-		new Vector3(10, 15, 0)
+		new Vector3(-(d), d, 0),
+		new Vector3(-(d), -(d), 0),
+		new Vector3(d, -(d), 0),
+		new Vector3(d, d/2, 0),
+		new Vector3(d/2, d/2, 0),
+		new Vector3(d/2, d, 0)
   ];
 
   let originX = Number.MAX_VALUE;
@@ -44,7 +48,6 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number) =>
     let direction = Vector3.Cross(line, nextLine).normalize().z;
     let lineNormal = new Vector3(line.y, -1 * line.x, 0).normalize();
     line.normalize();
-    let extrusionLength = line.length();
     cornerProfile[(p + 1) % nbPoints] = [] as any;
     //local profile
     for(let m = 0; m < profile.length; m++) {
@@ -68,6 +71,11 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number) =>
     frame[p] = MeshBuilder.CreateRibbon("frameLeft", {pathArray: extrusionPaths, sideOrientation: Mesh.DOUBLESIDE, updatable: true, closeArray: true}, scene);
   }
 
-  return Mesh.MergeMeshes(frame, true)?.convertToFlatShadedMesh();
+  const finalMesh = Mesh.MergeMeshes(frame, true)?.convertToFlatShadedMesh();
+  if (finalMesh) {
+    finalMesh.position = new Vector3(position.x, position.y + h, position.z);
+  }
+
+  return 
 }
 

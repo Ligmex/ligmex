@@ -23,6 +23,7 @@ import { addNewPostButton } from "../things/newPost";
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
 import { createTrendingCorner } from "../things/trendingCorner";
+import { galleryMaker } from "../things/gallery";
 import {
   addLoginButton,
   addConnectWalletButton,
@@ -112,7 +113,9 @@ export const Home = () => {
       createVideoStreamDisplay(scene);
     }
 
-    createTrendingCorner(scene);
+    createTrendingCorner(scene, new Vector3(10, 0, 10));
+
+    galleryMaker(scene, new Vector3(10, 0, 10), 4);
 
     addConnectWalletButton(scene, {
       isConnected,
@@ -162,7 +165,7 @@ export const Home = () => {
       console.log(e);
     } finally {
 
-      console.log(camera.position, camera.rotation);
+      // console.log(camera.position, camera.rotation);
       scene.meshes.forEach((mesh: AbstractMesh) => {
         mesh.checkCollisions = true;
       })

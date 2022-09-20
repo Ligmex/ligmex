@@ -122,7 +122,7 @@ export const SceneComponent = (props: {
     scene.gravity = new Vector3(0, gravity / framesPerSecond, 0);
     scene.collisionsEnabled = true;
 
-    setupFPSCameraMovements(scene);
+    // setupFPSCameraMovements(scene);
     
     const camera2 = new ArcRotateCamera(
       "camera1",
