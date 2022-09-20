@@ -8,7 +8,7 @@ import { Metadata } from "./publication";
 import { ipfs } from "./ipfs";
 import { omit } from "./utils";
 
-const PROFILE_ID = "0x45dc";
+const PROFILE_ID = "0x47a8";
 
 //TODO typings
 const createPostTypedData = (createPostTypedDataRequest: any) => {
