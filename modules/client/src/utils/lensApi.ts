@@ -1,10 +1,6 @@
-import {
-  gql,
-} from '@apollo/client/core';
-import {
-  apolloClient
-} from "./apollo";
+import { gql } from '@apollo/client/core';
 
+import { apolloClient } from "./apollo";
 import {
   AUTHENTICATION,
   EXPLORE_PUBLICATIONS,
@@ -36,7 +32,7 @@ export const generateChallenge = (address: string) => {
   });
 };
 
-export const getMyPosts =async (profileId: string) => {
+export const getMyPosts = async (profileId: string): Promise<any> => {
   const response = await apolloClient.query({
     query: gql(GET_PUBLICATION_BY_PROFILE),
     variables: {
@@ -47,6 +43,7 @@ export const getMyPosts =async (profileId: string) => {
       }
     }
   })
+  return response;
 }
 
 export const getPosts = async (LIMIT = 10) => {

@@ -1,8 +1,6 @@
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { VertexData, Mesh } from "@babylonjs/core/Meshes";
 
-
-
 export const buildFromPlan = (walls, ply, height, scene) => {
 	
     let outerData = [] as Vector3[];

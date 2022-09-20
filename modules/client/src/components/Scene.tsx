@@ -10,7 +10,8 @@ import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { verifyMessage } from 'ethers/lib/utils'
 import { DeviceSourceManager, DeviceType, FreeCamera, PointerInput } from "@babylonjs/core";
-import { buildFromPlan } from "src/buildFromPlan";
+
+import { buildFromPlan } from "../utils";
 
 const buildWalls = (scene: Scene) => {
   const baseData = [-25, -25, -25, 25, 25, 25, 25, -25];

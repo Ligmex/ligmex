@@ -1,17 +1,14 @@
 import {
   FilesInput,
-  FreeCamera,
   MeshBuilder,
   Tools,
   Vector3,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
+import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
 import { v4 as uuid } from "uuid";
-import { Button, AdvancedDynamicTexture, Container, } from "@babylonjs/gui";
-import { ipfs } from "../ipfs";
-import { PublicationMainFocus, SceneState } from "../utils";
-import { createPost } from "../postToLens";
 
+import { createPost, ipfs, PublicationMainFocus, SceneState } from "../utils";
 
 export const addNewPostButton = (
   scene: Scene,

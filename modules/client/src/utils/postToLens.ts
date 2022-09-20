@@ -1,12 +1,13 @@
 import { gql } from "@apollo/client/core";
 import { BigNumber, utils } from "ethers";
 import { v4 as uuid } from "uuid";
+
 import { apolloClient } from "./apollo";
 import { CREATE_POST_TYPED_DATA } from "./gqlQueries";
 import { pollUntilIndexed } from "./poller";
 import { Metadata } from "./publication";
 import { ipfs } from "./ipfs";
-import { omit } from "./utils";
+import { omit } from "./misc";
 
 const PROFILE_ID = "0x47a8";
 
@@ -72,21 +73,14 @@ export const createPost = async (
       deadline: typedData.value.deadline,
     },
   }});
+  console.log(`create post: tx hash=${tx.hash}`);
   /*
-  console.log("create post: tx hash", tx.hash);
-  
-    //console.log("create post: poll until indexed");
-    //const indexedResult = await pollUntilIndexed(tx.hash);
 
-    //console.log("create post: profile has been indexed", indexedResult);
-  
-    //const logs = indexedResult.txReceipt.logs;
-  
-    //console.log("create post: logs", logs);
-
- 
-
-  
+  //console.log("create post: poll until indexed");
+  //const indexedResult = await pollUntilIndexed(tx.hash);
+  //console.log("create post: profile has been indexed", indexedResult);
+  //const logs = indexedResult.txReceipt.logs;
+  //console.log("create post: logs", logs);
 
   const topicId = utils.id(
     "PostCreated(uint256,uint256,string,address,bytes,address,bytes,uint256)"

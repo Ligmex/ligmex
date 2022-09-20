@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client/core';
+
 import { apolloClient } from './apollo';
 
 const HAS_TX_BEEN_INDEXED = `

@@ -1,3 +1,4 @@
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import {
     AssetContainer,
     Color3,
@@ -10,23 +11,16 @@ import {
     Vector3,
     VideoTexture
 } from "@babylonjs/core";
-
 // Babylon GUI imports
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 import { Button } from "@babylonjs/gui/2D/controls/button";
-
 // Web3 imports
 import { verifyMessage } from "ethers/lib/utils";
-
 // Livepeer imports
 import { Client, isSupported } from "@livepeer/webrtmp-sdk";
 
-import { AuthenticateResponse, SceneState } from './utils';
-import {
-    authenticate,
-    generateChallenge
-} from "./lensApi"
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { AuthenticateResponse, SceneState } from './misc';
+import { authenticate, generateChallenge } from "./lensApi"
 
 const LIVPEER_API_KEY = localStorage.getItem("LIVPEER_API_KEY") || "null";
 

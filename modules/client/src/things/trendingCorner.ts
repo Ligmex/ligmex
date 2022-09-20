@@ -18,11 +18,13 @@ import {
   Control, GUI3DManager, HolographicSlate, TextBlock
 } from "@babylonjs/gui"
 import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
-import { scaleAndCenterMeshes, scaleNewMeshes } from "src/babylonUtils";
+
 import {
   getMyPosts,
-  getPosts
-} from "../lensApi";
+  getPosts,
+  scaleAndCenterMeshes,
+  scaleNewMeshes,
+} from "../utils";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
@@ -77,8 +79,6 @@ export const createTrendingCorner = async (scene: Scene) => {
     guiManager.addControl(postHoloState);
     const description = new TextBlock(`${post.id}-description`); //post.metadata.description;
     const content = new TextBlock(`${post.id}-content`);
-
-
   }
 
   // Get Top Posts

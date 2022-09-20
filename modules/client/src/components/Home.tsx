@@ -21,16 +21,15 @@ import { AccessToken, SceneState } from "../utils";
 
 import { addNewPostButton } from "../things/newPost";
 
-
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
-import { createTrendingCorner } from "src/things/trendingCorner";
+import { createTrendingCorner } from "../things/trendingCorner";
 import {
   addLoginButton,
   addConnectWalletButton,
   createUploadFileView,
   createStartVideoStreamButton,
   createVideoStreamDisplay,
- } from "src/babylonUtils";
+ } from "../utils";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";

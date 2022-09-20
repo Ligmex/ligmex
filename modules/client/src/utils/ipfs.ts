@@ -1,28 +1,27 @@
 import axios from "axios";
 import { create } from 'ipfs-http-client';
 
-const projectId = localStorage.getItem('INFURA_PROJECT_ID');
-const secret = localStorage.getItem('INFURA_SECRET');
+const uploadViaInfura = async <T>(data: T) => {
 
-if (!projectId || !secret) {
-  throw new Error('Must define INFURA_PROJECT_ID and INFURA_SECRET in the .env to run this');
-}
+  const projectId = localStorage.getItem('INFURA_PROJECT_ID') || "";
+  const secret = localStorage.getItem('INFURA_SECRET') || "";
 
-const client = create({
-  host: 'ipfs.infura.io',
-  port: 5001,
-  protocol: 'https',
-  headers: {
-    authorization: `Basic ${btoa(`${projectId}:${secret}`)}`,
-    //`Basic ${Buffer.from(`${projectId}:${secret}`, 'utf-8').toString('base64')}`,
-  },
-});
+  if (!projectId || !secret) {
+    console.error(`Infura credentials not available`);
+  }
 
-export const uploadViaInfura = async <T>(data: T) => {
+  const client = create({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+    headers: {
+      authorization: `Basic ${btoa(`${projectId}:${secret}`)}`,
+    },
+  });
+
   const result = await client.add(data as any);
-  // const result = await client.add(JSON.stringify(data));
 
-  console.log('upload result ipfs', result);
+  console.log('upload result', result);
   return result.path;
 };
 
