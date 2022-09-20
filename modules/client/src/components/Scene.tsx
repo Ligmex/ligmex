@@ -13,15 +13,11 @@ import { DeviceSourceManager, DeviceType, FreeCamera, PointerInput } from "@baby
 import { buildFromPlan } from "src/buildFromPlan";
 
 const buildWalls = (scene: Scene) => {
-  const baseData = [-3, -2, -1, -4, 1, -4, 3, -2, 5, -2, 5, 1, 2, 1, 2, 3, -3, 3];
-
-  const corner = (x, z) => {
-    return new Vector3(x, 0, z);
-  }
+  const baseData = [-25, -25, -25, 25, 25, 25, 25, -25];
 
   const corners = [] as Vector3[];
   for (let b = 0; b < baseData.length / 2; b++) {
-    corners.push(corner(baseData[2 * b], baseData[2 * b + 1]));
+    corners.push(new Vector3(baseData[2 * b],0, baseData[2 * b + 1]));
   }
 
   const walls = [] as Array<{corner: Vector3 }>;
@@ -29,16 +25,16 @@ const buildWalls = (scene: Scene) => {
   for (let c = 0; c < corners.length; c++) {
     walls.push({corner: corners[c]});
   }
-  
-  const ply = 0.3;
-  const height = 3.2;
 
-  console.log(walls);
+  const ply = 0.3;
+  const height = 1;
+
   let newWall = buildFromPlan(walls, ply, height, scene);
 }
 
-const setupFPSCameraMovements = (scene: Scene, camera: FreeCamera) => {
+const setupFPSCameraMovements = (scene: Scene) => {
 
+  const camera = new FreeCamera("fpsCamera", new Vector3(0, 1, 0), scene);
   let dsm = new DeviceSourceManager(scene.getEngine());
 
   dsm.onDeviceConnectedObservable.add((device) => {
@@ -116,16 +112,17 @@ export const SceneComponent = (props: {
     const engine = new Engine(canvas, antialias, engineOptions, adaptToDeviceRatio);
     const scene = new Scene(engine, sceneOptions);
 
-    scene.onPointerDown = (evt) => {
-      if (evt.button === 0) engine.enterPointerlock();
-      if (evt.button === 1) engine.exitPointerlock();
-    };
+    // scene.onPointerDown = (evt) => {
+    //   if (evt.button === 0) engine.enterPointerlock();
+    //   if (evt.button === 1) engine.exitPointerlock();
+    // };
     const framesPerSecond = 60;
     const gravity = -9.81;
     scene.gravity = new Vector3(0, gravity / framesPerSecond, 0);
     scene.collisionsEnabled = true;
 
-    // const camera = new FreeCamera("camera", new Vector3(0, 2, 0), scene);
+    setupFPSCameraMovements(scene);
+    
     const camera2 = new ArcRotateCamera(
       "camera1",
       -Math.PI/2,
