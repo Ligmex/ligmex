@@ -12,6 +12,7 @@ import { createPost, ipfs, PublicationMainFocus, SceneState } from "../utils";
 
 export const addNewPostButton = (
   scene: Scene,
+  profileId: string,
   connectorOptions: {
     address: string,
     error: any,
@@ -73,8 +74,7 @@ export const addNewPostButton = (
           createdOn: new Date(),
           appId: "ligmex"
         }));
-        console.log(glbIpfsHash);
-        createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig);
+        createPost(metaDataIpfsHash, connectorOptions.signer, connectorOptions.lenshubPostWithSig, profileId);
 
       } catch (e) {
         console.log(e);

@@ -133,11 +133,10 @@ export const Home = () => {
     });
 
     if (isConnected && address) {
-      const myPosts = await getPostsByProfile((await getProfileByOwner(address))[0]?.id);
+      const profileId = (await getProfileByOwner(address))[0]?.id;
+      const myPosts = await getPostsByProfile(profileId);
       if (myPosts && myPosts.length > 0)
-        galleryMaker(scene, new Vector3(-10,0,10), 4, myPosts)
-      // console.log((await getProfileByOwner(address))[0]?.id);
-      // connectedProfileGallery()
+        galleryMaker(scene, new Vector3(-10,0,10), 4, myPosts);
       createStartVideoStreamButton(scene, setSceneState);
       addLoginButton(scene, setAccessToken, {
         address,
@@ -145,7 +144,7 @@ export const Home = () => {
         error: loginError,
         isLoading: isLoadingLoginMessage,
       });
-      addNewPostButton(scene, {
+      addNewPostButton(scene, profileId, {
         address,
         signer: signCreatePost,
         error: createPostError,
