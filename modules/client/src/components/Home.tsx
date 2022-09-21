@@ -73,7 +73,7 @@ export const Home = () => {
     },
   })
 
-  const onSceneReady = async (scene: Scene) => {
+  const onSceneReady = (scene: Scene) => {
 
     const camera = scene.getCameraByName("fpsCamera") as FreeCamera;
     if (camera) {
@@ -115,11 +115,17 @@ export const Home = () => {
       createVideoStreamDisplay(scene);
     }
 
-    const latestPosts = await getPosts(10);
-
-    createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
-
-    // galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
+    try {
+      setTimeout(async () => {
+        const latestPosts = await getPosts(10);
+        if (latestPosts) {
+          console.log(latestPosts)
+          createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
+        }
+      })
+    } catch (e) {
+      console.log(e);
+    }
 
     addConnectWalletButton(scene, {
       isConnected,
@@ -133,24 +139,32 @@ export const Home = () => {
     });
 
     if (isConnected && address) {
-      const profileId = (await getProfileByOwner(address))[0]?.id;
-      const myPosts = await getPostsByProfile(profileId);
-      if (myPosts && myPosts.length > 0)
-        galleryMaker(scene, new Vector3(-10,0,10), 4, myPosts);
+
       createStartVideoStreamButton(scene, setSceneState);
-      addLoginButton(scene, setAccessToken, {
-        address,
-        signer: signLogin,
-        error: loginError,
-        isLoading: isLoadingLoginMessage,
-      });
-      addNewPostButton(scene, profileId, {
-        address,
-        signer: signCreatePost,
-        error: createPostError,
-        isLoading: isLoadingCreatePostMessage,
-        lenshubPostWithSig,
-      },  setSceneState);
+      try {
+        setTimeout(async () => {
+          const profileId = (await getProfileByOwner(address))[0]?.id;
+          const myPosts = await getPostsByProfile(profileId);
+          if (myPosts && myPosts.length > 0) {
+            galleryMaker(scene, new Vector3(-10,0,10), 4, myPosts);
+          }
+          addLoginButton(scene, setAccessToken, {
+            address,
+            signer: signLogin,
+            error: loginError,
+            isLoading: isLoadingLoginMessage,
+          });
+          addNewPostButton(scene, profileId, {
+            address,
+            signer: signCreatePost,
+            error: createPostError,
+            isLoading: isLoadingCreatePostMessage,
+            lenshubPostWithSig,
+          },  setSceneState);
+        })
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     try {
