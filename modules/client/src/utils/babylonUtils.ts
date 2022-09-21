@@ -329,5 +329,6 @@ export const scaleNewMeshes = (newMeshes: AbstractMesh[], position = Vector3.Zer
 
     scaleBox.scaling = new Vector3(1/localMax, 1/localMax, -1/localMax);
     scaleBox.position = position;
+    scaleBox.rotation = new Vector3(0,0, 0)
     return scaleBox;
 }
