@@ -6,6 +6,7 @@ import {
   EXPLORE_PUBLICATIONS,
   GET_CHALLENGE,
   GET_PROFILE,
+  GET_PROFILE_BY_OWNER,
   GET_PUBLICATION_BY_PROFILE,
 } from "./gqlQueries";
 
@@ -21,6 +22,19 @@ export const authenticate = (address: string, signature: string) => {
   });
 };
 
+export const getProfileByOwner = async (address: string) => {
+  const response = await apolloClient.query({
+    query: gql(GET_PROFILE_BY_OWNER),
+    variables: {
+      request: {
+        ownedBy: address,
+        limit: 1
+      },
+    },
+  });
+  return response.data?.profiles?.items
+};
+
 export const generateChallenge = (address: string) => {
   return apolloClient.query({
     query: gql(GET_CHALLENGE),
@@ -32,7 +46,8 @@ export const generateChallenge = (address: string) => {
   });
 };
 
-export const getMyPosts = async (profileId: string): Promise<any> => {
+export const getPostsByProfile = async (profileId: string): Promise<any> => {
+  console.log(`Querring post by profile: ${profileId}`)
   const response = await apolloClient.query({
     query: gql(GET_PUBLICATION_BY_PROFILE),
     variables: {
@@ -43,7 +58,7 @@ export const getMyPosts = async (profileId: string): Promise<any> => {
       }
     }
   })
-  return response;
+  return response.data?.publications?.items;
 }
 
 export const getPosts = async (LIMIT = 10) => {

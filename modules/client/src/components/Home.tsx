@@ -17,7 +17,7 @@ import {
 } from 'wagmi'
 
 import { SceneComponent } from "./Scene";
-import { AccessToken, SceneState } from "../utils";
+import { AccessToken, getPostsByProfile, SceneState } from "../utils";
 
 import { addNewPostButton } from "../things/newPost";
 
@@ -31,6 +31,7 @@ import {
   createStartVideoStreamButton,
   createVideoStreamDisplay,
   getPosts,
+  getProfileByOwner,
  } from "../utils";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
@@ -118,7 +119,7 @@ export const Home = () => {
 
     createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
 
-    galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
+    // galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
 
     addConnectWalletButton(scene, {
       isConnected,
@@ -132,6 +133,11 @@ export const Home = () => {
     });
 
     if (isConnected && address) {
+      const myPosts = await getPostsByProfile((await getProfileByOwner(address))[0]?.id);
+      if (myPosts && myPosts.length > 0)
+        galleryMaker(scene, new Vector3(-10,0,10), 4, myPosts)
+      // console.log((await getProfileByOwner(address))[0]?.id);
+      // connectedProfileGallery()
       createStartVideoStreamButton(scene, setSceneState);
       addLoginButton(scene, setAccessToken, {
         address,

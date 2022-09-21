@@ -51,17 +51,19 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any) => {
       console.log("Embed: ", post.metadata);
       // console.log("Embed: ", post.metadata);
       let animation_url = post.metadata.animatedUrl;
-      // if (animation_url.split("/").length === 1) return;
+      
       createPedestal(`${post.id}-pillar`, pillar_position);
       if (animation_url.startsWith("ipfs://")) {
         animation_url = animation_url.replace(
           "ipfs://", "https://lens.infura-ipfs.io/ipfs/"
         );
-        SceneLoader.LoadAssetContainer(animation_url, "", scene, (glbContainer: AssetContainer) => {
-          scaleNewMeshes(glbContainer.meshes, post_position);
-          glbContainer.addAllToScene();
-        }, null, null, ".glb");
+      } else if (animation_url.split("/").length === 1) {
+        animation_url = "https://lens.infura-ipfs.io/ipfs/" + animation_url;
       }
+      SceneLoader.LoadAssetContainer(animation_url, "", scene, (glbContainer: AssetContainer) => {
+        scaleNewMeshes(glbContainer.meshes, post_position);
+        glbContainer.addAllToScene();
+      }, null, null, ".glb");
       break;
 
     case "IMAGE":

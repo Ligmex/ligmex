@@ -9,6 +9,7 @@ import { postMaker } from "./post";
 
 export const galleryMaker = (scene: Scene, position: Vector3, height: number, posts: any[]) => {
 
+  console.log(posts);
   const w = height;
   const h = height / 2;
   const d = height / 16;

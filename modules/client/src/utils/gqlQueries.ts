@@ -19,8 +19,49 @@ export const AUTHENTICATION = `
  }
 `;
 
+export const GET_PROFILE_BY_OWNER = `
+  query($request: ProfileQueryRequest!) {
+    profiles(request: $request) {
+      items {
+        id
+        name
+        handle
+      }
+    }
+  }
+`;
+
+const MetadataOutputFields = `
+  fragment MetadataOutputFields on MetadataOutput {
+    name
+    description
+    content
+    mainContentFocus
+    animatedUrl
+    media {
+      original {
+        ...MediaFields
+      }
+      small {
+        ...MediaFields
+      }
+      medium {
+        ...MediaFields
+      }
+    }
+    attributes {
+      displayType
+      traitType
+      value
+    }
+  }
+`;
+
+
+
+
 export const GET_PUBLICATION_BY_PROFILE = `
- query($request: Publications!) {
+ query($request: PublicationsQueryRequest!) {
   publications(request: $request) {
     items {
       __typename 
@@ -131,21 +172,7 @@ fragment PublicationStatsFields on PublicationStats {
   totalAmountOfComments
 }
 
-fragment MetadataOutputFields on MetadataOutput {
-  name
-  description
-  content
-  media {
-    original {
-      ...MediaFields
-    }
-  }
-  attributes {
-    displayType
-    traitType
-    value
-  }
-}
+${MetadataOutputFields}
 
 fragment Erc20Fields on Erc20 {
   name
@@ -583,29 +610,7 @@ export const EXPLORE_PUBLICATIONS = `
     totalAmountOfComments
   }
 
-  fragment MetadataOutputFields on MetadataOutput {
-    name
-    description
-    content
-    mainContentFocus
-    animatedUrl
-    media {
-      original {
-        ...MediaFields
-      }
-      small {
-        ...MediaFields
-      }
-      medium {
-        ...MediaFields
-      }
-    }
-    attributes {
-      displayType
-      traitType
-      value
-    }
-  }
+ ${MetadataOutputFields}
 
   fragment Erc20Fields on Erc20 {
     name
