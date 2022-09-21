@@ -77,6 +77,7 @@ jobs:
     runInContainer: false
     interpreter: !DefaultInterpreter
       commands:
+      - make push-commit
       - make push-semver
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
@@ -85,14 +86,7 @@ jobs:
     runInContainer: false
     interpreter: !DefaultInterpreter
       commands:
-      - 'CMDS=$(cat <<CMD '
-      - cd ligmex/
-      - git checkout -f prod
-      - git pull origin prod
-      - make restart-prod
-      - ') '
-      - ''
-      - ssh ligmex -t "$CMDS"
+      - ssh ligmex -t <<<"docker login; cd ligmex/; git fetch --all; git checkout -f prod; git pull origin prod; make pull-commit; make restart-prod;"
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
