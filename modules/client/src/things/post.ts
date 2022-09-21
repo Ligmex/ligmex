@@ -16,7 +16,7 @@ import { scaleNewMeshes } from "../utils";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
-export const postMaker = async (scene: Scene, position: Vector3, post: any): Promise<AbstractMesh | undefined> => {
+export const postMaker = async (scene: Scene, position: Vector3, post: any): Promise<Array<AbstractMesh>> => {
 
   const height = 1;
 
@@ -28,11 +28,14 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
     )
     pillar.position = position;
     pillar.checkCollisions = true
+    return pillar;
   }
 
   const pillar_position = position;
   const post_position = new Vector3(position.x, position.y + height, position.z);
   const post_rotation = new Vector3(Math.PI/8, 0, 0);
+
+  const output = [] as any[];
 
   switch (post?.metadata?.mainContentFocus) {
 
@@ -49,11 +52,11 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
       break;
 
     case "EMBED":
-      console.log("Embed: ", post.metadata);
+      // console.log("Embed: ", post.metadata);
       // console.log("Embed: ", post.metadata);
       let animation_url = post.metadata.animatedUrl;
       
-      createPedestal(`${post.id}-pillar`, pillar_position);
+      output.push(createPedestal(`${post.id}-pillar`, pillar_position));
       if (animation_url.startsWith("ipfs://")) {
         animation_url = animation_url.replace(
           "ipfs://", "https://lens.infura-ipfs.io/ipfs/"
@@ -72,13 +75,11 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
         scaleNewMeshes(glbContainer.meshes, post_position);
         glbContainer.addAllToScene();
       }
-
-      return glbContainer.meshes[0];
-      
+      output.push(glbContainer.meshes[0]);
       break;
 
     case "IMAGE":
-      createPedestal(`${post.id}-pillar`, pillar_position);
+      output.push(createPedestal(`${post.id}-pillar`, pillar_position));
       const f = new Vector4(0,0, 1, 1);
       const b = new Vector4(0,0, 0.5, 1);
       const imagePlane = MeshBuilder.CreateBox(post.id, {
@@ -94,7 +95,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
       imagePlane.material = material;
       imagePlane.position = post_position;
       imagePlane.rotation = post_rotation;
-      return imagePlane
+      output.push(imagePlane);
       break;
 
     case "LINK":
@@ -106,7 +107,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
       break;
 
     case "VIDEO":
-      createPedestal(`${post.id}-pillar`, pillar_position);
+      output.push(createPedestal(`${post.id}-pillar`, pillar_position));
       const videoPlane = MeshBuilder.CreatePlane(`${post.id}-videoPlane`, {
         width: post.metadata.media[0]?.original?.width || 1,
         height: post.metadata.media[0]?.original?.height || 1
@@ -119,7 +120,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
       videoPlane.position = post_position;
       videoPlane.rotation = post_rotation;
       // console.log("Video: ", post.metadata);
-      return videoPlane
+      output.push(videoPlane);
       break;
 
     default:
@@ -127,7 +128,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
       break;
   };
 
-  return;
+  return output;
   /*
   const createTextPlaque =async (post: any, position: Vector3, f: Vector4, b: Vector4) => {
     console.log(post.metadata.description);

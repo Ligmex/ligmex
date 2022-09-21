@@ -1,7 +1,9 @@
 import {
+  // ActionManager,
   Mesh,
   MeshBuilder,
   PointerDragBehavior,
+  StandardMaterial,
   Vector3,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
@@ -87,28 +89,48 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   // Add Posts
 
   const count = posts.length > 6 ? 6 : posts.length;
+  const step = ((2 * w) - (2 * d)) / (count + 1);
+  const groupWidth = step * (posts.length + 1);
+
+  const groupMesh = MeshBuilder.CreateBox("Post Group", {
+    width: groupWidth,
+    height: 4 * h,
+    depth: 2 * d,
+  }, scene);
+
+  const transparentMaterial = new StandardMaterial('boundBoxMaterial', scene);
+  transparentMaterial.alpha = 0.5;
+
+  groupMesh.material = transparentMaterial;
+  groupMesh.position = new Vector3(position.x + (groupWidth/2) - w + d*2, position.y, position.z);
+
   posts.forEach(async (post, i) => {
-    if (i >= count) return;
-    const step = ((2 * w) - (2 * d)) / (count + 1);
     const postMesh = await postMaker(scene, new Vector3(
-      position.x - w + d + step * (i + 1),
-      position.y + 0.5,
-      position.z,
+      -(groupWidth/2) + step * (i + 1), // position.x - w + d + step * (i + 1),
+      0.5, // position.y + 0.5,
+      0, // position.z,
     ), post);
-
-    // console.log(postMesh);
-    if (postMesh) {
-      // Create Drag Behavior
-      const pointerDrag = new PointerDragBehavior({
-        dragAxis: new Vector3(
-          position.x - w + d,0, 0)
-      })
-      pointerDrag.dragDeltaRatio = 1;
-
-      // Attach mesh behavior
-       postMesh.addBehavior(pointerDrag);
-    }
+    postMesh.forEach(mesh => {
+      mesh.parent = groupMesh;
+    });
   });
+
+  const pointerDrag = new PointerDragBehavior({
+    dragAxis: new Vector3(position.x - w + d, 0, 0)
+  })
+  pointerDrag.moveAttached = false;
+  // pointerDrag.dragDeltaRatio = 1;
+  pointerDrag.onDragObservable.add((data, state) => {
+    console.log("hi", data.delta);
+  });
+
+  groupMesh.addBehavior(pointerDrag);
+
+  /*
+  groupMesh.actionManager = new ActionManager(scene);
+  groupMesh.actionManager.registerAction(
+    SetValueAction(
+  */
 
   return finalMesh;
 }

@@ -120,7 +120,8 @@ export const Home = () => {
         const latestPosts = await getPosts(10);
         if (latestPosts) {
           console.log(latestPosts)
-          createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
+          // createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
+          galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
         }
       })
     } catch (e) {
@@ -146,7 +147,7 @@ export const Home = () => {
           const profileId = (await getProfileByOwner(address))[0]?.id;
           const myPosts = await getPostsByProfile(profileId);
           if (myPosts && myPosts.length > 0) {
-            galleryMaker(scene, new Vector3(-10,0,10), 4, myPosts);
+            // galleryMaker(scene, new Vector3(10, 0, -10), 4, myPosts);
           }
           addLoginButton(scene, setAccessToken, {
             address,
