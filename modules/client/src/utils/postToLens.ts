@@ -27,10 +27,12 @@ export const getPostMetadata = async () => {
 export const createPost = async (
   metaDataIpfsHash: string,
   signTypedData: any,
-  lenshubPostWithSig: any
+  lenshubPostWithSig: any,
+  profileId: string
   ) => {
+    
   const createPostRequest = {
-    profileId: PROFILE_ID,
+    profileId: profileId,
     contentURI: `ipfs://${metaDataIpfsHash}`,
     collectModule: {
       freeCollectModule: { followerOnly: false },
