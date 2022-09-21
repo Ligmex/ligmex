@@ -47,7 +47,7 @@ export const getMyPosts = async (profileId: string): Promise<any> => {
 }
 
 export const getPosts = async (LIMIT = 10) => {
-   const response = await apolloClient.query({
+   const embededRes = await apolloClient.query({
     query: gql(EXPLORE_PUBLICATIONS),
     variables: {
       request: {
@@ -60,7 +60,25 @@ export const getPosts = async (LIMIT = 10) => {
       }
     },
   });
-  return response.data.explorePublications.items;
+  const embeded = embededRes.data.explorePublications.items
+  let videos = [] as any[];
+  if (embeded.length < 10) {
+    const videoRes = await apolloClient.query({
+      query: gql(EXPLORE_PUBLICATIONS),
+      variables: {
+        request: {
+          sortCriteria: "LATEST",
+          publicationTypes: ["POST"], // , "COMMENT", "MIRROR"],
+          metadata: {
+            mainContentFocus: ["VIDEO", "IMAGE"]
+          },
+          limit: LIMIT - embeded.length,
+        }
+      },
+    });
+    videos.push(...videoRes.data.explorePublications.items);
+  }
+  return [...embeded, ...videos];
 };
 
 export const getProfile = async (profileId: string) => {

@@ -115,7 +115,7 @@ export const Home = () => {
 
     createTrendingCorner(scene, new Vector3(10, 0, 10));
 
-    galleryMaker(scene, new Vector3(10, 0, 10), 4);
+    galleryMaker(scene, new Vector3(-10, 0, 10), 4);
 
     addConnectWalletButton(scene, {
       isConnected,

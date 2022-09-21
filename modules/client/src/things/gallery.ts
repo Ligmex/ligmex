@@ -11,6 +11,9 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number) =>
   const h = height / 2;
   const d = height / 16;
 
+  ////////////////////////////////////////
+  // Begin Frame
+
   const path = [
     new Vector3(-(w), -(h), 0),
     new Vector3(w, -(h), 0),
@@ -76,6 +79,9 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number) =>
     finalMesh.position = new Vector3(position.x, position.y + h, position.z);
   }
 
-  return 
+  ////////////////////////////////////////
+  // Begin Frame
+
+  return finalMesh;
 }
 
