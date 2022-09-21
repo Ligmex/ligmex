@@ -9,13 +9,14 @@ import {
   Vector4,
   VideoTexture,
 } from "@babylonjs/core";
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 
 import { scaleNewMeshes } from "../utils";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
-export const postMaker = async (scene: Scene, position: Vector3, post: any) => {
+export const postMaker = async (scene: Scene, position: Vector3, post: any): Promise<AbstractMesh | undefined> => {
 
   const height = 1;
 
@@ -60,17 +61,27 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any) => {
       } else if (animation_url.split("/").length === 1) {
         animation_url = "https://lens.infura-ipfs.io/ipfs/" + animation_url;
       }
-      SceneLoader.LoadAssetContainer(animation_url, "", scene, (glbContainer: AssetContainer) => {
+      const glbContainer = await SceneLoader.LoadAssetContainerAsync(
+        animation_url,
+        "",
+        scene,
+        null,
+        ".glb"
+      );
+      if (glbContainer) {
         scaleNewMeshes(glbContainer.meshes, post_position);
         glbContainer.addAllToScene();
-      }, null, null, ".glb");
+      }
+
+      return glbContainer.meshes[0];
+      
       break;
 
     case "IMAGE":
       createPedestal(`${post.id}-pillar`, pillar_position);
       const f = new Vector4(0,0, 1, 1);
       const b = new Vector4(0,0, 0.5, 1);
-      const plane = MeshBuilder.CreateBox(post.id, {
+      const imagePlane = MeshBuilder.CreateBox(post.id, {
         depth: 0.03,
         height: post.metadata.media[0]?.original?.height || 1,
         width: post.metadata.media[0]?.original?.width || 1,
@@ -80,9 +91,10 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any) => {
       const material = new StandardMaterial(post.id, scene);
       let url = post.metadata.media[0]?.original?.url.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
       material.diffuseTexture = new Texture(url, scene);
-      plane.material = material;
-      plane.position = post_position;
-      plane.rotation = post_rotation;
+      imagePlane.material = material;
+      imagePlane.position = post_position;
+      imagePlane.rotation = post_rotation;
+      return imagePlane
       break;
 
     case "LINK":
@@ -107,6 +119,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any) => {
       videoPlane.position = post_position;
       videoPlane.rotation = post_rotation;
       // console.log("Video: ", post.metadata);
+      return videoPlane
       break;
 
     default:
@@ -114,6 +127,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any) => {
       break;
   };
 
+  return;
   /*
   const createTextPlaque =async (post: any, position: Vector3, f: Vector4, b: Vector4) => {
     console.log(post.metadata.description);
