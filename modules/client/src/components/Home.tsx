@@ -30,6 +30,7 @@ import {
   createUploadFileView,
   createStartVideoStreamButton,
   createVideoStreamDisplay,
+  getPosts,
  } from "../utils";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
@@ -71,7 +72,7 @@ export const Home = () => {
     },
   })
 
-  const onSceneReady = (scene: Scene) => {
+  const onSceneReady = async (scene: Scene) => {
 
     const camera = scene.getCameraByName("fpsCamera") as FreeCamera;
     if (camera) {
@@ -113,9 +114,11 @@ export const Home = () => {
       createVideoStreamDisplay(scene);
     }
 
-    createTrendingCorner(scene, new Vector3(10, 0, 10));
+    const latestPosts = await getPosts(10);
 
-    galleryMaker(scene, new Vector3(-10, 0, 10), 4);
+    createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
+
+    galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
 
     addConnectWalletButton(scene, {
       isConnected,

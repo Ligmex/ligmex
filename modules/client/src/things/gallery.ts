@@ -5,14 +5,16 @@ import {
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
 
-export const galleryMaker = (scene: Scene, position: Vector3, height: number) => {
+import { postMaker } from "./post";
+
+export const galleryMaker = (scene: Scene, position: Vector3, height: number, posts: any[]) => {
 
   const w = height;
   const h = height / 2;
   const d = height / 16;
 
   ////////////////////////////////////////
-  // Begin Frame
+  // Create Frame
 
   const path = [
     new Vector3(-(w), -(h), 0),
@@ -80,7 +82,18 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number) =>
   }
 
   ////////////////////////////////////////
-  // Begin Frame
+  // Add Posts
+
+  const count = posts.length > 6 ? 6 : posts.length;
+  posts.forEach((post, i) => {
+    if (i >= count) return;
+    const step = ((2 * w) - (2 * d)) / (count + 1);
+    postMaker(scene, new Vector3(
+      position.x - w + d + step * (i + 1),
+      position.y + 0.5,
+      position.z,
+    ), post);
+  });
 
   return finalMesh;
 }

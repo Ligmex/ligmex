@@ -22,7 +22,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any) => {
   const createPedestal = (id: string, position: Vector3) => {
     const pillar = MeshBuilder.CreateCylinder(
       id,
-      { diameter: .25, height },
+      { diameter: height/4, height },
       scene
     )
     pillar.position = position;
@@ -51,7 +51,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any) => {
       console.log("Embed: ", post.metadata);
       // console.log("Embed: ", post.metadata);
       let animation_url = post.metadata.animatedUrl;
-      if (animation_url.split("/").length === 1) return;
+      // if (animation_url.split("/").length === 1) return;
       createPedestal(`${post.id}-pillar`, pillar_position);
       if (animation_url.startsWith("ipfs://")) {
         animation_url = animation_url.replace(
