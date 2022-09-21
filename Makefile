@@ -51,6 +51,9 @@ start: dev
 start-prod:
 	LIGMEX_PROD=true bash ops/start.sh
 
+start-agent:
+	bash agent/bin/agent.sh console
+
 stop:
 	bash ops/stop.sh
 
