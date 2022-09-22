@@ -33,7 +33,7 @@ import {
   createVideoStreamDisplay,
   getPosts,
   getProfileByOwner,
- } from "../utils";
+} from "../utils";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
@@ -96,7 +96,7 @@ export const Home = () => {
       camera.keysRight = [68];
 
     }
-    
+
     if (sceneState?.newFileToLoad) {
       console.log("setting camera position and rotation", sceneState.camera)
       if (camera && sceneState.camera?.position)
@@ -163,7 +163,7 @@ export const Home = () => {
             error: createPostError,
             isLoading: isLoadingCreatePostMessage,
             lenshubPostWithSig,
-          },  setSceneState);
+          }, setSceneState);
         })
       } catch (e) {
         console.log(e);
