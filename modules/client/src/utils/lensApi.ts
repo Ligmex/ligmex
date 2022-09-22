@@ -6,6 +6,7 @@ import {
   EXPLORE_PUBLICATIONS,
   GET_CHALLENGE,
   GET_PROFILE,
+  GET_PROFILE_ID,
   GET_PROFILE_BY_OWNER,
   GET_PUBLICATION_BY_PROFILE,
 } from "./gqlQueries";
@@ -20,6 +21,19 @@ export const authenticate = (address: string, signature: string) => {
       },
     },
   });
+};
+
+export const getProfileID = async (handle: string) => {
+  const response = await apolloClient.query({
+    query: gql(GET_PROFILE_ID),
+    variables: {
+      request: {
+        handle: handle
+      }
+    },
+  });
+  console.log(response);
+  return response.data?.profile?.id;
 };
 
 export const getProfileByOwner = async (address: string) => {

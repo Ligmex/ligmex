@@ -17,8 +17,9 @@ export type AuthenticateResponse = {
 }
 
 export type SceneState = {
-  newFileToLoad: string;
-  videoStream: boolean;
+  newFileToLoad?: string;
+  videoStream?: boolean;
+  profileToLoad?: string;
   camera: {
     position: Vector3;
     rotation: Vector3;

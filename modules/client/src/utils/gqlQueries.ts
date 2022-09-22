@@ -443,6 +443,14 @@ export const CREATE_POST_TYPED_DATA = `
 }
 `;
 
+export const GET_PROFILE_ID = `
+  query($request: SingleProfileQueryRequest!) {
+    profile(request: $request) {
+      id
+    }
+  }
+`;
+
 export const GET_PROFILE = `
   query($request: SingleProfileQueryRequest!) {
     profile(request: $request) {

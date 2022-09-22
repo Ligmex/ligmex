@@ -44,9 +44,6 @@ SceneLoader.RegisterPlugin(new GLTFFileLoader());
 export const Home = () => {
 
   const [sceneState, setSceneState] = useState({} as SceneState);
-
-  const [newFile, setNewFile] = useState<string>();
-  const [startVideoStream, setStartVideoStream] = useState(false);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
@@ -95,6 +92,11 @@ export const Home = () => {
       camera.keysDown = [83];
       camera.keysRight = [68];
 
+      if (sceneState?.camera?.position) {
+        camera.position = sceneState.camera.position;
+        camera.rotation = sceneState.camera.rotation;
+      }
+
     }
 
     if (sceneState?.newFileToLoad) {
@@ -123,7 +125,7 @@ export const Home = () => {
           console.log(latestPosts)
           // createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
           galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
-          ctrlPanelMaker(scene, new Vector3(10, 0, 10));
+          ctrlPanelMaker(scene, new Vector3(10, 0, 10), setSceneState);
         }
       })
     } catch (e) {

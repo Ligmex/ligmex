@@ -9,8 +9,14 @@ import {
 } from "@babylonjs/core";
 import { AdvancedDynamicTexture, Button, Control, Grid, GUI3DManager, HolographicSlate, InputText, TextBlock, TextWrapping } from "@babylonjs/gui";
 import { Scene } from "@babylonjs/core/scene";
+import { getProfileID, SceneState } from "src/utils";
+import { PROFILE_FRAME_VIEW_POSITION } from "src/utils/cameraConstants";
 
-export const ctrlPanelMaker = (scene: Scene, position: Vector3) => {
+export const ctrlPanelMaker = (
+  scene: Scene,
+  position: Vector3,
+  setSceneState: React.Dispatch<React.SetStateAction<SceneState>>
+) => {
 
   const id = "ctrlPanel";
   const height = 1;
@@ -55,45 +61,46 @@ export const ctrlPanelMaker = (scene: Scene, position: Vector3) => {
     input.promptMessage = "Enter Profile ID"
     input.height = "100px";
     input.width = "200px";
-    input.color = "white";
-    input.background = "green"
-    input.paddingBottom = "50"
+    input.color = "red";
+    input.background = "black"
     input.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-    input.onFocusObservable.add(() => {
-      console.log("uuuu")
-      // document.addEventListener('keyup', (ev) => {
-      //   input.text = input.text + ev.key;
-      //   // input.addKey = true
-      // })
-    })
-
-    input.onTextChangedObservable.add((inputText) => {
-      console.log(inputText);
-    })
+    input.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
 
     advancedTexture.addControl(input);
     
     const searchProfile = Button.CreateSimpleButton("searchProfileButton", "🔎 profile")
     searchProfile.width = "200px";
     searchProfile.height = "100px";
+    searchProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+    searchProfile.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
     if (searchProfile.textBlock) {
       searchProfile.textBlock.color = "white";
     }
-    
-    searchProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-   
-    searchProfile.onPointerUpObservable.add(() => {
+    searchProfile.onPointerUpObservable.add(async () => {
       // console.log("hello");
-      input.isVisible = true;
-    })
-    
+      if (input.isVisible && input.text !== "") {
+        const handle = input.text;
+        console.log(handle);
 
-    
-  
+        const profileId = await getProfileID(handle);
+        
+        if (profileId) {
+          setSceneState({
+            profileToLoad: profileId,
+            camera: {
+              position: PROFILE_FRAME_VIEW_POSITION,
+              rotation: new Vector3(0, 0, 0),
+            }
+          })
+        }
+      }
+      input.isVisible = !input.isVisible;
+    })
    
     grid.addControl(content);
     // grid.addControl(input);
     grid.addControl(searchProfile);
+
 
     holoslate.content = grid;
 
