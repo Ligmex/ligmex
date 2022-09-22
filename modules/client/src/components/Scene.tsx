@@ -140,8 +140,6 @@ export const SceneComponent = (props: {
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 1;
 
-   
-
     MeshBuilder.CreateGround(
       "ground",
       { height: 50, width: 50, },
