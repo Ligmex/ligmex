@@ -86,7 +86,7 @@ jobs:
     runInContainer: false
     interpreter: !DefaultInterpreter
       commands:
-      - ssh ligmex -t <<<"docker login; cd ligmex/; git fetch --all; git checkout -f prod; git pull origin prod; make pull-commit; make restart-prod;"
+      - make deploy-fr
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:

@@ -103,6 +103,9 @@ lint:
 deploy:
 	bash ops/deploy.sh
 
+deploy-fr:
+	bash ops/deploy-fr.sh
+
 ########################################
 # Common Prerequisites
 
