@@ -1,9 +1,21 @@
 
-## Wednesday
-- grab & move pillar in gallery to scroll through more posts
-- use galleryMaker to display a profile which also includes a profile picture
-- if post is embedded, allow picking it up & throwing it
-- trigger post for title/description holo-pop-up
 
 ## Thursday
-- 
+- make holoslate not pop up in our face
+- add username input to holoslate, 
+- use galleryMaker to display a profile which also includes a profile picture
+- display a followed profile in gallery if username is defined else display top trending profile
+
+## Friday
+- grab & move pillar in gallery to scroll through more posts
+- add vip token input to holoslate
+- display new post button if vip token is defined
+
+## Saturday
+- trigger post for title/description holo-pop-up
+
+## Sunday
+- submit by 3pm
+
+## Later Maybe
+- if post is embedded, allow picking it up & throwing it

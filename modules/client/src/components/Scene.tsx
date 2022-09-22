@@ -35,7 +35,7 @@ const buildWalls = (scene: Scene) => {
 
 const setupFPSCameraMovements = (scene: Scene) => {
 
-  const camera = new FreeCamera("fpsCamera", new Vector3(-10, 1, -6), scene);
+  const camera = new FreeCamera("fpsCamera", new Vector3(-20, 1, -6), scene);
   let dsm = new DeviceSourceManager(scene.getEngine());
 
   dsm.onDeviceConnectedObservable.add((device) => {

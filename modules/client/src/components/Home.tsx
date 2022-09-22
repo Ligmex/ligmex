@@ -19,10 +19,11 @@ import {
 import { SceneComponent } from "./Scene";
 import { AccessToken, getPostsByProfile, SceneState } from "../utils";
 
-import { addNewPostButton } from "../things/newPost";
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
+import { addNewPostButton } from "../things/newPost";
 import { createTrendingCorner } from "../things/trendingCorner";
+import { ctrlPanelMaker } from "../things/ctrlPanel";
 import { galleryMaker } from "../things/gallery";
 import {
   addLoginButton,
@@ -122,6 +123,7 @@ export const Home = () => {
           console.log(latestPosts)
           // createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
           galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
+          ctrlPanelMaker(scene, new Vector3(10, 0, 10));
         }
       })
     } catch (e) {
