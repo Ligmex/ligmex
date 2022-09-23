@@ -73,6 +73,8 @@ export const Home = () => {
 
   const onSceneReady = (scene: Scene) => {
 
+    ctrlPanelMaker(scene, new Vector3(10, 0, 10), setSceneState);
+
     const camera = scene.getCameraByName("fpsCamera") as FreeCamera;
     if (camera) {
       camera.attachControl();
@@ -120,17 +122,24 @@ export const Home = () => {
 
     try {
       setTimeout(async () => {
-        const latestPosts = await getPosts(10);
-        if (latestPosts) {
-          console.log(latestPosts)
-          // createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
-          galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
-          ctrlPanelMaker(scene, new Vector3(10, 0, 10), setSceneState);
+        if (sceneState?.profileToLoad) {
+          console.log(sceneState.profileToLoad);
+          const profilePost = await getPostsByProfile(sceneState.profileToLoad);
+          if (profilePost) {
+            console.log("showing posts by profile")
+            galleryMaker(scene, new Vector3(-10, 0, 10), 4, profilePost);
+          }
+        } else {
+          const latestPosts = await getPosts(10);
+          if (latestPosts) {
+            galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
+          }
         }
       })
     } catch (e) {
       console.log(e);
     }
+
 
     addConnectWalletButton(scene, {
       isConnected,
