@@ -67,8 +67,15 @@ export const ctrlPanelMaker = (
     input.background = "black"
     input.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
     input.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    input.onFocusObservable.addOnce(() => {
+      let camera = scene.getCameraByName("fpsCamera");
+      camera?.detachControl()
+      document.addEventListener('keyup', (ev) => {
+        input.processKey(ev.keyCode, ev.key, ev)
+      })
+    })
 
-    advancedTexture.addControl(input);
+    // advancedTexture.addControl(input);
 
     const searchProfile = Button.CreateSimpleButton("searchProfileButton", "🔎 profile")
     searchProfile.width = "200px";
@@ -87,7 +94,8 @@ export const ctrlPanelMaker = (
         const profileId = await getProfileID(handle);
 
         console.log(`got handle=${handle}, maybe saving profileId=${profileId}`);
-
+        input.isVisible = false;
+        input.text = "";
         if (profileId) {
           localStorage.setItem("profileId", profileId);
           setSceneState({
@@ -103,7 +111,7 @@ export const ctrlPanelMaker = (
     })
 
     grid.addControl(content);
-    // grid.addControl(input);
+    grid.addControl(input);
     grid.addControl(searchProfile);
 
     // advancedTexture.addControl(grid);
