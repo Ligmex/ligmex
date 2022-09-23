@@ -8,7 +8,9 @@ import { Scene } from "@babylonjs/core/scene";
 import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
 import { v4 as uuid } from "uuid";
 
-import { createPost, ipfs, PublicationMainFocus, SceneState } from "../utils";
+import { createPost } from "../utils/postToLens";
+import { ipfs } from "../utils/ipfs";
+import { PublicationMainFocus, SceneState } from "../utils/misc";
 
 export const addNewPostButton = (
   scene: Scene,

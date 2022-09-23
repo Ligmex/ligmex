@@ -43,7 +43,9 @@ SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const Home = () => {
 
-  const [sceneState, setSceneState] = useState({ profileToLoad: localStorage.getItem("profileId") || "" } as SceneState);
+  const [sceneState, setSceneState] = useState({
+    profileToLoad: localStorage.getItem("ProfileID") || "",
+  } as SceneState);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
@@ -73,7 +75,18 @@ export const Home = () => {
 
   const onSceneReady = (scene: Scene) => {
 
-    ctrlPanelMaker(scene, new Vector3(10, 0, 10), setSceneState);
+    ctrlPanelMaker(
+      scene,
+      new Vector3(10, 0, 10), // position
+      {
+        address,
+        signer: signCreatePost,
+        error: createPostError,
+        isLoading: isLoadingCreatePostMessage,
+        lenshubPostWithSig,
+      },
+      setSceneState,
+    );
 
     const camera = scene.getCameraByName("fpsCamera") as FreeCamera;
     if (camera) {
@@ -162,19 +175,6 @@ export const Home = () => {
           if (myPosts && myPosts.length > 0) {
             // galleryMaker(scene, new Vector3(10, 0, -10), 4, myPosts);
           }
-          addLoginButton(scene, setAccessToken, {
-            address,
-            signer: signLogin,
-            error: loginError,
-            isLoading: isLoadingLoginMessage,
-          });
-          addNewPostButton(scene, profileId, {
-            address,
-            signer: signCreatePost,
-            error: createPostError,
-            isLoading: isLoadingCreatePostMessage,
-            lenshubPostWithSig,
-          }, setSceneState);
         })
       } catch (e) {
         console.log(e);

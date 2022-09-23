@@ -1,4 +1,26 @@
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import axios from "axios";
+
+export const validateToken = async (token: string): Promise<boolean> => {
+  try {
+    const result = await axios({
+      url: `${window.location.origin}/api/auth`, 
+      method: "POST",
+      headers: {
+        "content-type": "application/octet-stream",
+        "authorization": `Basic ${btoa(`ligmex:${token}`)}`,
+      }
+    });
+    if (!result?.data) {
+      console.error(result);
+    }
+  } catch (e: any) {
+    console.error(`VIP Token test failed: ${e.message}`);
+    return false;
+  }
+  console.log(`validated token=${token}`);
+  return true;
+};
 
 export const omit = (object: { [key: string]: any }, name: string) => {
   delete object[name];

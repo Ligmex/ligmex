@@ -1,4 +1,5 @@
 import {
+  AbstractMesh,
   MeshBuilder,
   DynamicTexture,
   StandardMaterial,
@@ -11,14 +12,30 @@ import { AdvancedDynamicTexture, Button, Control, Grid, GUI3DManager, Holographi
 import { Scene } from "@babylonjs/core/scene";
 
 import { getProfileID } from "../utils/lensApi";
-import { SceneState } from "../utils/misc";
+import { validateToken, SceneState } from "../utils/misc";
 import { PROFILE_FRAME_VIEW_POSITION } from "../utils/cameraConstants";
 
-export const ctrlPanelMaker = (
+import {
+  addLoginButton,
+  addConnectWalletButton,
+  createStartVideoStreamButton,
+  createVideoStreamDisplay,
+  getPosts,
+  getProfileByOwner,
+} from "../utils";
+
+export const ctrlPanelMaker = async (
   scene: Scene,
   position: Vector3,
+  connectorOptions: {
+    address?: string,
+    error: any,
+    signer: any,
+    isLoading: any,
+    lenshubPostWithSig: any,
+  },
   setSceneState: React.Dispatch<React.SetStateAction<SceneState>>
-) => {
+): Promise<AbstractMesh> => {
 
   const id = "ctrlPanel";
   const height = 1;
@@ -51,6 +68,21 @@ export const ctrlPanelMaker = (
     );
 
     const grid = new Grid("newGrid");
+
+    addLoginButton(scene, setAccessToken, {
+      address: connectorOptions.address,
+      signer: signLogin,
+      error: loginError,
+      isLoading: isLoadingLoginMessage,
+    });
+
+    addNewPostButton(scene, profileId, {
+      address: connectorOptions.address,
+      signer: signCreatePost,
+      error: createPostError,
+      isLoading: isLoadingCreatePostMessage,
+      lenshubPostWithSig,
+    }, setSceneState);
 
     /*
     const content = new TextBlock(`${id}-ctrlPanelContent`);
@@ -88,7 +120,7 @@ export const ctrlPanelMaker = (
         const profileId = await getProfileID(handle);
         console.log(`got handle=${handle}, maybe saving profileId=${profileId}`);
         if (profileId) {
-          localStorage.setItem("profileId", profileId);
+          localStorage.setItem("ProfileID", profileId);
           setSceneState({
             profileToLoad: profileId,
             camera: {
@@ -101,45 +133,73 @@ export const ctrlPanelMaker = (
       inputProfile.isVisible = !inputProfile.isVisible;
     })
 
-    const inputToken = new InputText("TokenInput");
-    inputToken.isVisible = false
-    inputToken.promptMessage = "Enter Token ID"
-    inputToken.height = "100px";
-    inputToken.width = "200px";
-    inputToken.color = "red";
-    inputToken.background = "black"
-    inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-    inputToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-    advancedTexture.addControl(inputToken);
+    const token = localStorage.getItem("VipToken");
+    if (await validateToken(token)) {
 
-    const askToken = Button.CreateSimpleButton("AskToken", "Enter VIP Token")
-    askToken.width = "200px";
-    askToken.height = "100px";
-    askToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-    askToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    if (askToken.textBlock) {
-      askToken.textBlock.color = "white";
+      const createPost = Button.CreateSimpleButton("CreatePost", "Create A New Post")
+      createPost.width = "200px";
+      createPost.height = "100px";
+      createPost.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+      createPost.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+      if (createPost.textBlock) {
+        createPost.textBlock.color = "white";
+      }
+      createPost.onPointerUpObservable.add(async () => {
+        // console.log("hello");
+        if (inputToken.isVisible && inputToken.text !== "") {
+          const token = inputToken.text;
+          if (await validateToken(token)) {
+            localStorage.setItem("VipToken", token);
+            setSceneState({
+              camera: {
+                position: PROFILE_FRAME_VIEW_POSITION,
+                rotation: new Vector3(0, 0, 0),
+              }
+            })
+          }
+        }
+        inputToken.isVisible = !inputToken.isVisible;
+      })
+
+    } else {
+
+      const inputToken = new InputText("TokenInput");
+      inputToken.isVisible = false
+      inputToken.promptMessage = "Enter Token ID"
+      inputToken.height = "100px";
+      inputToken.width = "200px";
+      inputToken.color = "red";
+      inputToken.background = "black"
+      inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+      inputToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+      advancedTexture.addControl(inputToken);
+
+      const askToken = Button.CreateSimpleButton("AskToken", "Enter VIP Token")
+      askToken.width = "200px";
+      askToken.height = "100px";
+      askToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+      askToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+      if (askToken.textBlock) {
+        askToken.textBlock.color = "white";
+      }
+      askToken.onPointerUpObservable.add(async () => {
+        // console.log("hello");
+        if (inputToken.isVisible && inputToken.text !== "") {
+          const token = inputToken.text;
+          if (await validateToken(token)) {
+            localStorage.setItem("VipToken", token);
+            setSceneState({
+              camera: {
+                position: PROFILE_FRAME_VIEW_POSITION,
+                rotation: new Vector3(0, 0, 0),
+              }
+            })
+          }
+        }
+        inputToken.isVisible = !inputToken.isVisible;
+      })
+
     }
-    askToken.onPointerUpObservable.add(async () => {
-      // console.log("hello");
-      if (inputProfile.isVisible && inputProfile.text !== "") {
-        const handle = inputProfile.text;
-        console.log(handle);
-        const profileId = await getProfileID(handle);
-        console.log(`got handle=${handle}, maybe saving profileId=${profileId}`);
-        if (profileId) {
-          localStorage.setItem("profileId", profileId);
-          setSceneState({
-            profileToLoad: profileId,
-            camera: {
-              position: PROFILE_FRAME_VIEW_POSITION,
-              rotation: new Vector3(0, 0, 0),
-            }
-          })
-        }
-      }
-      inputProfile.isVisible = !inputProfile.isVisible;
-    })
 
     grid.addControl(askProfile);
     grid.addControl(askToken);

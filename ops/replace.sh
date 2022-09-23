@@ -24,7 +24,9 @@ then
     Makefile \
     ops \
     package.json \
-    src \
+    modules/**/src \
+    modules/**/ops \
+    modules/**/package.json \
     -type f -not -name "*.swp" -exec sed -i "s|$old|$new|g" {} \;
 else echo "Goodbye"
 fi
