@@ -2,6 +2,7 @@ import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import {
     AssetContainer,
     Color3,
+    DynamicTexture,
     FreeCamera,
     Mesh,
     MeshBuilder,
@@ -354,4 +355,34 @@ export const scaleNewMeshes = (newMeshes: AbstractMesh[], position = Vector3.Zer
     scaleBox.position = position;
     scaleBox.rotation = new Vector3(0, 0, 0)
     return scaleBox;
+}
+
+export const createProfileHandleDisplay = (
+    scene: Scene,
+    size: number,
+    id: string,
+    handle: string,
+    position: Vector3,
+) => {
+    const profileHandlePlane = MeshBuilder.CreatePlane(
+        `${id}-handlePlane`,
+        { height: size / 4, width: size },
+        scene
+      );
+      const profileHandleTextue = new DynamicTexture(
+        `${id}-handleTexture`,
+        { width: 512, height: 300 },
+        scene,
+        true
+      );
+      profileHandleTextue.drawText(handle, null, null, "bold 50px Arial", "white", "#33334c")
+      const profileHandleMaterial = new StandardMaterial(
+        `${id}-handleMaterial`,
+        scene
+      );
+      profileHandleMaterial.diffuseTexture = profileHandleTextue;
+      profileHandleMaterial.emissiveColor = Color3.White();
+      profileHandlePlane.material = profileHandleMaterial;
+      profileHandlePlane.position = position;
+    
 }

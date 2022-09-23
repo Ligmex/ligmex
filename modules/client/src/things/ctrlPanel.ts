@@ -106,6 +106,7 @@ export const ctrlPanelMaker = (
     // grid.addControl(input);
     grid.addControl(searchProfile);
 
+    // advancedTexture.addControl(grid);
     holoslate.content = grid;
 
     return holoslate;

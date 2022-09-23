@@ -1,4 +1,6 @@
 import {
+  Color3,
+  DynamicTexture,
   // ActionManager,
   Mesh,
   MeshBuilder,
@@ -8,7 +10,7 @@ import {
   Vector3,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
-import { createProfilePicture, getStandardUrl } from "../utils";
+import { createProfileHandleDisplay, createProfilePicture, getStandardUrl } from "../utils";
 
 import { galleryMaker } from "./gallery";
 
@@ -19,7 +21,6 @@ export const profileMaker = (
   posts: any[],
   profile: any,
 ) => {
-  console.log(profile);
 
   // Add profile Image
   if (profile?.picture?.__typename === "MediaSet") {
@@ -29,14 +30,22 @@ export const profileMaker = (
       profile?.id,
       profileUrl,
       1,
-      new Vector3(position.x - height/3, position.y + 2*height/3, position.z - height/8),
-      new Vector3(-Math.PI/2, 0, 0)
+      new Vector3(position.x - height + 0.5, position.y + height + 0.5, position.z - height / 8),
+      new Vector3(-Math.PI / 2, 0, 0)
     )
   }
 
+  // Add profile handle
+  createProfileHandleDisplay(
+    scene,
+    height,
+    profile?.id,
+    profile?.handle,
+    new Vector3(position.x, position.y + height + 0.5, position.z)
+  )
+  
   // Add profile latest posts
   const galleryMesh = galleryMaker(scene, position, height, posts);
-  console.log(galleryMesh);
-  
+
   return galleryMesh;
 };

@@ -9,6 +9,8 @@ import {
   GET_PROFILE_ID,
   GET_PROFILE_BY_OWNER,
   GET_PUBLICATION_BY_PROFILE,
+  GET_FOLLOWERS,
+  GET_FOLLOWING,
 } from "./gqlQueries";
 
 export const authenticate = (address: string, signature: string) => {
@@ -122,4 +124,28 @@ export const getProfile = async (profileId: string) => {
   return response.data.profile;
 };
 
+export const getFollowers = async (profileId: string) => {
+  const response = await apolloClient.query({
+    query: gql(GET_FOLLOWERS),
+    variables: {
+      request: {
+        profileId: profileId,
+        limit: 10
+      }
+    }
+  })
+}
 
+export const getFollowing = async (address: string) => {
+  const response = await apolloClient.query({
+    query: gql(GET_FOLLOWING),
+    variables: {
+      request: {
+        address: address,
+        limit: 10
+      }
+    }
+  });
+
+  return response.data.following.items;
+}

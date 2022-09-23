@@ -17,7 +17,7 @@ import {
 } from 'wagmi'
 
 import { SceneComponent } from "./Scene";
-import { AccessToken, getPostsByProfile, getProfile, SceneState } from "../utils";
+import { AccessToken, getFollowing, getPostsByProfile, getProfile, SceneState } from "../utils";
 
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
@@ -45,17 +45,17 @@ SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const Home = () => {
 
-  const [sceneState, setSceneState] = useState({ profileToLoad: localStorage.getItem("profileId") || "" } as SceneState);
+  const { disconnect } = useDisconnect();
+  const { address, isConnected } = useAccount();
+  const [sceneState, setSceneState] = useState({
+    profileToLoad: localStorage.getItem("profileId") || "",
+  } as SceneState);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
-  } as AccessToken)
-
-  const { disconnect } = useDisconnect();
+  } as AccessToken);
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
-  const { address, isConnected } = useAccount()
   const { error: loginError, isLoading: isLoadingLoginMessage, signMessageAsync: signLogin } = useSignMessage();
-
   const { error: contractWriteError, write: lenshubPostWithSig, isLoading: isPostWithSigLoading } = useContractWrite({
     addressOrName: LENS_HUB_CONTRACT,
     contractInterface: LENS_HUB_ABI.abi,
@@ -66,12 +66,11 @@ export const Home = () => {
       console.log(error);
     }
   });
-
   const { error: createPostError, isLoading: isLoadingCreatePostMessage, signTypedDataAsync: signCreatePost } = useSignTypedData({
     onError(error) {
       console.log(error)
     },
-  })
+  });
 
   const onSceneReady = (scene: Scene) => {
 
@@ -105,21 +104,10 @@ export const Home = () => {
     }
 
     if (sceneState?.newFileToLoad) {
-      console.log("setting camera position and rotation", sceneState.camera)
-      if (camera && sceneState.camera?.position)
-        camera.position = sceneState.camera.position;
-      if (camera && sceneState.camera?.rotation)
-        camera.rotation = sceneState.camera.rotation;
-
       createUploadFileView(scene, sceneState.newFileToLoad);
     }
 
     if (sceneState?.videoStream) {
-      console.log("setting camera position and rotation", sceneState.camera)
-      if (camera && sceneState.camera?.position)
-        camera.position = sceneState.camera.position;
-      if (camera && sceneState.camera?.rotation)
-        camera.rotation = sceneState.camera.rotation;
       createVideoStreamDisplay(scene);
     }
 
@@ -129,6 +117,8 @@ export const Home = () => {
           console.log(sceneState.profileToLoad);
           const profilePost = await getPostsByProfile(sceneState.profileToLoad);
           const profile = await getProfile(sceneState.profileToLoad);
+          const following = await getFollowing(profile.ownedBy);
+          console.log(following);
           if (profilePost && profile) {
             console.log("showing posts by profile")
             profileMaker(scene, PROFILE_FRAME_POSITION, 4, profilePost, profile);
