@@ -134,6 +134,8 @@ export const getFollowers = async (profileId: string) => {
       }
     }
   })
+
+  return response.data.followers.items;
 }
 
 export const getFollowing = async (address: string) => {

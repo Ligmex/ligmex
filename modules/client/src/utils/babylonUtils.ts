@@ -167,6 +167,7 @@ export const createProfilePicture = (
 
     const material = new StandardMaterial(`${id}-profilePicture`, scene);
     material.diffuseTexture = new Texture(url, scene);
+    material.emissiveColor = Color3.White();
     profilePicture.material = material;
     profilePicture.position = position;
     profilePicture.rotation = rotation;
@@ -357,7 +358,7 @@ export const scaleNewMeshes = (newMeshes: AbstractMesh[], position = Vector3.Zer
     return scaleBox;
 }
 
-export const createProfileHandleDisplay = (
+export const createTextDisplay = (
     scene: Scene,
     size: number,
     id: string,
