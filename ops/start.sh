@@ -181,7 +181,7 @@ services:
       DOMAINNAME: '$LIGMEX_DOMAINNAME'
       EMAIL: '$LIGMEX_EMAIL'
       WEBSERVER_URL: 'http://webserver:$webserver_internal_port'
-      IPFS_URL: 'http://server:$server_internal_port'
+      SERVER_URL: 'http://server:$server_internal_port'
       POLYGON_RPC_URL: '$LIGMEX_POLYGON_RPC_URL'
     volumes:
       - 'certs:/etc/letsencrypt'

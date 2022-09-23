@@ -12,7 +12,7 @@ const authType = "Basic";
 const encodedToken = Buffer.from(`ligmex:${env.vipToken}`).toString("base64");
 
 const restrictedMethods = ["DELETE", "POST", "PUT"];
-const restrictedPaths = ["/ipfs"];
+const restrictedPaths = ["/ipfs", "/auth"];
 
 authRouter.use((req, res, next) => {
   if (restrictedPaths.includes(req.path) || restrictedMethods.includes(req.method)) {

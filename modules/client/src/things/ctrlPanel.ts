@@ -51,43 +51,42 @@ export const ctrlPanelMaker = (
     );
 
     const grid = new Grid("newGrid");
-    const content = new TextBlock(`${id}-ctrlPanelContent`);
 
+    /*
+    const content = new TextBlock(`${id}-ctrlPanelContent`);
     content.textWrapping = TextWrapping.WordWrap;
     content.color = "white";
     content.text = "Pretty fkn please input ur username";
+    */
+
     const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("advinput");
 
-    const input = new InputText("profileIdInput");
-    input.isVisible = false
-    input.promptMessage = "Enter Profile ID"
-    input.height = "100px";
-    input.width = "200px";
-    input.color = "red";
-    input.background = "black"
-    input.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-    input.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    const inputProfile = new InputText("ProfileInput");
+    inputProfile.isVisible = false
+    inputProfile.promptMessage = "Enter Profile ID"
+    inputProfile.height = "100px";
+    inputProfile.width = "200px";
+    inputProfile.color = "red";
+    inputProfile.background = "black"
+    inputProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+    inputProfile.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    advancedTexture.addControl(inputProfile);
 
-    advancedTexture.addControl(input);
-
-    const searchProfile = Button.CreateSimpleButton("searchProfileButton", "🔎 profile")
-    searchProfile.width = "200px";
-    searchProfile.height = "100px";
-    searchProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-    searchProfile.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    if (searchProfile.textBlock) {
-      searchProfile.textBlock.color = "white";
+    const askProfile = Button.CreateSimpleButton("AskProfileButton", "Enter Lens Handle")
+    askProfile.width = "200px";
+    askProfile.height = "100px";
+    askProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+    askProfile.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    if (askProfile.textBlock) {
+      askProfile.textBlock.color = "white";
     }
-    searchProfile.onPointerUpObservable.add(async () => {
+    askProfile.onPointerUpObservable.add(async () => {
       // console.log("hello");
-      if (input.isVisible && input.text !== "") {
-        const handle = input.text;
+      if (inputProfile.isVisible && inputProfile.text !== "") {
+        const handle = inputProfile.text;
         console.log(handle);
-
         const profileId = await getProfileID(handle);
-
         console.log(`got handle=${handle}, maybe saving profileId=${profileId}`);
-
         if (profileId) {
           localStorage.setItem("profileId", profileId);
           setSceneState({
@@ -99,12 +98,51 @@ export const ctrlPanelMaker = (
           })
         }
       }
-      input.isVisible = !input.isVisible;
+      inputProfile.isVisible = !inputProfile.isVisible;
     })
 
-    grid.addControl(content);
-    // grid.addControl(input);
-    grid.addControl(searchProfile);
+    const inputToken = new InputText("TokenInput");
+    inputToken.isVisible = false
+    inputToken.promptMessage = "Enter Token ID"
+    inputToken.height = "100px";
+    inputToken.width = "200px";
+    inputToken.color = "red";
+    inputToken.background = "black"
+    inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+    inputToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    advancedTexture.addControl(inputToken);
+
+    const askToken = Button.CreateSimpleButton("AskToken", "Enter VIP Token")
+    askToken.width = "200px";
+    askToken.height = "100px";
+    askToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+    askToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    if (askToken.textBlock) {
+      askToken.textBlock.color = "white";
+    }
+    askToken.onPointerUpObservable.add(async () => {
+      // console.log("hello");
+      if (inputProfile.isVisible && inputProfile.text !== "") {
+        const handle = inputProfile.text;
+        console.log(handle);
+        const profileId = await getProfileID(handle);
+        console.log(`got handle=${handle}, maybe saving profileId=${profileId}`);
+        if (profileId) {
+          localStorage.setItem("profileId", profileId);
+          setSceneState({
+            profileToLoad: profileId,
+            camera: {
+              position: PROFILE_FRAME_VIEW_POSITION,
+              rotation: new Vector3(0, 0, 0),
+            }
+          })
+        }
+      }
+      inputProfile.isVisible = !inputProfile.isVisible;
+    })
+
+    grid.addControl(askProfile);
+    grid.addControl(askToken);
 
     holoslate.content = grid;
 

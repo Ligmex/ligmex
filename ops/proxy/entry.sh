@@ -22,15 +22,15 @@ null_ui=localhost
 EMAIL="${EMAIL:-noreply@gmail.com}"
 WEBSERVER_URL="${WEBSERVER_URL:-$null_ui}"
 WEBSERVER_URL="${WEBSERVER_URL#*://}"
-IPFS_URL="${IPFS_URL#*://}"
-IPFS_URL="server:8080" # TODO remove
+SERVER_URL="${SERVER_URL:-server:8080}"
+SERVER_URL="${SERVER_URL#*://}"
 POLYGON_RPC_URL="${POLYGON_RPC_URL#https://}"
 
 echo "Proxy container launched in env:"
 echo "DOMAINNAME=${DOMAINNAME:-$null_ui}"
 echo "EMAIL=$EMAIL"
 echo "WEBSERVER_URL=$WEBSERVER_URL"
-echo "IPFS_URL=$IPFS_URL"
+echo "SERVER_URL=$SERVER_URL"
 echo "POLYGON_RPC_URL=$POLYGON_RPC_URL"
 echo "POLYGON_RPC_HOST=$POLYGON_RPC_HOST"
 echo "POLYGON_RPC_PATH=$POLYGON_RPC_PATH"
@@ -56,6 +56,14 @@ while ! curl -s "$WEBSERVER_URL" > /dev/null
 do sleep 2
 done
 echo "Good morning $webserver"
+
+server="${SERVER_URL#*://}"
+echo "waiting for $server..."
+wait-for -q -t 60 "$server" 2>&1 | sed '/nc: bad address/d'
+while ! curl -s "$SERVER_URL" > /dev/null
+do sleep 2
+done
+echo "Good morning $server"
 
 # Kill the loading message server
 kill "$loading_pid" && pkill nc
