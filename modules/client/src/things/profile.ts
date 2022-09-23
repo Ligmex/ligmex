@@ -39,16 +39,16 @@ export const profileMaker = (
     new Vector3(position.x, position.y + height + 0.5, position.z)
   )
 
-  // Show Following data
-  createTextDisplay(
-    scene,
-    height,
-    profile?.id + "following",
-    "Following",
-    new Vector3(position.x + height + 1, position.y + height, position.z)
-  );
-
+  
   if (following) {
+    // Show Following data
+    createTextDisplay(
+      scene,
+      height,
+      profile?.id + "following",
+      "Following",
+      new Vector3(position.x + height + 1, position.y + height, position.z)
+    );
     following.forEach((followingProfile, i) => {
       const profilePicture = createProfilePicture(
         scene,
