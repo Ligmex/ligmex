@@ -9,8 +9,10 @@ import {
 } from "@babylonjs/core";
 import { AdvancedDynamicTexture, Button, Control, Grid, GUI3DManager, HolographicSlate, InputText, TextBlock, TextWrapping } from "@babylonjs/gui";
 import { Scene } from "@babylonjs/core/scene";
-import { getProfileID, SceneState } from "src/utils";
-import { PROFILE_FRAME_VIEW_POSITION } from "src/utils/cameraConstants";
+
+import { getProfileID } from "../utils/lensApi";
+import { SceneState } from "../utils/misc";
+import { PROFILE_FRAME_VIEW_POSITION } from "../utils/cameraConstants";
 
 export const ctrlPanelMaker = (
   scene: Scene,
@@ -67,7 +69,7 @@ export const ctrlPanelMaker = (
     input.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
 
     advancedTexture.addControl(input);
-    
+
     const searchProfile = Button.CreateSimpleButton("searchProfileButton", "🔎 profile")
     searchProfile.width = "200px";
     searchProfile.height = "100px";
@@ -85,7 +87,7 @@ export const ctrlPanelMaker = (
         const profileId = await getProfileID(handle);
 
         console.log(`got handle=${handle}, maybe saving profileId=${profileId}`);
-        
+
         if (profileId) {
           localStorage.setItem("profileId", profileId);
           setSceneState({
@@ -103,7 +105,6 @@ export const ctrlPanelMaker = (
     grid.addControl(content);
     // grid.addControl(input);
     grid.addControl(searchProfile);
-
 
     holoslate.content = grid;
 
