@@ -21,6 +21,7 @@ export const profileMaker = (
 ) => {
   console.log(profile);
 
+  // Add profile Image
   if (profile?.picture?.__typename === "MediaSet") {
     const profileUrl = getStandardUrl(profile?.picture?.original?.url);
     createProfilePicture(
@@ -29,13 +30,13 @@ export const profileMaker = (
       profileUrl,
       1,
       new Vector3(position.x - height/3, position.y + 2*height/3, position.z - height/8),
-      new Vector3(Math.PI/2, 0, 0)
+      new Vector3(-Math.PI/2, 0, 0)
     )
   }
 
-
+  // Add profile latest posts
   const galleryMesh = galleryMaker(scene, position, height, posts);
   console.log(galleryMesh);
-  // TODO: add profile pic
+  
   return galleryMesh;
 };
