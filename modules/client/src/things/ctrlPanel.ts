@@ -83,8 +83,11 @@ export const ctrlPanelMaker = (
         console.log(handle);
 
         const profileId = await getProfileID(handle);
+
+        console.log(`got handle=${handle}, maybe saving profileId=${profileId}`);
         
         if (profileId) {
+          localStorage.setItem("profileId", profileId);
           setSceneState({
             profileToLoad: profileId,
             camera: {
@@ -96,7 +99,7 @@ export const ctrlPanelMaker = (
       }
       input.isVisible = !input.isVisible;
     })
-   
+
     grid.addControl(content);
     // grid.addControl(input);
     grid.addControl(searchProfile);
