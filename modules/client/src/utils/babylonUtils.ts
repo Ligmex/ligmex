@@ -171,6 +171,8 @@ export const createProfilePicture = (
     profilePicture.material = material;
     profilePicture.position = position;
     profilePicture.rotation = rotation;
+
+    return profilePicture;
 }
 
 export const createVideoStreamDisplay = (scene: Scene) => {
