@@ -149,21 +149,26 @@ export const createStartVideoStreamButton = (
 
 }
 
-export const createProfilePicture = (scene: Scene, id: string, url: string) => {
+export const createProfilePicture = (
+    scene: Scene,
+    id: string,
+    url: string,
+    size: number,
+    position: Vector3,
+    rotation: Vector3
+) => {
 
-    console.log(url)
     const profilePicture = MeshBuilder.CreateCylinder(
         `${id}-profileDisc`,
-        { diameter: 3, height: 0.2 },
+        { diameter: size, height: 0.05 },
         scene
     )
 
     const material = new StandardMaterial(`${id}-profilePicture`, scene);
     material.diffuseTexture = new Texture(url, scene);
-
     profilePicture.material = material;
-    profilePicture.rotation = new Vector3(0, Math.PI/2, 0)
-
+    profilePicture.position = position;
+    profilePicture.rotation = rotation;
 }
 
 export const createVideoStreamDisplay = (scene: Scene) => {

@@ -12,7 +12,7 @@ import {
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 
-import { scaleNewMeshes } from "../utils";
+import { getStandardUrl, scaleNewMeshes } from "../utils";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
@@ -57,13 +57,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
       let animation_url = post.metadata.animatedUrl;
       
       output.push(createPedestal(`${post.id}-pillar`, pillar_position));
-      if (animation_url.startsWith("ipfs://")) {
-        animation_url = animation_url.replace(
-          "ipfs://", "https://lens.infura-ipfs.io/ipfs/"
-        );
-      } else if (animation_url.split("/").length === 1) {
-        animation_url = "https://lens.infura-ipfs.io/ipfs/" + animation_url;
-      }
+      animation_url = getStandardUrl(animation_url);
       const glbContainer = await SceneLoader.LoadAssetContainerAsync(
         animation_url,
         "",
@@ -90,7 +84,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
         backUVs: b
       }, scene);
       const material = new StandardMaterial(post.id, scene);
-      let url = post.metadata.media[0]?.original?.url.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
+      let url = getStandardUrl(post.metadata.media[0]?.original?.url);
       material.diffuseTexture = new Texture(url, scene);
       imagePlane.material = material;
       imagePlane.position = post_position;
@@ -113,7 +107,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
         height: post.metadata.media[0]?.original?.height || 1
       }, scene);
       const videoMaterial = new StandardMaterial(`${post.id}-videoMaterial`, scene);
-      let videoPostUrl = post.metadata.media[0]?.original?.url.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
+      let videoPostUrl = getStandardUrl(post.metadata.media[0]?.original?.url);
       videoMaterial.diffuseTexture = new VideoTexture(`${post.id}-videoTexture`, videoPostUrl, scene);
       (videoMaterial.diffuseTexture as VideoTexture).video.muted = true;
       videoPlane.material = videoMaterial;

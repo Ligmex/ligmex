@@ -4,10 +4,11 @@ import {
   MeshBuilder,
   PointerDragBehavior,
   StandardMaterial,
+  Texture,
   Vector3,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
-import { createProfilePicture } from "../utils";
+import { createProfilePicture, getStandardUrl } from "../utils";
 
 import { galleryMaker } from "./gallery";
 
@@ -21,16 +22,17 @@ export const profileMaker = (
   console.log(profile);
 
   if (profile?.picture?.__typename === "MediaSet") {
-    const profilePicture = MeshBuilder.CreateCylinder(
-      `${profile?.id}-profileDisc`,
-        { diameter: 1, height: 0.2 },
-        scene
-    );
-    const material = new StandardMaterial(`${profile?.id}-profilePicture`, scene);
-    profilePicture.material = material;
-    profilePicture.position = new Vector3(position.x, position.y + height, position.z);
-    profilePicture.rotation = new Vector3(Math.PI/2, 0, 0)
+    const profileUrl = getStandardUrl(profile?.picture?.original?.url);
+    createProfilePicture(
+      scene,
+      profile?.id,
+      profileUrl,
+      1,
+      new Vector3(position.x - height/3, position.y + 2*height/3, position.z - height/8),
+      new Vector3(Math.PI/2, 0, 0)
+    )
   }
+
 
   const galleryMesh = galleryMaker(scene, position, height, posts);
   console.log(galleryMesh);

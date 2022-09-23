@@ -54,3 +54,11 @@ export enum PublicationMainFocus {
   LINK = 'LINK',
   EMBED = 'EMBED',
 }
+
+export const getStandardUrl = (uri: string) => {
+  if (uri.startsWith("ipfs://")) {
+    return uri.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
+  } else if (uri.split("/").length === 1) {
+    return "https://lens.infura-ipfs.io/ipfs/" + uri;
+  } else return uri;
+}
