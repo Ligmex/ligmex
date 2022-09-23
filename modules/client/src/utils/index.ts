@@ -1,15 +1,7 @@
 import { from } from "@apollo/client";
 
 export { apolloClient } from "./apollo";
-export {
-  createUploadFileView,
-  createStartVideoStreamButton,
-  createVideoStreamDisplay,
-  addConnectWalletButton,
-  addLoginButton,
-  scaleAndCenterMeshes,
-  scaleNewMeshes,
-} from "./babylonUtils";
+export * from "./babylonUtils";
 export { buildFromPlan } from "./buildFromPlan";
 export * from "./gqlQueries";
 export { ipfs } from "./ipfs";

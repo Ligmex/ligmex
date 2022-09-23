@@ -17,7 +17,7 @@ import {
 } from 'wagmi'
 
 import { SceneComponent } from "./Scene";
-import { AccessToken, getPostsByProfile, SceneState } from "../utils";
+import { AccessToken, getPostsByProfile, getProfile, SceneState } from "../utils";
 
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
@@ -25,6 +25,7 @@ import { addNewPostButton } from "../things/newPost";
 import { createTrendingCorner } from "../things/trendingCorner";
 import { ctrlPanelMaker } from "../things/ctrlPanel";
 import { galleryMaker } from "../things/gallery";
+import { profileMaker } from "../things/profile";
 import {
   addLoginButton,
   addConnectWalletButton,
@@ -34,6 +35,7 @@ import {
   getPosts,
   getProfileByOwner,
 } from "../utils";
+import { PROFILE_FRAME_POSITION } from "src/utils/cameraConstants";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
@@ -95,6 +97,7 @@ export const Home = () => {
       camera.keysRight = [68];
 
       if (sceneState?.camera?.position) {
+        console.log("setting camera position and rotation", sceneState.camera)
         camera.position = sceneState.camera.position;
         camera.rotation = sceneState.camera.rotation;
       }
@@ -125,9 +128,11 @@ export const Home = () => {
         if (sceneState?.profileToLoad) {
           console.log(sceneState.profileToLoad);
           const profilePost = await getPostsByProfile(sceneState.profileToLoad);
-          if (profilePost) {
+          const profile = await getProfile(sceneState.profileToLoad);
+          if (profilePost && profile) {
             console.log("showing posts by profile")
-            galleryMaker(scene, new Vector3(-10, 0, 10), 4, profilePost);
+            profileMaker(scene, PROFILE_FRAME_POSITION, 4, profilePost, profile);
+            // galleryMaker(scene,  , 4, profilePost);
           }
         } else {
           const latestPosts = await getPosts(10);
