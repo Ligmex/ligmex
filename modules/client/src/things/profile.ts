@@ -53,7 +53,7 @@ export const profileMaker = (
       const profilePicture = createProfilePicture(
         scene,
         followingProfile.profile.id,
-        followingProfile.profile.picture.original.url,
+        followingProfile.profile?.picture?.original?.url,
         0.3,
         new Vector3(position.x + height + 0.3, position.y + 7*height/8 - i* 0.4, position.z),
         new Vector3(-Math.PI / 2, 0, 0)
