@@ -43,7 +43,7 @@ SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const Home = () => {
 
-  const [sceneState, setSceneState] = useState({} as SceneState);
+  const [sceneState, setSceneState] = useState({ profileToLoad: localStorage.getItem("profileId") || "" } as SceneState);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
