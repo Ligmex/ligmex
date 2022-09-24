@@ -39,8 +39,8 @@ export const profileMaker = (
     profile?.handle,
     new Vector3(position.x, position.y + height + 0.5, position.z)
   )
-  
-  if (following) {
+
+  if (following.length) {
     // Show Following data
     createTextDisplay(
       scene,

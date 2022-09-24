@@ -1,8 +1,4 @@
 
-## Thursday
-- use galleryMaker to display a profile which also includes a profile picture
-- display a followed profile in gallery if username is defined else display top trending profile
-
 ## Friday
 - grab & move pillar in gallery to scroll through more posts
 - add vip token input to holoslate
