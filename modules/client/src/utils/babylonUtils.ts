@@ -150,7 +150,11 @@ export const createProfilePicture = (
         scene
     )
     const material = new StandardMaterial(`${id}-profilePicture`, scene);
-    material.diffuseTexture = new Texture(url, scene);
+    try {
+        material.diffuseTexture = new Texture(url, scene);
+    } catch (e) {
+        console.log(e);
+    }
     material.emissiveColor = Color3.White();
     profilePicture.material = material;
     profilePicture.position = position;
