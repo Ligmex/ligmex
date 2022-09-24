@@ -37,7 +37,7 @@ $(shell mkdir -p .flags)
 # Command & Control Aliases
 
 default: dev
-dev: proxy server
+dev: proxy server-bundle
 prod: proxy webserver server
 all: dev prod
 

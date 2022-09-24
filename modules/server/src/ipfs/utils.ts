@@ -1,5 +1,5 @@
-import ipfsClient from "ipfs-client";
+import { create } from "ipfs-http-client";
 
 import { env } from "../env";
 
-export const ipfs = ipfsClient({ http: `http://${env.ipfsUrl}` });
+export const ipfs = create({ url: `http://${env.ipfsUrl}` });
