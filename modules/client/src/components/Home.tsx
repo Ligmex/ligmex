@@ -19,6 +19,7 @@ import {
 import { AccessToken, getFollowing, getPostsByProfile, getProfile, SceneState } from "../utils";
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
+import { createTrendingCorner } from "../things/trendingCorner";
 import { ctrlPanelMaker } from "../things/ctrlPanel";
 import { galleryMaker } from "../things/gallery";
 import { profileMaker } from "../things/profile";
@@ -32,6 +33,9 @@ import {
   PROFILE_FRAME_POSITION,
   PROFILE_FRAME_VIEW_POSITION,
   PROFILE_FRAME_VIEW_ROTATION,
+  TRENDING_CORNER_POSITION,
+  TRENDING_VIEW_POSITION,
+  TRENDING_VIEW_ROTATION,
 } from "../utils/cameraConstants";
 
 import { SceneComponent } from "./Scene";
@@ -51,7 +55,10 @@ export const Home = () => {
     camera: storedProfile? {
       position: PROFILE_FRAME_VIEW_POSITION,
       rotation: PROFILE_FRAME_VIEW_ROTATION
-    } : null
+    } : {
+      position: TRENDING_VIEW_POSITION,
+      rotation: TRENDING_VIEW_ROTATION
+    }
   } as SceneState);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
@@ -148,12 +155,13 @@ export const Home = () => {
             profileMaker(scene, PROFILE_FRAME_POSITION, 4, profilePost, profile, following);
             // galleryMaker(scene,  , 4, profilePost);
           }
-        } else {
-          const latestPosts = await getPosts(10);
-          if (latestPosts) {
-            galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
-          }
         }
+        
+        const latestPosts = await getPosts(10);
+        if (latestPosts) {
+          createTrendingCorner(scene, TRENDING_CORNER_POSITION, latestPosts);
+        }
+        
       })
     } catch (e) {
       console.log(e);
