@@ -115,7 +115,7 @@ builder: $(shell find ops/builder $(find_options))
 	docker tag $(project)_builder:latest $(project)_builder:$(commit)
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
-node-modules: builder package.json
+node-modules: builder package.json modules/client/package.json modules/server/package.json
 	$(log_start)
 	$(docker_run) "lerna bootstrap --no-progress"
 	$(log_finish) && mv -f $(totalTime) .flags/$@

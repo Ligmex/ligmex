@@ -130,7 +130,7 @@ export const ctrlPanelMaker = async (
     inputProfile.promptMessage = "Enter Profile ID"
     inputProfile.height = "100px";
     inputProfile.width = "200px";
-    inputProfile.color = "red";
+    inputProfile.color = "green";
     inputProfile.background = "black"
     inputProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
     inputProfile.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -141,9 +141,6 @@ export const ctrlPanelMaker = async (
         inputProfile.processKey(ev.keyCode, ev.key, ev)
       })
     })
-
-    // advancedTexture.addControl(inputProfile);
-
     const askProfile = Button.CreateSimpleButton("searchProfileButton", "🔎 profile")
     askProfile.width = "200px";
     askProfile.height = "100px";
@@ -177,7 +174,7 @@ export const ctrlPanelMaker = async (
 
     const inputToken = new InputText("TokenInput");
     inputToken.isVisible = false
-    inputToken.promptMessage = "Enter Token ID"
+    inputToken.promptMessage = "Enter VIP Token"
     inputToken.height = "100px";
     inputToken.width = "200px";
     inputToken.color = "red";
