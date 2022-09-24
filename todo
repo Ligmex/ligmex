@@ -1,11 +1,12 @@
-
-## Friday
-- grab & move pillar in gallery to scroll through more posts
-- add vip token input to holoslate
-- display new post button if vip token is defined
-
 ## Saturday
-- trigger post for title/description holo-pop-up
+- S: trigger post for title/description holo-pop-up
+- B: add vip token input to holoslate
+- B: maybe fix RPC_URL bug
+- S: grab & move pillar in gallery to scroll through more posts
+- B: display new post button if vip token is defined
+- S: add textures to scene
+- S: reposition galleries
+- S: livestream post, join stream
 
 ## Sunday
 - submit by 3pm
