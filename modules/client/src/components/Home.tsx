@@ -36,7 +36,7 @@ import {
   TRENDING_CORNER_POSITION,
   TRENDING_VIEW_POSITION,
   TRENDING_VIEW_ROTATION,
-} from "../utils/cameraConstants";
+} from "../utils/constants";
 
 import { SceneComponent } from "./Scene";
 
