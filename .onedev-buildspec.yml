@@ -15,8 +15,7 @@ jobs:
     interpreter: !ShellInterpreter
       shell: bash
       commands:
-      - export CI=true
-      - make all
+      - CI=true make all
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PushRepository
@@ -62,8 +61,7 @@ jobs:
     runInContainer: false
     interpreter: !DefaultInterpreter
       commands:
-      - export CI=true
-      - make all
+      - CI=true make all
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PushRepository
