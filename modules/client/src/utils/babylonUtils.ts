@@ -2,12 +2,14 @@ import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import {
     AssetContainer,
     Color3,
+    DynamicTexture,
     FreeCamera,
     Mesh,
     MeshBuilder,
     Scene,
     SceneLoader,
     StandardMaterial,
+    Texture,
     Vector3,
     VideoTexture
 } from "@babylonjs/core";
@@ -40,27 +42,27 @@ const setupLivepeerStream = async (videoEl: HTMLVideoElement) => {
             body: JSON.stringify({
                 "name": "ligmexNewLiveStream",
                 "profiles": [
-                {
-                    "name": "720p",
-                    "bitrate": 2000000,
-                    "fps": 30,
-                    "width": 1280,
-                    "height": 720
-                },
-                {
-                    "name": "480p",
-                    "bitrate": 1000000,
-                    "fps": 30,
-                    "width": 854,
-                    "height": 480
-                },
-                {
-                    "name": "360p",
-                    "bitrate": 500000,
-                    "fps": 30,
-                    "width": 640,
-                    "height": 360
-                }
+                    {
+                        "name": "720p",
+                        "bitrate": 2000000,
+                        "fps": 30,
+                        "width": 1280,
+                        "height": 720
+                    },
+                    {
+                        "name": "480p",
+                        "bitrate": 1000000,
+                        "fps": 30,
+                        "width": 854,
+                        "height": 480
+                    },
+                    {
+                        "name": "360p",
+                        "bitrate": 500000,
+                        "fps": 30,
+                        "width": 640,
+                        "height": 360
+                    }
                 ]
             })
         });
@@ -70,7 +72,7 @@ const setupLivepeerStream = async (videoEl: HTMLVideoElement) => {
 
             const stream = videoEl.srcObject;
             const client = new Client();
-            const session = client.cast(stream! as MediaStream, data?.streamKey );
+            const session = client.cast(stream! as MediaStream, data?.streamKey);
 
             session.on('open', () => {
                 console.log('Stream started.')
@@ -79,7 +81,7 @@ const setupLivepeerStream = async (videoEl: HTMLVideoElement) => {
             session.on('close', () => {
                 console.log('Stream stopped.')
             })
-        
+
             session.on('error', (err) => {
                 console.log('Stream error.', err.message)
             })
@@ -88,26 +90,26 @@ const setupLivepeerStream = async (videoEl: HTMLVideoElement) => {
         console.log(e);
     }
 
-    
+
 }
 
 const login = async (address: string, signMessage: any, setAccessToken: any) => {
     // request a challenge from the server
     const challengeResponse = await generateChallenge(address);
-  
+
     // sign the text with the wallet
-    const sig = await signMessage({ message: challengeResponse.data.challenge.text});
+    const sig = await signMessage({ message: challengeResponse.data.challenge.text });
     console.log(sig);
     const recoveredAddress = verifyMessage(challengeResponse.data.challenge.text, sig)
-        if (address === recoveredAddress && sig) {
-          const jwtTokens = (await authenticate(address, sig) as AuthenticateResponse).data.authenticate;
-          console.log("Setting access token");
-          setAccessToken(jwtTokens);
-          //console.log(jwtTokens);
-          localStorage.setItem('ACCESS_TOKEN', jwtTokens.accessToken);
-          localStorage.setItem('REFRESH_TOKEN', jwtTokens.refreshToken);
-        }
-  };
+    if (address === recoveredAddress && sig) {
+        const jwtTokens = (await authenticate(address, sig) as AuthenticateResponse).data.authenticate;
+        console.log("Setting access token");
+        setAccessToken(jwtTokens);
+        //console.log(jwtTokens);
+        localStorage.setItem('ACCESS_TOKEN', jwtTokens.accessToken);
+        localStorage.setItem('REFRESH_TOKEN', jwtTokens.refreshToken);
+    }
+};
 
 export const createUploadFileView = (scene: Scene, filname: string | undefined) => {
     if (!scene || !filname) return;
@@ -148,6 +150,31 @@ export const createStartVideoStreamButton = (
 
 }
 
+export const createProfilePicture = (
+    scene: Scene,
+    id: string,
+    url: string,
+    size: number,
+    position: Vector3,
+    rotation: Vector3
+) => {
+
+    const profilePicture = MeshBuilder.CreateCylinder(
+        `${id}-profileDisc`,
+        { diameter: size, height: 0.05 },
+        scene
+    )
+
+    const material = new StandardMaterial(`${id}-profilePicture`, scene);
+    material.diffuseTexture = new Texture(url, scene);
+    material.emissiveColor = Color3.White();
+    profilePicture.material = material;
+    profilePicture.position = position;
+    profilePicture.rotation = rotation;
+
+    return profilePicture;
+}
+
 export const createVideoStreamDisplay = (scene: Scene) => {
     const videoStreamDisplay = MeshBuilder.CreatePlane("videoStreamDisplay", {
         width: 2,
@@ -163,86 +190,86 @@ export const createVideoStreamDisplay = (scene: Scene) => {
 
         videoStreamMaterial.emissiveTexture = videoTexture;
         videoStreamDisplay.material = videoStreamMaterial;
-        
+
 
         setupLivepeerStream(videoTexture.video);
-       
-    }, {minWidth: 2, minHeight: 2, maxWidth: 256, maxHeight: 256, deviceId: "videoStream"})
+
+    }, { minWidth: 2, minHeight: 2, maxWidth: 256, maxHeight: 256, deviceId: "videoStream" })
 
 }
 
 export const addConnectWalletButton = (
     scene: Scene,
     connectorOptions: {
-      isConnected: boolean,
-      address?: string,
-      connect: any,
-      connectors: Array<any>,
-      error: any,
-      isLoading: boolean,
-      pendingConnector: any,
-      disconnect: any
+        isConnected: boolean,
+        address?: string,
+        connect: any,
+        connectors: Array<any>,
+        error: any,
+        isLoading: boolean,
+        pendingConnector: any,
+        disconnect: any
     }
-  ) => {
+) => {
     const plane = MeshBuilder.CreatePlane("plane", {}, scene);
     plane.position.y = 2;
     plane.position.x = 1;
-  
+
     const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
-  
+
     let button: Button;
     if (connectorOptions.isConnected) {
-      button = Button.CreateSimpleButton("disconnet", "❌ disconnet wallet");
-      button.background = "green";
+        button = Button.CreateSimpleButton("disconnet", "❌ disconnet wallet");
+        button.background = "green";
     } else {
-      button = Button.CreateSimpleButton("newPost", "🔗 connect wallet");
-      button.background = "black";
+        button = Button.CreateSimpleButton("newPost", "🔗 connect wallet");
+        button.background = "black";
     }
     button.onPointerUpObservable.add(() => {
-      console.log("click");
-      if (connectorOptions.isConnected) {
-          console.log("disconnecting");
-          connectorOptions.disconnect();
-      } else {
-          console.log("connecting");
-          connectorOptions.connect({ connector: connectorOptions.connectors[0]})
-      }
+        console.log("click");
+        if (connectorOptions.isConnected) {
+            console.log("disconnecting");
+            connectorOptions.disconnect();
+        } else {
+            console.log("connecting");
+            connectorOptions.connect({ connector: connectorOptions.connectors[0] })
+        }
     });
     button.width = 0.2;
     button.height = 0.1;
     button.color = "white";
-  
+
     advancedTexture.addControl(button);
-  }
+}
 
 export const addLoginButton = (
-  scene: Scene,
-  setAccessToken: any,
-  connectorOptions: {
-    address: string,
-    error: any,
-    signer: any,
-    isLoading: any
-  }
+    scene: Scene,
+    setAccessToken: any,
+    connectorOptions: {
+        address: string,
+        error: any,
+        signer: any,
+        isLoading: any
+    }
 ) => {
-  const plane = MeshBuilder.CreatePlane("plane", {}, scene);
-  plane.position.y = 2;
-  plane.position.x = 0.5;
+    const plane = MeshBuilder.CreatePlane("plane", {}, scene);
+    plane.position.y = 2;
+    plane.position.x = 0.5;
 
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
+    const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
 
-  const button = Button.CreateSimpleButton("newPost", "🔐 Login");
-  button.width = 0.2;
-  button.height = 0.1;
-  button.color = "white";
-  button.background = "red";
-  button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer, setAccessToken));
+    const button = Button.CreateSimpleButton("newPost", "🔐 Login");
+    button.width = 0.2;
+    button.height = 0.1;
+    button.color = "white";
+    button.background = "red";
+    button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer, setAccessToken));
 
-  advancedTexture.addControl(button);
+    advancedTexture.addControl(button);
 }
 
 export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: AssetContainer): Mesh | undefined => {
-    if (assetContainer.meshes[0] == undefined) return undefined;
+    if (assetContainer.meshes[0] === undefined) return undefined;
     let minimum;
     let maximum;
     let center;
@@ -267,9 +294,9 @@ export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: A
 
     // Get group maximum bounds
     assetContainer.meshes.forEach((mesh) => {
-        if (mesh.material != undefined && mesh.subMeshes != undefined) {
+        if (mesh.material !== undefined && mesh.subMeshes !== undefined) {
             let boundingInfo = mesh.getHierarchyBoundingVectors();
-            if (minimum == undefined) {
+            if (minimum === undefined) {
                 minimum = boundingInfo.min;
                 maximum = boundingInfo.max;
             } else {
@@ -284,7 +311,7 @@ export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: A
     if (minimum) {
         let sum = maximum.add(minimum);
         center = sum.divide(new Vector3(-1, -1, 1));
-    } 
+    }
 
     assetContainer.meshes.forEach((mesh) => {
         mesh.position.addInPlace(center);
@@ -297,19 +324,19 @@ export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: A
             localMax = scale;
     }
 
-    scaleBox.scaling = new Vector3(1/localMax, 1/localMax, 1/localMax);
+    scaleBox.scaling = new Vector3(1 / localMax, 1 / localMax, 1 / localMax);
 
     return boundBox;
 }
 
 export const scaleNewMeshes = (newMeshes: AbstractMesh[], position = Vector3.Zero()): AbstractMesh | undefined => {
-    if (newMeshes[0] == undefined) return;
+    if (newMeshes[0] === undefined) return;
 
     const scaleBox = newMeshes[0];
     let newMin;
     let newMax;
 
-    for (let i = 1; i < newMeshes.length; i++){
+    for (let i = 1; i < newMeshes.length; i++) {
         let boundingInfo = newMeshes[i].getBoundingInfo();
         if (!newMin) {
             newMin = boundingInfo.boundingBox.minimumWorld;
@@ -324,11 +351,41 @@ export const scaleNewMeshes = (newMeshes: AbstractMesh[], position = Vector3.Zer
     for (let key in { x: 0, y: 0, z: 0 }) {
         let scale = Math.abs(newMax[key] - newMin[key]);
         if (scale > localMax)
-        localMax = scale;
+            localMax = scale;
     }
 
-    scaleBox.scaling = new Vector3(1/localMax, 1/localMax, -1/localMax);
+    scaleBox.scaling = new Vector3(1 / localMax, 1 / localMax, -1 / localMax);
     scaleBox.position = position;
-    scaleBox.rotation = new Vector3(0,0, 0)
+    scaleBox.rotation = new Vector3(0, 0, 0)
     return scaleBox;
+}
+
+export const createTextDisplay = (
+    scene: Scene,
+    size: number,
+    id: string,
+    handle: string,
+    position: Vector3,
+) => {
+    const profileHandlePlane = MeshBuilder.CreatePlane(
+        `${id}-handlePlane`,
+        { height: size / 4, width: size },
+        scene
+      );
+      const profileHandleTextue = new DynamicTexture(
+        `${id}-handleTexture`,
+        { width: 512, height: 300 },
+        scene,
+        true
+      );
+      profileHandleTextue.drawText(handle, null, null, "bold 50px Arial", "white", "#33334c")
+      const profileHandleMaterial = new StandardMaterial(
+        `${id}-handleMaterial`,
+        scene
+      );
+      profileHandleMaterial.diffuseTexture = profileHandleTextue;
+      profileHandleMaterial.emissiveColor = Color3.White();
+      profileHandlePlane.material = profileHandleMaterial;
+      profileHandlePlane.position = position;
+    
 }

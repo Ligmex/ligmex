@@ -35,7 +35,7 @@ export const ctrlPanelMaker = async (
     lenshubPostWithSig: any,
   },
   setSceneState: React.Dispatch<React.SetStateAction<SceneState>>
-): Promise<AbstractMesh> => {
+): Promise<Array<AbstractMesh>> => {
 
   const id = "ctrlPanel";
   const height = 1;
@@ -69,21 +69,6 @@ export const ctrlPanelMaker = async (
 
     const grid = new Grid("newGrid");
 
-    addLoginButton(scene, setAccessToken, {
-      address: connectorOptions.address,
-      signer: signLogin,
-      error: loginError,
-      isLoading: isLoadingLoginMessage,
-    });
-
-    addNewPostButton(scene, profileId, {
-      address: connectorOptions.address,
-      signer: signCreatePost,
-      error: createPostError,
-      isLoading: isLoadingCreatePostMessage,
-      lenshubPostWithSig,
-    }, setSceneState);
-
     /*
     const content = new TextBlock(`${id}-ctrlPanelContent`);
     content.textWrapping = TextWrapping.WordWrap;
@@ -93,7 +78,7 @@ export const ctrlPanelMaker = async (
 
     const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("advinput");
 
-    const inputProfile = new InputText("ProfileInput");
+    const inputProfile = new InputText("profileIdInput");
     inputProfile.isVisible = false
     inputProfile.promptMessage = "Enter Profile ID"
     inputProfile.height = "100px";
@@ -102,9 +87,17 @@ export const ctrlPanelMaker = async (
     inputProfile.background = "black"
     inputProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
     inputProfile.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-    advancedTexture.addControl(inputProfile);
+    inputProfile.onFocusObservable.addOnce(() => {
+      let camera = scene.getCameraByName("fpsCamera");
+      camera?.detachControl()
+      document.addEventListener('keyup', (ev) => {
+        inputProfile.processKey(ev.keyCode, ev.key, ev)
+      })
+    })
 
-    const askProfile = Button.CreateSimpleButton("AskProfileButton", "Enter Lens Handle")
+    // advancedTexture.addControl(inputProfile);
+
+    const askProfile = Button.CreateSimpleButton("searchProfileButton", "🔎 profile")
     askProfile.width = "200px";
     askProfile.height = "100px";
     askProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
@@ -119,6 +112,8 @@ export const ctrlPanelMaker = async (
         console.log(handle);
         const profileId = await getProfileID(handle);
         console.log(`got handle=${handle}, maybe saving profileId=${profileId}`);
+        inputProfile.isVisible = false;
+        inputProfile.text = "";
         if (profileId) {
           localStorage.setItem("ProfileID", profileId);
           setSceneState({
@@ -133,8 +128,19 @@ export const ctrlPanelMaker = async (
       inputProfile.isVisible = !inputProfile.isVisible;
     })
 
+    const inputToken = new InputText("TokenInput");
+    inputToken.isVisible = false
+    inputToken.promptMessage = "Enter Token ID"
+    inputToken.height = "100px";
+    inputToken.width = "200px";
+    inputToken.color = "red";
+    inputToken.background = "black"
+    inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+    inputToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    advancedTexture.addControl(inputToken);
+
     const token = localStorage.getItem("VipToken");
-    if (await validateToken(token)) {
+    if (token && await validateToken(token)) {
 
       const createPost = Button.CreateSimpleButton("CreatePost", "Create A New Post")
       createPost.width = "200px";
@@ -163,17 +169,6 @@ export const ctrlPanelMaker = async (
 
     } else {
 
-      const inputToken = new InputText("TokenInput");
-      inputToken.isVisible = false
-      inputToken.promptMessage = "Enter Token ID"
-      inputToken.height = "100px";
-      inputToken.width = "200px";
-      inputToken.color = "red";
-      inputToken.background = "black"
-      inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-      inputToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-      advancedTexture.addControl(inputToken);
-
       const askToken = Button.CreateSimpleButton("AskToken", "Enter VIP Token")
       askToken.width = "200px";
       askToken.height = "100px";
@@ -198,15 +193,18 @@ export const ctrlPanelMaker = async (
         }
         inputToken.isVisible = !inputToken.isVisible;
       })
+      grid.addControl(askToken);
 
     }
 
     grid.addControl(askProfile);
-    grid.addControl(askToken);
+    grid.addControl(inputProfile);
+    grid.addControl(inputToken);
 
+    // advancedTexture.addControl(grid);
     holoslate.content = grid;
 
-    return holoslate;
+    return [holoslate];
   }
 
   const output = [] as any[];

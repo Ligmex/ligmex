@@ -17,7 +17,7 @@ import {
 } from 'wagmi'
 
 import { SceneComponent } from "./Scene";
-import { AccessToken, getPostsByProfile, SceneState } from "../utils";
+import { AccessToken, getFollowing, getPostsByProfile, getProfile, SceneState } from "../utils";
 
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
@@ -25,6 +25,7 @@ import { addNewPostButton } from "../things/newPost";
 import { createTrendingCorner } from "../things/trendingCorner";
 import { ctrlPanelMaker } from "../things/ctrlPanel";
 import { galleryMaker } from "../things/gallery";
+import { profileMaker } from "../things/profile";
 import {
   addLoginButton,
   addConnectWalletButton,
@@ -34,28 +35,32 @@ import {
   getPosts,
   getProfileByOwner,
 } from "../utils";
+import { PROFILE_FRAME_POSITION, PROFILE_FRAME_VIEW_POSITION, PROFILE_FRAME_VIEW_ROTATION } from "../utils/cameraConstants";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
 
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
+const storedProfile = localStorage.getItem("profileId") || null;
 
 export const Home = () => {
 
+  const { disconnect } = useDisconnect();
+  const { address, isConnected } = useAccount();
   const [sceneState, setSceneState] = useState({
-    profileToLoad: localStorage.getItem("ProfileID") || "",
+    profileToLoad: storedProfile ? storedProfile : "",
+    camera: storedProfile? {
+      position: PROFILE_FRAME_VIEW_POSITION,
+      rotation: PROFILE_FRAME_VIEW_ROTATION
+    } : null
   } as SceneState);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
-  } as AccessToken)
-
-  const { disconnect } = useDisconnect();
+  } as AccessToken);
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
-  const { address, isConnected } = useAccount()
   const { error: loginError, isLoading: isLoadingLoginMessage, signMessageAsync: signLogin } = useSignMessage();
-
   const { error: contractWriteError, write: lenshubPostWithSig, isLoading: isPostWithSigLoading } = useContractWrite({
     addressOrName: LENS_HUB_CONTRACT,
     contractInterface: LENS_HUB_ABI.abi,
@@ -66,12 +71,11 @@ export const Home = () => {
       console.log(error);
     }
   });
-
   const { error: createPostError, isLoading: isLoadingCreatePostMessage, signTypedDataAsync: signCreatePost } = useSignTypedData({
     onError(error) {
       console.log(error)
     },
-  })
+  });
 
   const onSceneReady = (scene: Scene) => {
 
@@ -108,6 +112,7 @@ export const Home = () => {
       camera.keysRight = [68];
 
       if (sceneState?.camera?.position) {
+        console.log("setting camera position and rotation", sceneState.camera)
         camera.position = sceneState.camera.position;
         camera.rotation = sceneState.camera.rotation;
       }
@@ -115,21 +120,10 @@ export const Home = () => {
     }
 
     if (sceneState?.newFileToLoad) {
-      console.log("setting camera position and rotation", sceneState.camera)
-      if (camera && sceneState.camera?.position)
-        camera.position = sceneState.camera.position;
-      if (camera && sceneState.camera?.rotation)
-        camera.rotation = sceneState.camera.rotation;
-
       createUploadFileView(scene, sceneState.newFileToLoad);
     }
 
     if (sceneState?.videoStream) {
-      console.log("setting camera position and rotation", sceneState.camera)
-      if (camera && sceneState.camera?.position)
-        camera.position = sceneState.camera.position;
-      if (camera && sceneState.camera?.rotation)
-        camera.rotation = sceneState.camera.rotation;
       createVideoStreamDisplay(scene);
     }
 
@@ -138,9 +132,12 @@ export const Home = () => {
         if (sceneState?.profileToLoad) {
           console.log(sceneState.profileToLoad);
           const profilePost = await getPostsByProfile(sceneState.profileToLoad);
-          if (profilePost) {
+          const profile = await getProfile(sceneState.profileToLoad);
+          const following = await getFollowing(profile.ownedBy);
+          if (profilePost && profile) {
             console.log("showing posts by profile")
-            galleryMaker(scene, new Vector3(-10, 0, 10), 4, profilePost);
+            profileMaker(scene, PROFILE_FRAME_POSITION, 4, profilePost, profile, following);
+            // galleryMaker(scene,  , 4, profilePost);
           }
         } else {
           const latestPosts = await getPosts(10);
