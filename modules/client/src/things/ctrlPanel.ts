@@ -179,7 +179,7 @@ export const ctrlPanelMaker = async (
     inputToken.width = "200px";
     inputToken.color = "red";
     inputToken.background = "black"
-    inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+    inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
     inputToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
     advancedTexture.addControl(inputToken);
 
@@ -189,7 +189,7 @@ export const ctrlPanelMaker = async (
       const createPost = Button.CreateSimpleButton("CreatePost", "Create A New Post")
       createPost.width = "200px";
       createPost.height = "100px";
-      createPost.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+      createPost.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
       createPost.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
       if (createPost.textBlock) {
         createPost.textBlock.color = "white";

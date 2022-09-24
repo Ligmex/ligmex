@@ -3,7 +3,7 @@ set -e
 
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." >/dev/null 2>&1 && pwd)
 
-do_not_upgrade=''
+do_not_upgrade='ipfs-client ipfs-http-client'
 
 if [[ -n "$do_not_upgrade" ]]
 then
