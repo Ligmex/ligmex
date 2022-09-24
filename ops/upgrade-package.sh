@@ -11,7 +11,7 @@ else sedFlag=(-i)
 fi
 
 if [[ -z "$version" ]]
-then version=$(npm info "$package" version)
+then version=$(yarn --silent info "$package" version)
 fi
 
 if [[ -z "$package" || -z "$version" || -n "$3" ]]

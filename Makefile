@@ -43,7 +43,7 @@ all: dev prod
 
 qs: quickstart
 quickstart: node-modules
-	npm run start
+	yarn start
 
 start: dev
 	bash ops/start.sh
@@ -117,7 +117,7 @@ builder: $(shell find ops/builder $(find_options))
 
 node-modules: builder package.json
 	$(log_start)
-	$(docker_run) "ls -al . && lerna bootstrap --hoist --no-progress; ls -al ."
+	$(docker_run) "lerna bootstrap --no-progress"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
 ########################################
@@ -125,12 +125,12 @@ node-modules: builder package.json
 
 client-bundle: node-modules $(shell find modules/client/src $(find_options))
 	$(log_start)
-	$(docker_run) "cd modules/client && npm run build"
+	$(docker_run) "cd modules/client && yarn build"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
 server-bundle: node-modules $(shell find modules/server/src $(find_options))
 	$(log_start)
-	$(docker_run) "cd modules/server && npm run build"
+	$(docker_run) "cd modules/server && yarn build"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
 ########################################

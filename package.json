@@ -2,6 +2,7 @@
   "name": "ligmex",
   "version": "0.0.2",
   "registry": "docker.io",
+  "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Ligmex/ligmex.git"
