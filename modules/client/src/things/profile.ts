@@ -1,4 +1,5 @@
 import {
+  AbstractMesh,
   ActionManager,
   ExecuteCodeAction,
   Vector3,
@@ -49,6 +50,7 @@ export const profileMaker = (
       "Following",
       new Vector3(position.x + height + 1, position.y + height, position.z)
     );
+    let currentlyViewing: AbstractMesh;
     following.forEach((followingProfile, i) => {
       const profilePicture = createProfilePicture(
         scene,
@@ -69,10 +71,15 @@ export const profileMaker = (
         profilePicture.actionManager = new ActionManager(scene);
         profilePicture.actionManager.registerAction(
           new ExecuteCodeAction(ActionManager.OnPickTrigger, async () => {
+            if (currentlyViewing) {
+              console.log(currentlyViewing);
+              console.log("disposing current gallery");
+              currentlyViewing.dispose();
+            }
             const followingProfilePosts = await getPostsByProfile(followingProfile.profile.id);
             console.log(followingProfilePosts);
             console.log("Viewing followed profile: ", followingProfile.profile.handle);
-            profileMaker(
+            let gallery = profileMaker(
               scene,
               new Vector3(-3, 0, 4),
               4,
@@ -80,6 +87,10 @@ export const profileMaker = (
               followingProfile.profile,
               null
             )
+            if (gallery) {
+              console.log("Setting current gallery");
+              currentlyViewing = gallery;
+            }
           })
         )
       }
