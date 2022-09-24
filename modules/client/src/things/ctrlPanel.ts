@@ -80,50 +80,8 @@ export const ctrlPanelMaker = async (
 
     const grid = new Grid("newGrid");
 
-    const connectWalletButton = addConnectWalletButton(scene, {
-      isConnected,
-      address: address,
-      connect,
-      connectors,
-      error,
-      isLoading,
-      pendingConnector,
-      disconnect
-    });
-    connectWalletButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-    connectWalletButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    grid.addControl(connectWalletButton);
-
-    const loginButton = addLoginButton(scene, setAccessToken, {
-      address: address || AddressZero,
-      error,
-      signer,
-      isLoading,
-    });
-    loginButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-    loginButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-    grid.addControl(loginButton);
-
-    if (sceneState.profileToLoad) {
-      const newPostButton = addNewPostButton(scene, sceneState.profileToLoad, {
-        address: address || AddressZero,
-        signer: signCreatePost,
-        error: createPostError,
-        isLoading: isLoadingCreatePostMessage,
-        lenshubPostWithSig,
-      }, setSceneState);
-      newPostButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-      newPostButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-      grid.addControl(newPostButton);
-
-      const streamButton = createStartVideoStreamButton(scene, setSceneState);
-      streamButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-      streamButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-      grid.addControl(streamButton);
-
-    } else {
-      console.warn(`No profile to load, not adding create post button`);
-    }
+    ////////////////////////////////////////
+    // Text Input
 
     const inputProfile = new InputText("profileIdInput");
     inputProfile.isVisible = false
@@ -161,6 +119,112 @@ export const ctrlPanelMaker = async (
     })
     grid.addControl(inputToken);
 
+    ////////////////////////////////////////
+    // Setup Buttons
+
+    const connectWalletButton = addConnectWalletButton(scene, {
+      isConnected,
+      address: address,
+      connect,
+      connectors,
+      error,
+      isLoading,
+      pendingConnector,
+      disconnect
+    });
+    connectWalletButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    connectWalletButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    grid.addControl(connectWalletButton);
+
+    const loginButton = addLoginButton(scene, setAccessToken, {
+      address: address || AddressZero,
+      error,
+      signer,
+      isLoading,
+    });
+    loginButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    loginButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+    grid.addControl(loginButton);
+
+    const token = localStorage.getItem("VipToken");
+    if (token && await validateToken(token)) {
+      const createPost = Button.CreateSimpleButton("CreatePost", "Create A New Post")
+      createPost.width = CTRL_BUTTON_WIDTH;
+      createPost.height = CTRL_BUTTON_HEIGHT;
+      createPost.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+      createPost.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+      if (createPost.textBlock) {
+        createPost.textBlock.color = "white";
+      }
+      createPost.onPointerUpObservable.add(async () => {
+        // console.log("hello");
+        if (inputToken.isVisible && inputToken.text !== "") {
+          const token = inputToken.text;
+          if (await validateToken(token)) {
+            localStorage.setItem("VipToken", token);
+            setSceneState({
+              camera: {
+                position: PROFILE_FRAME_VIEW_POSITION,
+                rotation: new Vector3(0, 0, 0),
+              }
+            })
+          }
+        }
+        inputToken.isVisible = !inputToken.isVisible;
+      })
+    } else {
+      const askToken = Button.CreateSimpleButton("AskToken", "Enter VIP Token\nTo Create A Post")
+      askToken.width = CTRL_BUTTON_WIDTH;
+      askToken.height = CTRL_BUTTON_HEIGHT;
+      askToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+      askToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+      if (askToken.textBlock) {
+        askToken.textBlock.color = "white";
+      }
+      askToken.onPointerUpObservable.add(async () => {
+        // console.log("hello");
+        if (inputToken.isVisible && inputToken.text !== "") {
+          const token = inputToken.text;
+          if (await validateToken(token)) {
+            localStorage.setItem("VipToken", token);
+            setSceneState({
+              camera: {
+                position: PROFILE_FRAME_VIEW_POSITION,
+                rotation: new Vector3(0, 0, 0),
+              }
+            })
+          }
+        }
+        inputToken.isVisible = !inputToken.isVisible;
+      })
+      grid.addControl(askToken);
+    }
+
+    ////////////////////////////////////////
+    // Write Buttons
+
+    if (sceneState.profileToLoad) {
+      const newPostButton = addNewPostButton(scene, sceneState.profileToLoad, {
+        address: address || AddressZero,
+        signer: signCreatePost,
+        error: createPostError,
+        isLoading: isLoadingCreatePostMessage,
+        lenshubPostWithSig,
+      }, setSceneState);
+      newPostButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+      newPostButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+      grid.addControl(newPostButton);
+      const streamButton = createStartVideoStreamButton(scene, setSceneState);
+      streamButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+      streamButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+      grid.addControl(streamButton);
+    } else {
+      console.warn(`No profile to load, not adding create post button`);
+    }
+
+    ////////////////////////////////////////
+    // Read Buttons
+
     const askProfile = Button.CreateSimpleButton("searchProfileButton", "🔎 profile")
     askProfile.width = CTRL_BUTTON_WIDTH;
     askProfile.height = CTRL_BUTTON_HEIGHT;
@@ -193,61 +257,6 @@ export const ctrlPanelMaker = async (
       if (inputProfile.isVisible) inputToken.isVisible = false;
     })
     grid.addControl(askProfile);
-
-    const token = localStorage.getItem("VipToken");
-    if (token && await validateToken(token)) {
-      const createPost = Button.CreateSimpleButton("CreatePost", "Create A New Post")
-      createPost.width = CTRL_BUTTON_WIDTH;
-      createPost.height = CTRL_BUTTON_HEIGHT;
-      createPost.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-      createPost.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-      if (createPost.textBlock) {
-        createPost.textBlock.color = "white";
-      }
-      createPost.onPointerUpObservable.add(async () => {
-        // console.log("hello");
-        if (inputToken.isVisible && inputToken.text !== "") {
-          const token = inputToken.text;
-          if (await validateToken(token)) {
-            localStorage.setItem("VipToken", token);
-            setSceneState({
-              camera: {
-                position: PROFILE_FRAME_VIEW_POSITION,
-                rotation: new Vector3(0, 0, 0),
-              }
-            })
-          }
-        }
-        inputToken.isVisible = !inputToken.isVisible;
-      })
-
-    } else {
-      const askToken = Button.CreateSimpleButton("AskToken", "Enter VIP Token\nTo Create A Post")
-      askToken.width = CTRL_BUTTON_WIDTH;
-      askToken.height = CTRL_BUTTON_HEIGHT;
-      askToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-      askToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
-      if (askToken.textBlock) {
-        askToken.textBlock.color = "white";
-      }
-      askToken.onPointerUpObservable.add(async () => {
-        // console.log("hello");
-        if (inputToken.isVisible && inputToken.text !== "") {
-          const token = inputToken.text;
-          if (await validateToken(token)) {
-            localStorage.setItem("VipToken", token);
-            setSceneState({
-              camera: {
-                position: PROFILE_FRAME_VIEW_POSITION,
-                rotation: new Vector3(0, 0, 0),
-              }
-            })
-          }
-        }
-        inputToken.isVisible = !inputToken.isVisible;
-      })
-      grid.addControl(askToken);
-    }
 
 
     holoslate.content = grid;
