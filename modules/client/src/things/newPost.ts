@@ -1,11 +1,10 @@
 import {
   FilesInput,
-  MeshBuilder,
   Tools,
   Vector3,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
-import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
+import { Button, } from "@babylonjs/gui";
 import { v4 as uuid } from "uuid";
 
 import { createPost } from "../utils/postToLens";

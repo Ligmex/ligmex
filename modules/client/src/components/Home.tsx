@@ -24,12 +24,9 @@ import { galleryMaker } from "../things/gallery";
 import { profileMaker } from "../things/profile";
 import { addNewPostButton } from "../things/newPost";
 import {
-  addLoginButton,
   createUploadFileView,
-  createStartVideoStreamButton,
   createVideoStreamDisplay,
   getPosts,
-  getProfileByOwner,
 } from "../utils";
 import {
   PROFILE_FRAME_POSITION,
@@ -43,10 +40,10 @@ const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 // const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
-const storedProfile = localStorage.getItem("profileId") || null;
 
 export const Home = () => {
-
+  const storedProfile = localStorage.getItem("ProfileID") || null;
+  console.log(`Got profile from local storage: ${storedProfile}`);
   const { disconnect } = useDisconnect();
   const { address, isConnected } = useAccount();
   const [sceneState, setSceneState] = useState({
@@ -67,7 +64,6 @@ export const Home = () => {
     contractInterface: LENS_HUB_ABI.abi,
     functionName: 'postWithSig',
     mode: 'recklesslyUnprepared',
-
     onError(error) {
       console.log(error);
     }
@@ -161,31 +157,6 @@ export const Home = () => {
       })
     } catch (e) {
       console.log(e);
-    }
-
-
-    if (isConnected && address) {
-
-      createStartVideoStreamButton(scene, setSceneState);
-      try {
-        setTimeout(async () => {
-          const profileId = (await getProfileByOwner(address))[0]?.id;
-          const myPosts = await getPostsByProfile(profileId);
-          if (myPosts && myPosts.length > 0) {
-            // galleryMaker(scene, new Vector3(10, 0, -10), 4, myPosts);
-          }
-          addNewPostButton(scene, profileId, {
-            address,
-            signer: signCreatePost,
-            error: createPostError,
-            isLoading: isLoadingCreatePostMessage,
-            lenshubPostWithSig,
-          }, setSceneState);
-
-        })
-      } catch (e) {
-        console.log(e);
-      }
     }
 
     try {

@@ -9,7 +9,11 @@ import { AdvancedDynamicTexture, Button, Control, Grid, GUI3DManager, Holographi
 import { Scene } from "@babylonjs/core/scene";
 
 import { addNewPostButton } from "../things/newPost";
-import { addConnectWalletButton, addLoginButton } from "../utils/babylonUtils";
+import {
+  addConnectWalletButton,
+  addLoginButton,
+  createStartVideoStreamButton,
+} from "../utils/babylonUtils";
 import { getProfileID } from "../utils/lensApi";
 import { validateToken, SceneState } from "../utils/misc";
 import { PROFILE_FRAME_VIEW_POSITION } from "../utils/cameraConstants";
@@ -109,8 +113,14 @@ export const ctrlPanelMaker = async (
       newPostButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
       newPostButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
       grid.addControl(newPostButton);
+
+      const streamButton = createStartVideoStreamButton(scene, setSceneState);
+      streamButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+      streamButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+      grid.addControl(streamButton);
+
     } else {
-      console.log(`No profile to load, not adding create post button`);
+      console.warn(`No profile to load, not adding create post button`);
     }
 
     const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("advinput");

@@ -14,7 +14,6 @@ import {
     VideoTexture
 } from "@babylonjs/core";
 // Babylon GUI imports
-import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 import { Button } from "@babylonjs/gui/2D/controls/button";
 // Web3 imports
 import { verifyMessage } from "ethers/lib/utils";
@@ -127,27 +126,23 @@ export const createStartVideoStreamButton = (
     scene: Scene,
     setSceneState: React.Dispatch<React.SetStateAction<SceneState>>
 ) => {
-    const videoStreamButton = MeshBuilder.CreatePlane("videoStreamButton", {}, scene);
-    videoStreamButton.position = new Vector3(-1, 2, 0);
-    const advancedTexture = AdvancedDynamicTexture.CreateForMesh(videoStreamButton);
-    const videoStreamControl = Button.CreateSimpleButton("StartVideoStream", "📡 Start Streaming");
-    videoStreamControl.width = 0.6;
-    videoStreamControl.height = 0.3;
-    videoStreamControl.color = "yellow";
-    videoStreamControl.background = "red";
-    videoStreamControl.onPointerUpObservable.add(() => {
-        const fpsCamera = scene.getCameraByName("fpsCamera") as FreeCamera;
-        setSceneState({
-            newFileToLoad: "",
-            videoStream: true,
-            camera: {
-                position: fpsCamera?.position,
-                rotation: fpsCamera?.rotation
-            }
-        });
+  const videoStreamButton = Button.CreateSimpleButton("StartVideoStream", "📡 Start Streaming");
+  videoStreamButton.width = 0.6;
+  videoStreamButton.height = 0.3;
+  videoStreamButton.color = "yellow";
+  videoStreamButton.background = "red";
+  videoStreamButton.onPointerUpObservable.add(() => {
+    const fpsCamera = scene.getCameraByName("fpsCamera") as FreeCamera;
+    setSceneState({
+      newFileToLoad: "",
+      videoStream: true,
+      camera: {
+        position: fpsCamera?.position,
+        rotation: fpsCamera?.rotation
+      }
     });
-    advancedTexture.addControl(videoStreamControl);
-
+  });
+  return videoStreamButton;
 }
 
 export const createProfilePicture = (
