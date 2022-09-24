@@ -33,21 +33,17 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     graphQLErrors.forEach(({ message, locations, path }) =>
       console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
     );
-
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
 const authLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem('ACCESS_TOKEN');
-  console.log('jwt token:', token);
-
   // Use the setContext method to set the HTTP headers.
   operation.setContext({
     headers: {
       'x-access-token': token ? `Bearer ${token}` : '',
     },
   });
-
   // Call the next link in the middleware chain.
   return forward(operation);
 });

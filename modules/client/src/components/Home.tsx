@@ -153,7 +153,6 @@ export const Home = () => {
           if (profilePost && profile) {
             console.log("showing posts by profile")
             profileMaker(scene, PROFILE_FRAME_POSITION, 4, profilePost, profile, following);
-            // galleryMaker(scene,  , 4, profilePost);
           }
         }
         

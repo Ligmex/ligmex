@@ -26,7 +26,6 @@ import { authenticate, generateChallenge } from "./lensApi"
 const LIVPEER_API_KEY = localStorage.getItem("LIVPEER_API_KEY") || "null";
 
 const setupLivepeerStream = async (videoEl: HTMLVideoElement) => {
-
     if (!isSupported()) {
         console.log("Browser not supported");
         return;
@@ -66,21 +65,16 @@ const setupLivepeerStream = async (videoEl: HTMLVideoElement) => {
             })
         });
         const data = await response.json();
-
         if (data?.streamKey) {
-
             const stream = videoEl.srcObject;
             const client = new Client();
             const session = client.cast(stream! as MediaStream, data?.streamKey);
-
             session.on('open', () => {
                 console.log('Stream started.')
             })
-
             session.on('close', () => {
                 console.log('Stream stopped.')
             })
-
             session.on('error', (err) => {
                 console.log('Stream error.', err.message)
             })
@@ -88,23 +82,19 @@ const setupLivepeerStream = async (videoEl: HTMLVideoElement) => {
     } catch (e) {
         console.log(e);
     }
-
-
-}
+};
 
 const login = async (address: string, signMessage: any, setAccessToken: any) => {
     // request a challenge from the server
     const challengeResponse = await generateChallenge(address);
-
     // sign the text with the wallet
     const sig = await signMessage({ message: challengeResponse.data.challenge.text });
-    console.log(sig);
+    console.log(`sig=${sig}`);
     const recoveredAddress = verifyMessage(challengeResponse.data.challenge.text, sig)
     if (address === recoveredAddress && sig) {
         const jwtTokens = (await authenticate(address, sig) as AuthenticateResponse).data.authenticate;
-        console.log("Setting access token");
+        console.log(`Setting access token to: access=${jwtTokens.accessToken} | refresh=${jwtTokens.refreshToken}`);
         setAccessToken(jwtTokens);
-        //console.log(jwtTokens);
         localStorage.setItem('ACCESS_TOKEN', jwtTokens.accessToken);
         localStorage.setItem('REFRESH_TOKEN', jwtTokens.refreshToken);
     }
@@ -120,7 +110,7 @@ export const createUploadFileView = (scene: Scene, filname: string | undefined) 
         })
         container.addAllToScene();
     });
-}
+};
 
 export const createStartVideoStreamButton = (
     scene: Scene,
@@ -143,7 +133,7 @@ export const createStartVideoStreamButton = (
     });
   });
   return videoStreamButton;
-}
+};
 
 export const createProfilePicture = (
     scene: Scene,
@@ -153,22 +143,19 @@ export const createProfilePicture = (
     position: Vector3,
     rotation: Vector3
 ) => {
-
     const profilePicture = MeshBuilder.CreateCylinder(
         `${id}-profileDisc`,
         { diameter: size, height: 0.05 },
         scene
     )
-
     const material = new StandardMaterial(`${id}-profilePicture`, scene);
     material.diffuseTexture = new Texture(url, scene);
     material.emissiveColor = Color3.White();
     profilePicture.material = material;
     profilePicture.position = position;
     profilePicture.rotation = rotation;
-
     return profilePicture;
-}
+};
 
 export const createVideoStreamDisplay = (scene: Scene) => {
     const videoStreamDisplay = MeshBuilder.CreatePlane("videoStreamDisplay", {
@@ -177,21 +164,14 @@ export const createVideoStreamDisplay = (scene: Scene) => {
     }, scene);
     videoStreamDisplay.position = new Vector3(3, 4, 0);
     videoStreamDisplay.rotation.z = Math.PI;
-
     const videoStreamMaterial = new StandardMaterial("streamingMaterial", scene);
     videoStreamMaterial.diffuseColor = Color3.Black();
-
     VideoTexture.CreateFromWebCam(scene, (videoTexture: VideoTexture) => {
-
         videoStreamMaterial.emissiveTexture = videoTexture;
         videoStreamDisplay.material = videoStreamMaterial;
-
-
         setupLivepeerStream(videoTexture.video);
-
     }, { minWidth: 2, minHeight: 2, maxWidth: 256, maxHeight: 256, deviceId: "videoStream" })
-
-}
+};
 
 export const addConnectWalletButton = (
     scene: Scene,
@@ -254,25 +234,20 @@ export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: A
     let minimum;
     let maximum;
     let center;
-
     // Create Transparent Material
     const transparentMaterial = new StandardMaterial('boundBoxMaterial', scene);
     transparentMaterial.alpha = 0.2;
-
     // Create Bounding Box Mesh
     const boundBox = MeshBuilder.CreateBox(`${id}-boundCube`, {}, scene);
     boundBox.material = transparentMaterial;
     boundBox.scaling = new Vector3(0.5, 0.5, -0.5);
-
     // Create Scaling Box Mesh
     const scaleBox = MeshBuilder.CreateBox(`${id}-scaleCube`, {}, scene);
     scaleBox.material = transparentMaterial;
     scaleBox.parent = boundBox
-
     for (let i = 1; i < assetContainer.meshes.length; i++) {
         assetContainer.meshes[i].parent = scaleBox;
     }
-
     // Get group maximum bounds
     assetContainer.meshes.forEach((mesh) => {
         if (mesh.material !== undefined && mesh.subMeshes !== undefined) {
@@ -285,38 +260,30 @@ export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: A
                 minimum.minimizeInPlace(boundingInfo.min);
             }
         }
-
     })
-
     // Get center of the group of meshes
     if (minimum) {
         let sum = maximum.add(minimum);
         center = sum.divide(new Vector3(-1, -1, 1));
     }
-
     assetContainer.meshes.forEach((mesh) => {
         mesh.position.addInPlace(center);
     })
-
     let localMax = 0;
     for (let key in { x: 0, y: 0, z: 0 }) {
         let scale = Math.abs(maximum[key] - minimum[key]);
         if (scale > localMax)
             localMax = scale;
     }
-
     scaleBox.scaling = new Vector3(1 / localMax, 1 / localMax, 1 / localMax);
-
     return boundBox;
-}
+};
 
 export const scaleNewMeshes = (newMeshes: AbstractMesh[], position = Vector3.Zero()): AbstractMesh | undefined => {
     if (newMeshes[0] === undefined) return;
-
     const scaleBox = newMeshes[0];
     let newMin;
     let newMax;
-
     for (let i = 1; i < newMeshes.length; i++) {
         let boundingInfo = newMeshes[i].getBoundingInfo();
         if (!newMin) {
@@ -327,19 +294,17 @@ export const scaleNewMeshes = (newMeshes: AbstractMesh[], position = Vector3.Zer
             newMax = Vector3.Maximize(boundingInfo.boundingBox.maximumWorld, newMax);
         }
     }
-
     let localMax = 0;
     for (let key in { x: 0, y: 0, z: 0 }) {
         let scale = Math.abs(newMax[key] - newMin[key]);
         if (scale > localMax)
             localMax = scale;
     }
-
     scaleBox.scaling = new Vector3(1 / localMax, 1 / localMax, -1 / localMax);
     scaleBox.position = position;
     scaleBox.rotation = new Vector3(0, 0, 0)
     return scaleBox;
-}
+};
 
 export const createTextDisplay = (
     scene: Scene,
@@ -369,4 +334,4 @@ export const createTextDisplay = (
       profileHandlePlane.material = profileHandleMaterial;
       profileHandlePlane.position = position;
     
-}
+};

@@ -13,5 +13,4 @@ grep "$@" --exclude=*.swp --exclude=*.pdf --color=auto -r "$target" \
   modules/**/package.json \
   modules/**/src \
   ops \
-  package.json \
-  src
+  package.json
