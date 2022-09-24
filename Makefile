@@ -117,7 +117,7 @@ builder: $(shell find ops/builder $(find_options))
 
 node-modules: builder package.json
 	$(log_start)
-	$(docker_run) "ls -l . && lerna bootstrap --hoist --no-progress"
+	$(docker_run) "ls -al . && lerna bootstrap --hoist --no-progress; ls -al ."
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
 ########################################
