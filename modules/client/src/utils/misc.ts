@@ -78,6 +78,7 @@ export enum PublicationMainFocus {
 }
 
 export const getStandardUrl = (uri: string) => {
+  if (!uri) return "";
   if (uri.startsWith("ipfs://")) {
     return uri.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
   } else if (uri.split("/").length === 1) {

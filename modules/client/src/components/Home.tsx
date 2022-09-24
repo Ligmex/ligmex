@@ -151,16 +151,13 @@ export const Home = () => {
           const profile = await getProfile(sceneState.profileToLoad);
           const following = await getFollowing(profile.ownedBy);
           if (profilePost && profile) {
-            console.log("showing posts by profile")
             profileMaker(scene, PROFILE_FRAME_POSITION, 4, profilePost, profile, following);
           }
         }
-        
         const latestPosts = await getPosts(10);
         if (latestPosts) {
           createTrendingCorner(scene, TRENDING_CORNER_POSITION, latestPosts);
         }
-        
       })
     } catch (e) {
       console.log(e);
