@@ -7,6 +7,7 @@
     "url": "git+ssh://git@github.com/Ligmex/ligmex.git"
   },
   "devDependencies": {
-    "david": "12.0.0"
+    "david": "12.0.0",
+    "typescript": "4.8.2"
   }
 }
