@@ -1,5 +1,3 @@
-import { from } from "@apollo/client";
-
 export { apolloClient } from "./apollo";
 export * from "./babylonUtils";
 export { buildFromPlan } from "./buildFromPlan";

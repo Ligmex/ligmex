@@ -1,5 +1,4 @@
 import {
-  AssetContainer,
   MeshBuilder,
   Scene,
   SceneLoader,

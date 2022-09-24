@@ -201,46 +201,39 @@ export const createVideoStreamDisplay = (scene: Scene) => {
 export const addConnectWalletButton = (
     scene: Scene,
     connectorOptions: {
-        isConnected: boolean,
         address?: string,
         connect: any,
         connectors: Array<any>,
+        disconnect: any,
         error: any,
+        isConnected: boolean,
         isLoading: boolean,
         pendingConnector: any,
-        disconnect: any
     }
 ) => {
-    const plane = MeshBuilder.CreatePlane("plane", {}, scene);
-    plane.position.y = 2;
-    plane.position.x = 1;
-
-    const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
-
-    let button: Button;
-    if (connectorOptions.isConnected) {
-        button = Button.CreateSimpleButton("disconnet", "❌ disconnet wallet");
-        button.background = "green";
-    } else {
-        button = Button.CreateSimpleButton("newPost", "🔗 connect wallet");
-        button.background = "black";
-    }
-    button.onPointerUpObservable.add(() => {
-        console.log("click");
-        if (connectorOptions.isConnected) {
-            console.log("disconnecting");
-            connectorOptions.disconnect();
-        } else {
-            console.log("connecting");
-            connectorOptions.connect({ connector: connectorOptions.connectors[0] })
-        }
-    });
-    button.width = 0.2;
-    button.height = 0.1;
-    button.color = "white";
-
-    advancedTexture.addControl(button);
-}
+  let button: Button;
+  if (connectorOptions.isConnected) {
+      button = Button.CreateSimpleButton("disconnet", "❌ disconnet wallet");
+      button.background = "green";
+  } else {
+      button = Button.CreateSimpleButton("newPost", "🔗 connect wallet");
+      button.background = "black";
+  }
+  button.onPointerUpObservable.add(() => {
+      console.log("click");
+      if (connectorOptions.isConnected) {
+          console.log("disconnecting");
+          connectorOptions.disconnect();
+      } else {
+          console.log("connecting");
+          connectorOptions.connect({ connector: connectorOptions.connectors[0] })
+      }
+  });
+  button.width = 0.2;
+  button.height = 0.1;
+  button.color = "white";
+  return button;
+};
 
 export const addLoginButton = (
     scene: Scene,
@@ -252,21 +245,14 @@ export const addLoginButton = (
         isLoading: any
     }
 ) => {
-    const plane = MeshBuilder.CreatePlane("plane", {}, scene);
-    plane.position.y = 2;
-    plane.position.x = 0.5;
-
-    const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
-
     const button = Button.CreateSimpleButton("newPost", "🔐 Login");
     button.width = 0.2;
     button.height = 0.1;
     button.color = "white";
     button.background = "red";
     button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer, setAccessToken));
-
-    advancedTexture.addControl(button);
-}
+    return button;
+};
 
 export const scaleAndCenterMeshes = (id: string, scene: Scene, assetContainer: AssetContainer): Mesh | undefined => {
     if (assetContainer.meshes[0] === undefined) return undefined;

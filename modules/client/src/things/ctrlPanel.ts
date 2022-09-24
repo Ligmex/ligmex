@@ -1,41 +1,38 @@
+import { AddressZero } from "@ethersproject/constants";
 import {
   AbstractMesh,
   MeshBuilder,
-  DynamicTexture,
-  StandardMaterial,
   Vector3,
   Vector2,
-  DeviceSourceManager,
-  DeviceType,
 } from "@babylonjs/core";
-import { AdvancedDynamicTexture, Button, Control, Grid, GUI3DManager, HolographicSlate, InputText, TextBlock, TextWrapping } from "@babylonjs/gui";
+import { AdvancedDynamicTexture, Button, Control, Grid, GUI3DManager, HolographicSlate, InputText } from "@babylonjs/gui";
 import { Scene } from "@babylonjs/core/scene";
 
+import { addConnectWalletButton, addLoginButton } from "../utils/babylonUtils";
 import { getProfileID } from "../utils/lensApi";
 import { validateToken, SceneState } from "../utils/misc";
 import { PROFILE_FRAME_VIEW_POSITION } from "../utils/cameraConstants";
-
-import {
-  addLoginButton,
-  addConnectWalletButton,
-  createStartVideoStreamButton,
-  createVideoStreamDisplay,
-  getPosts,
-  getProfileByOwner,
-} from "../utils";
 
 export const ctrlPanelMaker = async (
   scene: Scene,
   position: Vector3,
   connectorOptions: {
     address?: string,
+    connect: any,
+    connectors: Array<any>,
+    disconnect: any,
     error: any,
-    signer: any,
-    isLoading: any,
+    isConnected: boolean,
+    isLoading: boolean,
     lenshubPostWithSig: any,
+    pendingConnector: any
+    signer: any,
   },
-  setSceneState: React.Dispatch<React.SetStateAction<SceneState>>
+  setSceneState: React.Dispatch<React.SetStateAction<SceneState>>,
+  setAccessToken: any,
 ): Promise<Array<AbstractMesh>> => {
+
+  const { address, connect, connectors, disconnect, error, isConnected, isLoading, lenshubPostWithSig, pendingConnector, signer } = connectorOptions;
 
   const id = "ctrlPanel";
   const height = 1;
@@ -69,12 +66,29 @@ export const ctrlPanelMaker = async (
 
     const grid = new Grid("newGrid");
 
-    /*
-    const content = new TextBlock(`${id}-ctrlPanelContent`);
-    content.textWrapping = TextWrapping.WordWrap;
-    content.color = "white";
-    content.text = "Pretty fkn please input ur username";
-    */
+    const connectWalletButton = addConnectWalletButton(scene, {
+      isConnected,
+      address: address,
+      connect,
+      connectors,
+      error,
+      isLoading,
+      pendingConnector,
+      disconnect
+    });
+    connectWalletButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+    connectWalletButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    grid.addControl(connectWalletButton);
+
+    const loginButton = addLoginButton(scene, setAccessToken, {
+      address: address || AddressZero,
+      error,
+      signer,
+      isLoading,
+    });
+    loginButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+    loginButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+    grid.addControl(loginButton);
 
     const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("advinput");
 
