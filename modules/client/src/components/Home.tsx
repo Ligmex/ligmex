@@ -35,7 +35,7 @@ import {
   getPosts,
   getProfileByOwner,
 } from "../utils";
-import { PROFILE_FRAME_POSITION, PROFILE_FRAME_VIEW_POSITION, PROFILE_FRAME_VIEW_ROTATION } from "../utils/cameraConstants";
+import { PROFILE_FRAME_POSITION, PROFILE_FRAME_VIEW_POSITION, PROFILE_FRAME_VIEW_ROTATION, TRENDING_VIEW_POSITION } from "../utils/cameraConstants";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
@@ -128,12 +128,14 @@ export const Home = () => {
             profileMaker(scene, PROFILE_FRAME_POSITION, 4, profilePost, profile, following);
             // galleryMaker(scene,  , 4, profilePost);
           }
-        } else {
-          const latestPosts = await getPosts(10);
-          if (latestPosts) {
-            galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
-          }
         }
+        
+        const latestPosts = await getPosts(10);
+        if (latestPosts) {
+          // galleryMaker(scene, TRENDING_VIEW_POSITION, 4, latestPosts);
+          createTrendingCorner(scene, TRENDING_VIEW_POSITION, latestPosts);
+        }
+        
       })
     } catch (e) {
       console.log(e);
