@@ -2,11 +2,14 @@
   "name": "ligmex",
   "version": "0.0.2",
   "registry": "docker.io",
+  "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Ligmex/ligmex.git"
   },
   "devDependencies": {
-    "david": "12.0.0"
+    "david": "12.0.0",
+    "pino-pretty": "9.1.0",
+    "typescript": "4.8.3"
   }
 }

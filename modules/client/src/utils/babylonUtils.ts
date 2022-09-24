@@ -22,6 +22,7 @@ import { Client, isSupported } from "@livepeer/webrtmp-sdk";
 
 import { AuthenticateResponse, SceneState } from './misc';
 import { authenticate, generateChallenge } from "./lensApi"
+import { CTRL_BUTTON_HEIGHT, CTRL_BUTTON_WIDTH } from "./constants"
 
 const LIVPEER_API_KEY = localStorage.getItem("LIVPEER_API_KEY") || "null";
 
@@ -117,8 +118,8 @@ export const createStartVideoStreamButton = (
     setSceneState: React.Dispatch<React.SetStateAction<SceneState>>
 ) => {
   const videoStreamButton = Button.CreateSimpleButton("StartVideoStream", "📡 Start Streaming");
-  videoStreamButton.width = 0.6;
-  videoStreamButton.height = 0.3;
+  videoStreamButton.width = CTRL_BUTTON_WIDTH;
+  videoStreamButton.height = CTRL_BUTTON_HEIGHT;
   videoStreamButton.color = "yellow";
   videoStreamButton.background = "red";
   videoStreamButton.onPointerUpObservable.add(() => {
@@ -204,8 +205,8 @@ export const addConnectWalletButton = (
           connectorOptions.connect({ connector: connectorOptions.connectors[0] })
       }
   });
-  button.width = 0.2;
-  button.height = 0.1;
+  button.width = CTRL_BUTTON_WIDTH;
+  button.height = CTRL_BUTTON_HEIGHT;
   button.color = "white";
   return button;
 };
@@ -221,8 +222,8 @@ export const addLoginButton = (
     }
 ) => {
     const button = Button.CreateSimpleButton("newPost", "🔐 Login");
-    button.width = 0.2;
-    button.height = 0.1;
+    button.width = CTRL_BUTTON_WIDTH;
+    button.height = CTRL_BUTTON_HEIGHT;
     button.color = "white";
     button.background = "red";
     button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer, setAccessToken));

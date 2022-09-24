@@ -15,7 +15,7 @@ jobs:
     interpreter: !ShellInterpreter
       shell: bash
       commands:
-      - make all
+      - CI=true make all
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PushRepository
@@ -46,6 +46,8 @@ jobs:
   caches:
   - key: node_modules
     path: node_modules
+  - key: cache
+    path: .cache
   timeout: 3600
 - name: Deploy
   jobExecutor: system76
@@ -61,7 +63,7 @@ jobs:
     runInContainer: false
     interpreter: !DefaultInterpreter
       commands:
-      - make all
+      - CI=true make all
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PushRepository
@@ -101,4 +103,6 @@ jobs:
   caches:
   - key: node_modules
     path: node_modules
+  - key: cache
+    path: .cache
   timeout: 3600

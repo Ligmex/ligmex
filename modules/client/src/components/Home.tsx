@@ -31,12 +31,12 @@ import {
 } from "../utils";
 import {
   PROFILE_FRAME_POSITION,
-  PROFILE_FRAME_VIEW_POSITION,
+  CTRL_PANEL_VIEW_POSITION,
   PROFILE_FRAME_VIEW_ROTATION,
   TRENDING_CORNER_POSITION,
   TRENDING_VIEW_POSITION,
   TRENDING_VIEW_ROTATION,
-} from "../utils/cameraConstants";
+} from "../utils/constants";
 
 import { SceneComponent } from "./Scene";
 
@@ -53,7 +53,7 @@ export const Home = () => {
   const [sceneState, setSceneState] = useState({
     profileToLoad: storedProfile ? storedProfile : "",
     camera: storedProfile? {
-      position: PROFILE_FRAME_VIEW_POSITION,
+      position: CTRL_PANEL_VIEW_POSITION,
       rotation: PROFILE_FRAME_VIEW_ROTATION
     } : {
       position: TRENDING_VIEW_POSITION,

@@ -16,7 +16,11 @@ import {
 } from "../utils/babylonUtils";
 import { getProfileID } from "../utils/lensApi";
 import { validateToken, SceneState } from "../utils/misc";
-import { PROFILE_FRAME_VIEW_POSITION } from "../utils/cameraConstants";
+import {
+  PROFILE_FRAME_VIEW_POSITION,
+  CTRL_BUTTON_WIDTH,
+  CTRL_BUTTON_HEIGHT,
+} from "../utils/constants";
 
 export const ctrlPanelMaker = async (
   scene: Scene,
@@ -128,9 +132,9 @@ export const ctrlPanelMaker = async (
     const inputProfile = new InputText("profileIdInput");
     inputProfile.isVisible = false
     inputProfile.promptMessage = "Enter Profile ID"
-    inputProfile.height = "100px";
-    inputProfile.width = "200px";
-    inputProfile.color = "red";
+    inputProfile.height = CTRL_BUTTON_HEIGHT;
+    inputProfile.width = CTRL_BUTTON_WIDTH;
+    inputProfile.color = "green";
     inputProfile.background = "black"
     inputProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
     inputProfile.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
@@ -142,11 +146,9 @@ export const ctrlPanelMaker = async (
       })
     })
 
-    // advancedTexture.addControl(inputProfile);
-
     const askProfile = Button.CreateSimpleButton("searchProfileButton", "🔎 profile")
-    askProfile.width = "200px";
-    askProfile.height = "100px";
+    askProfile.width = CTRL_BUTTON_WIDTH;
+    askProfile.height = CTRL_BUTTON_HEIGHT;
     askProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
     askProfile.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
     if (askProfile.textBlock) {
@@ -177,12 +179,12 @@ export const ctrlPanelMaker = async (
 
     const inputToken = new InputText("TokenInput");
     inputToken.isVisible = false
-    inputToken.promptMessage = "Enter Token ID"
-    inputToken.height = "100px";
-    inputToken.width = "200px";
+    inputToken.promptMessage = "Enter VIP Token"
+    inputToken.height = CTRL_BUTTON_HEIGHT;
+    inputToken.width = CTRL_BUTTON_WIDTH;
     inputToken.color = "red";
     inputToken.background = "black"
-    inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+    inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
     inputToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
     advancedTexture.addControl(inputToken);
 
@@ -190,9 +192,9 @@ export const ctrlPanelMaker = async (
     if (token && await validateToken(token)) {
 
       const createPost = Button.CreateSimpleButton("CreatePost", "Create A New Post")
-      createPost.width = "200px";
-      createPost.height = "100px";
-      createPost.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+      createPost.width = CTRL_BUTTON_WIDTH;
+      createPost.height = CTRL_BUTTON_HEIGHT;
+      createPost.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
       createPost.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
       if (createPost.textBlock) {
         createPost.textBlock.color = "white";
@@ -217,9 +219,9 @@ export const ctrlPanelMaker = async (
     } else {
 
       const askToken = Button.CreateSimpleButton("AskToken", "Enter VIP Token")
-      askToken.width = "200px";
-      askToken.height = "100px";
-      askToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+      askToken.width = CTRL_BUTTON_WIDTH;
+      askToken.height = CTRL_BUTTON_HEIGHT;
+      askToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
       askToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
       if (askToken.textBlock) {
         askToken.textBlock.color = "white";
