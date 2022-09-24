@@ -95,8 +95,14 @@ export const Home = () => {
         pendingConnector,
         signer: signCreatePost,
       },
+      sceneState,
       setSceneState,
       setAccessToken,
+      {
+        signCreatePost,
+        createPostError,
+        isLoadingCreatePostMessage,
+      },
     );
 
     const camera = scene.getCameraByName("fpsCamera") as FreeCamera;

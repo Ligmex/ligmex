@@ -25,11 +25,6 @@ export const addNewPostButton = (
   setSceneState:  React.Dispatch<React.SetStateAction<SceneState>>
 ) => {
 
-  const plane = MeshBuilder.CreatePlane("plane", {}, scene);
-  plane.position.y = 2;
-
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
-
   const button = Button.CreateSimpleButton("newPost", "📡 Create New Post");
   button.width = 0.6;
   button.height = 0.3;
@@ -47,7 +42,6 @@ export const addNewPostButton = (
     const file = event.target.files[0];
     const blob = new Blob([file]);
     const filename = file.name.toLowerCase();
-
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -96,9 +90,9 @@ export const addNewPostButton = (
   }
   Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
     button.onPointerDownObservable.add(()=>{
-
       $("#import").trigger('click')
     })
    });
-  advancedTexture.addControl(button);
+
+  return button;
 }
