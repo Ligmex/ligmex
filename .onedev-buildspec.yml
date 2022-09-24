@@ -46,6 +46,8 @@ jobs:
   caches:
   - key: node_modules
     path: node_modules
+  - key: cache
+    path: .cache
   timeout: 3600
 - name: Deploy
   jobExecutor: system76
@@ -101,4 +103,6 @@ jobs:
   caches:
   - key: node_modules
     path: node_modules
+  - key: cache
+    path: .cache
   timeout: 3600
