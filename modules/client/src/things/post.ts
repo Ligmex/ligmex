@@ -15,14 +15,18 @@ import { getStandardUrl, scaleNewMeshes } from "../utils";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
-export const postMaker = async (scene: Scene, position: Vector3, post: any): Promise<Array<AbstractMesh>> => {
+export const postMaker = async (
+  scene: Scene,
+  position: Vector3,
+  post: any,
+): Promise<Array<AbstractMesh>> => {
 
   const height = 1;
 
   const createPedestal = (id: string, position: Vector3) => {
     const pillar = MeshBuilder.CreateCylinder(
       id,
-      { diameter: height/4, height },
+      { diameter: height / 4, height },
       scene
     )
     pillar.position = position;
@@ -32,7 +36,7 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
 
   const pillar_position = position;
   const post_position = new Vector3(position.x, position.y + height, position.z);
-  const post_rotation = new Vector3(Math.PI/8, 0, 0);
+  const post_rotation = new Vector3(Math.PI / 8, 0, 0);
 
   const output = [] as any[];
 
@@ -72,8 +76,8 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
       let url = getStandardUrl(post.metadata.media[0]?.original?.url);
       if (!url) break;
       output.push(createPedestal(`${post.id}-pillar`, pillar_position));
-      const f = new Vector4(0,0, 1, 1);
-      const b = new Vector4(0,0, 0.5, 1);
+      const f = new Vector4(0, 0, 1, 1);
+      const b = new Vector4(0, 0, 0.5, 1);
       const imagePlane = MeshBuilder.CreateBox(post.id, {
         depth: 0.03,
         height: post.metadata.media[0]?.original?.height || 1,
@@ -121,45 +125,6 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
   };
 
   return output;
-  /*
-  const createTextPlaque =async (post: any, position: Vector3, f: Vector4, b: Vector4) => {
-    console.log(post.metadata.description);
-    // const plaque = MeshBuilder.CreateBox(
-    //   `${post.id}-plaque`,
-    //   {bottomBaseAt: 2, depth: 1/16, height: 1, width: 1, frontUVs: f, backUVs: b },
-    //   scene
-    // );
-    const plaque = MeshBuilder.CreatePlane(
-        `${post.id}-plaque`,
-        { height: 1, width: 1, frontUVs: new Vector4(0, 0, 1, 1), backUVs: new Vector4(0, 0, 1, 1) },
-        scene
-      )
-    plaque.position = position;
-    plaque.addRotation(Math.PI/8, 0, 0);
-    plaque.material = new StandardMaterial(`${post.id}-plaqueMaterial`, scene);
-    const dynamicTexture = new DynamicTexture(`${post.id}-dynamicTextue`, 50, scene, true);
-    console.log(dynamicTexture.scale);
-    // dynamicTexture.hasAlpha = true;
-    dynamicTexture.drawText(
-      post.metadata.description,
-      5, 10, "8x Arial", "#FFFFFF",
-      "black"
-      );
-    (plaque.material as StandardMaterial).diffuseTexture = dynamicTexture;
-  }
-  const createHoloSlate =async (post: any) => {
-    const guiManager = new GUI3DManager(scene);
-    const postHoloState = new HolographicSlate(`${post.id}-holoState`);
-    postHoloState.minDimensions = new Vector2(0.02, 0.02);
-    postHoloState.position = new Vector3(0,10,0);
-    console.log(postHoloState.minDimensions);
-    // postHoloState.linkToTransformNode(anchor)
-    postHoloState.dimensions = new Vector2(0.02,0.02);
-    guiManager.addControl(postHoloState);
-    const description = new TextBlock(`${post.id}-description`); //post.metadata.description;
-    const content = new TextBlock(`${post.id}-content`);
-  }
-  */
 
 }
 
