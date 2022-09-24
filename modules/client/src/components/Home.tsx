@@ -35,7 +35,7 @@ import {
   getPosts,
   getProfileByOwner,
 } from "../utils";
-import { PROFILE_FRAME_POSITION, PROFILE_FRAME_VIEW_POSITION, PROFILE_FRAME_VIEW_ROTATION, TRENDING_VIEW_POSITION } from "../utils/cameraConstants";
+import { PROFILE_FRAME_POSITION, PROFILE_FRAME_VIEW_POSITION, PROFILE_FRAME_VIEW_ROTATION, TRENDING_CORNER_POSITION, TRENDING_VIEW_POSITION, TRENDING_VIEW_ROTATION } from "../utils/cameraConstants";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
 const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
@@ -53,7 +53,10 @@ export const Home = () => {
     camera: storedProfile? {
       position: PROFILE_FRAME_VIEW_POSITION,
       rotation: PROFILE_FRAME_VIEW_ROTATION
-    } : null
+    } : {
+      position: TRENDING_VIEW_POSITION,
+      rotation: TRENDING_VIEW_ROTATION
+    }
   } as SceneState);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
@@ -132,8 +135,7 @@ export const Home = () => {
         
         const latestPosts = await getPosts(10);
         if (latestPosts) {
-          // galleryMaker(scene, TRENDING_VIEW_POSITION, 4, latestPosts);
-          createTrendingCorner(scene, TRENDING_VIEW_POSITION, latestPosts);
+          createTrendingCorner(scene, TRENDING_CORNER_POSITION, latestPosts);
         }
         
       })
