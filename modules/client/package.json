@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "@types/jquery": "3.5.14",
-    "@types/node": "16.11.58",
+    "@types/node": "18.7.20",
     "@types/react": "18.0.18",
     "@types/react-dom": "18.0.6",
     "@types/uuid": "8.3.4",
