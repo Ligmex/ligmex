@@ -8,10 +8,9 @@ import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { verifyMessage } from 'ethers/lib/utils'
 import { DeviceSourceManager, DeviceType, FreeCamera, PointerInput } from "@babylonjs/core";
 
-import { buildFromPlan } from "../utils";
+import { buildFromPlan } from "../utils/buildFromPlan";
 
 const buildWalls = (scene: Scene) => {
   const baseData = [-25, -25, -25, 25, 25, 25, 25, -25];
@@ -31,6 +30,7 @@ const buildWalls = (scene: Scene) => {
   const height = 1;
 
   let newWall = buildFromPlan(walls, ply, height, scene);
+  return newWall;
 }
 
 const setupFPSCameraMovements = (scene: Scene) => {
@@ -91,7 +91,7 @@ const setupFPSCameraMovements = (scene: Scene) => {
     }
   });
 
-} 
+}
 
 export const SceneComponent = (props: {
   antialias: boolean;

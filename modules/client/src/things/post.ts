@@ -11,7 +11,8 @@ import {
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 
-import { getStandardUrl, scaleNewMeshes } from "../utils";
+import { getStandardUrl } from "../utils/misc";
+import { scaleNewMeshes } from "../utils/babylonUtils";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 

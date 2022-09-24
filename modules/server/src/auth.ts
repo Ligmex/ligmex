@@ -18,7 +18,7 @@ authRouter.use((req, res, next) => {
   if (restrictedPaths.includes(req.path) || restrictedMethods.includes(req.method)) {
     const authHeader = req.headers[authHeaderKey];
     if (!req.headers[authHeaderKey] || authHeader !== `${authType} ${encodedToken}`) {
-      res.setHeader("www-authenticate", authType);
+      res.removeHeader("www-authenticate");
       // Log a description re why auth failed
       const prefix = `Failed to auth ${req.method} to ${req.path}`;
       if (!authHeader) {

@@ -6,7 +6,8 @@ import {
   Vector3,
 } from "@babylonjs/core";
 
-import { createTextDisplay, getPosts, getStandardUrl } from "../utils";
+import { getStandardUrl } from "../utils/misc";
+import { createTextDisplay } from "../utils/babylonUtils";
 
 import { Control, Grid, GUI3DManager, HolographicSlate, TextBlock, TextWrapping, Image as GuiImage } from "@babylonjs/gui";
 import { postMaker } from "./post";
