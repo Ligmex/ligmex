@@ -1,6 +1,6 @@
 {
   "name": "ligmex",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "registry": "docker.io",
   "repository": {
     "type": "git",

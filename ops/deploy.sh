@@ -83,12 +83,12 @@ then echo "Successfully set version to $pkgVersion in package.json"
 else echo "Failure, set version to $pkgVersion in package.json. Manual cleanup required" && exit 1
 fi
 
-# Push updated package versions to prod
-git add .
-git commit --amend --no-edit
-git push origin prod --no-verify
-
 # Bring main up-to-date w prod for a cleaner git history
 git checkout main
 git merge prod
 git push origin main --no-verify
+
+# Push updated package versions to prod
+git add .
+git commit --amend --no-edit
+git push origin prod --no-verify
