@@ -129,7 +129,7 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   groupMesh.addBehavior(pointerDrag);
   if (groupMesh && finalMesh) {
     groupMesh.parent = finalMesh;
-  } 
+  }
 
   /*
   groupMesh.actionManager = new ActionManager(scene);

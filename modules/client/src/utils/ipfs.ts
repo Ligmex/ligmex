@@ -33,7 +33,7 @@ const upload = async <T>(data: T): Promise<string> => {
   try {
     const vipToken = "abc123"; // TODO: ask user for auth token
     const upload = await axios({
-      url: `${window.location.origin}/ipfs`, 
+      url: `${window.location.origin}/ipfs`,
       method: "POST",
       data,
       headers: {
@@ -61,7 +61,7 @@ const upload = async <T>(data: T): Promise<string> => {
  */
 const download = async (hash: string): Promise<string> => {
   const res = await axios({
-    url: `${window.location.origin}/ipfs/${hash.replace(/^\/?ipfs\//, "")}`, 
+    url: `${window.location.origin}/ipfs/${hash.replace(/^\/?ipfs\//, "")}`,
     method: "GET",
     headers: { "content-type": "application/octet-stream" }
   });

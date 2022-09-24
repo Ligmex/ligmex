@@ -9,8 +9,18 @@ import { v4 as uuid } from "uuid";
 
 import { createPost } from "../utils/postToLens";
 import { ipfs } from "../utils/ipfs";
-import { PublicationMainFocus, SceneState } from "../utils/misc";
+import { SceneState } from "../utils/babylonUtils";
 import { CTRL_BUTTON_HEIGHT, CTRL_BUTTON_WIDTH } from "../utils/constants";
+
+enum PublicationMainFocus {
+  VIDEO = 'VIDEO',
+  IMAGE = 'IMAGE',
+  ARTICLE = 'ARTICLE',
+  TEXT_ONLY = 'TEXT_ONLY',
+  AUDIO = 'AUDIO',
+  LINK = 'LINK',
+  EMBED = 'EMBED',
+}
 
 export const addNewPostButton = (
   scene: Scene,
@@ -76,7 +86,7 @@ export const addNewPostButton = (
         console.log(e);
       } finally {
         FilesInput.FilesToLoad[filename] = blob as any;
-        
+
         setSceneState({
           newFileToLoad: filename,
           videoStream: false,

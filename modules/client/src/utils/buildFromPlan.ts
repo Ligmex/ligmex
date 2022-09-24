@@ -59,8 +59,8 @@ export const buildFromPlan = (walls, ply, height, scene) => {
     VertexData.ComputeNormals(positions, indices, normals);
     VertexData._ComputeSides(Mesh.FRONTSIDE, positions, indices, normals, uvs);
 
-    
-    //Create a custom mesh  
+
+    //Create a custom mesh
     let customMesh = new Mesh("custom", scene);
 
     //Create a vertexData object
@@ -74,7 +74,6 @@ export const buildFromPlan = (walls, ply, height, scene) => {
 
     //Apply vertexData to custom mesh
     vertexData.applyToMesh(customMesh);
-    
+
     return customMesh;
-    
 }

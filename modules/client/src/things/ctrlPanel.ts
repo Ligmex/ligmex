@@ -5,17 +5,15 @@ import {
   Vector3,
   Vector2,
 } from "@babylonjs/core";
-import { AdvancedDynamicTexture, Button, Control, Grid, GUI3DManager, HolographicSlate, InputText } from "@babylonjs/gui";
+import { Button, Control, Grid, GUI3DManager, HolographicSlate, InputText } from "@babylonjs/gui";
 import { Scene } from "@babylonjs/core/scene";
 
 import { addNewPostButton } from "../things/newPost";
-import {
-  addConnectWalletButton,
-  addLoginButton,
-  createStartVideoStreamButton,
-} from "../utils/babylonUtils";
-import { getProfileID } from "../utils/lensApi";
-import { validateToken, SceneState } from "../utils/misc";
+import { SceneState } from "../utils/babylonUtils";
+import { createStartVideoStreamButton } from "../utils/livepeer";
+import { getProfileID, addLoginButton } from "../utils/lensApi";
+import { addConnectWalletButton } from "../utils/wallet";
+import { validateToken } from "../utils/misc";
 import {
   PROFILE_FRAME_VIEW_POSITION,
   CTRL_BUTTON_WIDTH,
@@ -119,7 +117,7 @@ export const ctrlPanelMaker = async (
       grid.addControl(newPostButton);
 
       const streamButton = createStartVideoStreamButton(scene, setSceneState);
-      streamButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+      streamButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
       streamButton.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
       grid.addControl(streamButton);
 
@@ -127,16 +125,14 @@ export const ctrlPanelMaker = async (
       console.warn(`No profile to load, not adding create post button`);
     }
 
-    const advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI("advinput");
-
     const inputProfile = new InputText("profileIdInput");
     inputProfile.isVisible = false
     inputProfile.promptMessage = "Enter Profile ID"
     inputProfile.height = CTRL_BUTTON_HEIGHT;
-    inputProfile.width = CTRL_BUTTON_WIDTH;
+    inputProfile.width = CTRL_BUTTON_WIDTH * 2;
     inputProfile.color = "green";
     inputProfile.background = "black"
-    inputProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+    inputProfile.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
     inputProfile.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
     inputProfile.onFocusObservable.addOnce(() => {
       let camera = scene.getCameraByName("fpsCamera");
@@ -145,6 +141,25 @@ export const ctrlPanelMaker = async (
         inputProfile.processKey(ev.keyCode, ev.key, ev)
       })
     })
+    grid.addControl(inputProfile);
+
+    const inputToken = new InputText("TokenInput");
+    inputToken.isVisible = false
+    inputToken.promptMessage = "Enter VIP Token"
+    inputToken.height = CTRL_BUTTON_HEIGHT;
+    inputToken.width = CTRL_BUTTON_WIDTH * 2;
+    inputToken.color = "red";
+    inputToken.background = "black"
+    inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
+    inputToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+    inputToken.onFocusObservable.addOnce(() => {
+      let camera = scene.getCameraByName("fpsCamera");
+      camera?.detachControl()
+      document.addEventListener('keyup', (ev) => {
+        inputToken.processKey(ev.keyCode, ev.key, ev)
+      })
+    })
+    grid.addControl(inputToken);
 
     const askProfile = Button.CreateSimpleButton("searchProfileButton", "🔎 profile")
     askProfile.width = CTRL_BUTTON_WIDTH;
@@ -175,22 +190,12 @@ export const ctrlPanelMaker = async (
         }
       }
       inputProfile.isVisible = !inputProfile.isVisible;
+      if (inputProfile.isVisible) inputToken.isVisible = false;
     })
-
-    const inputToken = new InputText("TokenInput");
-    inputToken.isVisible = false
-    inputToken.promptMessage = "Enter VIP Token"
-    inputToken.height = CTRL_BUTTON_HEIGHT;
-    inputToken.width = CTRL_BUTTON_WIDTH;
-    inputToken.color = "red";
-    inputToken.background = "black"
-    inputToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-    inputToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-    advancedTexture.addControl(inputToken);
+    grid.addControl(askProfile);
 
     const token = localStorage.getItem("VipToken");
     if (token && await validateToken(token)) {
-
       const createPost = Button.CreateSimpleButton("CreatePost", "Create A New Post")
       createPost.width = CTRL_BUTTON_WIDTH;
       createPost.height = CTRL_BUTTON_HEIGHT;
@@ -217,12 +222,11 @@ export const ctrlPanelMaker = async (
       })
 
     } else {
-
-      const askToken = Button.CreateSimpleButton("AskToken", "Enter VIP Token")
+      const askToken = Button.CreateSimpleButton("AskToken", "Enter VIP Token\nTo Create A Post")
       askToken.width = CTRL_BUTTON_WIDTH;
       askToken.height = CTRL_BUTTON_HEIGHT;
       askToken.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-      askToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+      askToken.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
       if (askToken.textBlock) {
         askToken.textBlock.color = "white";
       }
@@ -243,14 +247,9 @@ export const ctrlPanelMaker = async (
         inputToken.isVisible = !inputToken.isVisible;
       })
       grid.addControl(askToken);
-
     }
 
-    grid.addControl(askProfile);
-    grid.addControl(inputProfile);
-    grid.addControl(inputToken);
 
-    // advancedTexture.addControl(grid);
     holoslate.content = grid;
 
     return [holoslate];

@@ -3,7 +3,7 @@ import {
   Vector3,
 } from "@babylonjs/core";
 
-import { createTextDisplay, getPosts } from "../utils";
+import { createTextDisplay } from "../utils/babylonUtils";
 
 import { postMaker } from "./post";
 
