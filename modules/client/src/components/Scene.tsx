@@ -58,6 +58,7 @@ const setupFPSCameraMovements = (scene: Scene) => {
         }
       });
     }
+    
     // POINTER CONFIG
     else if (device.deviceType === DeviceType.Mouse || device.deviceType === DeviceType.Touch) {
       device.onInputChangedObservable.add((deviceData) => {
@@ -124,17 +125,17 @@ export const SceneComponent = (props: {
 
     setupFPSCameraMovements(scene);
     
-    const camera2 = new ArcRotateCamera(
-      "camera1",
-      -Math.PI/2,
-      Math.PI/3,
-      25,
-      new Vector3(0, 2, 0),
-      scene,
-    );
-    camera2.attachControl(canvas, true);
-    camera2.zoomToMouseLocation = true;
-    camera2.allowUpsideDown = false;
+    // const camera2 = new ArcRotateCamera(
+    //   "camera1",
+    //   -Math.PI/2,
+    //   Math.PI/3,
+    //   25,
+    //   new Vector3(0, 2, 0),
+    //   scene,
+    // );
+    // camera2.attachControl(canvas, true);
+    // camera2.zoomToMouseLocation = true;
+    // camera2.allowUpsideDown = false;
 
     buildWalls(scene);
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);

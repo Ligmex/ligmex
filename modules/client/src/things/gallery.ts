@@ -1,4 +1,5 @@
 import {
+  AbstractMesh,
   // ActionManager,
   Mesh,
   MeshBuilder,
@@ -106,6 +107,8 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   groupMesh.position = new Vector3((groupWidth / 2) - w + d * 2, position.y - h, 0);
   console.log(groupMesh.position)
 
+  const postMeshes = [] as AbstractMesh[][];
+
   posts.forEach(async (post, i) => {
     const postMesh = await postMaker(scene, new Vector3(
       -(groupWidth / 2) + step * (i + 1), // position.x - w + d + step * (i + 1),
@@ -115,6 +118,7 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
     postMesh.forEach(mesh => {
       mesh.parent = groupMesh;
     });
+    postMeshes.push(postMesh);
   });
 
   const pointerDrag = new PointerDragBehavior({
@@ -122,8 +126,22 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   })
   pointerDrag.moveAttached = false;
   // pointerDrag.dragDeltaRatio = 1;
+
+  const minX = (groupWidth / 2) - w + d * 2;
+  const maxX = ((groupWidth / 2) - w ) - groupWidth + height * 2;
+
   pointerDrag.onDragObservable.add((data, state) => {
-    console.log("hi", data.delta);
+    console.log("hi", data.delta.x);
+    if (data.delta.x > 0) {
+      groupMesh.position.x += step
+      if (groupMesh.position.x > maxX)
+        groupMesh.position.x = maxX
+      // postMeshes
+    } else if (data.delta.x < 0) {
+      groupMesh.position.x -= step
+      if (groupMesh.position.x < minX)
+        groupMesh.position.x = minX
+    }
   });
 
   groupMesh.addBehavior(pointerDrag);
