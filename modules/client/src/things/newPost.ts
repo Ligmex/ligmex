@@ -1,14 +1,15 @@
 import {
   FilesInput,
-  MeshBuilder,
   Tools,
   Vector3,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
-import { Button, AdvancedDynamicTexture, } from "@babylonjs/gui";
+import { Button, } from "@babylonjs/gui";
 import { v4 as uuid } from "uuid";
 
-import { createPost, ipfs, PublicationMainFocus, SceneState } from "../utils";
+import { createPost } from "../utils/postToLens";
+import { ipfs } from "../utils/ipfs";
+import { PublicationMainFocus, SceneState } from "../utils/misc";
 
 export const addNewPostButton = (
   scene: Scene,
@@ -22,11 +23,6 @@ export const addNewPostButton = (
   },
   setSceneState:  React.Dispatch<React.SetStateAction<SceneState>>
 ) => {
-
-  const plane = MeshBuilder.CreatePlane("plane", {}, scene);
-  plane.position.y = 2;
-
-  const advancedTexture = AdvancedDynamicTexture.CreateForMesh(plane);
 
   const button = Button.CreateSimpleButton("newPost", "📡 Create New Post");
   button.width = 0.6;
@@ -45,7 +41,6 @@ export const addNewPostButton = (
     const file = event.target.files[0];
     const blob = new Blob([file]);
     const filename = file.name.toLowerCase();
-
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -94,9 +89,9 @@ export const addNewPostButton = (
   }
   Tools.LoadScript("https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", () => {
     button.onPointerDownObservable.add(()=>{
-
       $("#import").trigger('click')
     })
    });
-  advancedTexture.addControl(button);
+
+  return button;
 }

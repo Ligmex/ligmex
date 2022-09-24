@@ -35,7 +35,7 @@ const buildWalls = (scene: Scene) => {
 
 const setupFPSCameraMovements = (scene: Scene) => {
 
-  const camera = new FreeCamera("fpsCamera", new Vector3(-10, 1, -6), scene);
+  const camera = new FreeCamera("fpsCamera", new Vector3(10, 1, 0), scene);
   let dsm = new DeviceSourceManager(scene.getEngine());
 
   dsm.onDeviceConnectedObservable.add((device) => {
@@ -139,8 +139,6 @@ export const SceneComponent = (props: {
     buildWalls(scene);
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 1;
-
-   
 
     MeshBuilder.CreateGround(
       "ground",

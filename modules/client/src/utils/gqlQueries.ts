@@ -339,7 +339,7 @@ const CommentMirrorOfFields = `
   }
 `;
 
-export const query  = `
+export const query = `
   query {
     ping
   }
@@ -441,6 +441,14 @@ export const CREATE_POST_TYPED_DATA = `
     }
   }
 }
+`;
+
+export const GET_PROFILE_ID = `
+  query($request: SingleProfileQueryRequest!) {
+    profile(request: $request) {
+      id
+    }
+  }
 `;
 
 export const GET_PROFILE = `
@@ -563,3 +571,59 @@ export const EXPLORE_PUBLICATIONS = `
   ${CommentFields}
   ${CommentMirrorOfFields}
 `;
+
+export const GET_FOLLOWERS = `
+  query($request: FollowersRequest!) {
+    followers(request: $request) {
+      items {
+        wallet {
+          id
+          handle
+          picture {
+            ... on NftImage {
+              contractAddress
+              tokenId
+              uri
+              verified
+            }
+            ... on MediaSet {
+              original {
+                url
+                mimeType
+              }
+            }
+            __typename
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_FOLLOWING = `
+  query($request: FollowingRequest!) {
+    following(request: $request) {
+      items {
+        profile {
+          id
+          handle
+          picture {
+            ... on NftImage {
+              contractAddress
+              tokenId
+              uri
+              verified
+            }
+            ... on MediaSet {
+              original {
+                url
+                mimeType
+              }
+            }
+            __typename
+          }
+        }
+      }
+    }
+  }
+`

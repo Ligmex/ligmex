@@ -1,5 +1,4 @@
 import {
-  AssetContainer,
   MeshBuilder,
   Scene,
   SceneLoader,
@@ -12,7 +11,7 @@ import {
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { GLTFFileLoader } from "@babylonjs/loaders/glTF";
 
-import { scaleNewMeshes } from "../utils";
+import { getStandardUrl, scaleNewMeshes } from "../utils";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
@@ -52,18 +51,8 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
       break;
 
     case "EMBED":
-      // console.log("Embed: ", post.metadata);
-      // console.log("Embed: ", post.metadata);
-      let animation_url = post.metadata.animatedUrl;
-      
-      output.push(createPedestal(`${post.id}-pillar`, pillar_position));
-      if (animation_url.startsWith("ipfs://")) {
-        animation_url = animation_url.replace(
-          "ipfs://", "https://lens.infura-ipfs.io/ipfs/"
-        );
-      } else if (animation_url.split("/").length === 1) {
-        animation_url = "https://lens.infura-ipfs.io/ipfs/" + animation_url;
-      }
+      const animation_url = getStandardUrl(post.metadata.animatedUrl);
+      if (!animation_url) break;
       const glbContainer = await SceneLoader.LoadAssetContainerAsync(
         animation_url,
         "",
@@ -75,10 +64,13 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
         scaleNewMeshes(glbContainer.meshes, post_position);
         glbContainer.addAllToScene();
       }
+      output.push(createPedestal(`${post.id}-pillar`, pillar_position));
       output.push(glbContainer.meshes[0]);
       break;
 
     case "IMAGE":
+      let url = getStandardUrl(post.metadata.media[0]?.original?.url);
+      if (!url) break;
       output.push(createPedestal(`${post.id}-pillar`, pillar_position));
       const f = new Vector4(0,0, 1, 1);
       const b = new Vector4(0,0, 0.5, 1);
@@ -90,7 +82,6 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
         backUVs: b
       }, scene);
       const material = new StandardMaterial(post.id, scene);
-      let url = post.metadata.media[0]?.original?.url.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
       material.diffuseTexture = new Texture(url, scene);
       imagePlane.material = material;
       imagePlane.position = post_position;
@@ -107,13 +98,14 @@ export const postMaker = async (scene: Scene, position: Vector3, post: any): Pro
       break;
 
     case "VIDEO":
+      const videoPostUrl = getStandardUrl(post.metadata.media[0]?.original?.url);
+      if (!videoPostUrl) break;
       output.push(createPedestal(`${post.id}-pillar`, pillar_position));
       const videoPlane = MeshBuilder.CreatePlane(`${post.id}-videoPlane`, {
         width: post.metadata.media[0]?.original?.width || 1,
         height: post.metadata.media[0]?.original?.height || 1
       }, scene);
       const videoMaterial = new StandardMaterial(`${post.id}-videoMaterial`, scene);
-      let videoPostUrl = post.metadata.media[0]?.original?.url.replace("ipfs://", "https://lens.infura-ipfs.io/ipfs/");
       videoMaterial.diffuseTexture = new VideoTexture(`${post.id}-videoTexture`, videoPostUrl, scene);
       (videoMaterial.diffuseTexture as VideoTexture).video.muted = true;
       videoPlane.material = videoMaterial;

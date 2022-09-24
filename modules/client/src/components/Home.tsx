@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   AbstractMesh,
   FreeCamera,
@@ -16,64 +16,97 @@ import {
   useContractWrite
 } from 'wagmi'
 
-import { SceneComponent } from "./Scene";
-import { AccessToken, getPostsByProfile, SceneState } from "../utils";
-
-import { addNewPostButton } from "../things/newPost";
+import { AccessToken, getFollowing, getPostsByProfile, getProfile, SceneState } from "../utils";
 
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
 import { createTrendingCorner } from "../things/trendingCorner";
+import { ctrlPanelMaker } from "../things/ctrlPanel";
 import { galleryMaker } from "../things/gallery";
+import { profileMaker } from "../things/profile";
+import { addNewPostButton } from "../things/newPost";
 import {
-  addLoginButton,
-  addConnectWalletButton,
   createUploadFileView,
-  createStartVideoStreamButton,
   createVideoStreamDisplay,
   getPosts,
-  getProfileByOwner,
- } from "../utils";
+} from "../utils";
+import {
+  PROFILE_FRAME_POSITION,
+  PROFILE_FRAME_VIEW_POSITION,
+  PROFILE_FRAME_VIEW_ROTATION,
+  TRENDING_CORNER_POSITION,
+  TRENDING_VIEW_POSITION,
+  TRENDING_VIEW_ROTATION,
+} from "../utils/cameraConstants";
+
+import { SceneComponent } from "./Scene";
 
 const LENS_HUB_CONTRACT = "0x60Ae865ee4C725cd04353b5AAb364553f56ceF82";
-const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
-
+// const LENS_PERIPHERY_CONTRACT = "0xD5037d72877808cdE7F669563e9389930AF404E8";
 
 SceneLoader.RegisterPlugin(new GLTFFileLoader());
 
 export const Home = () => {
-
-  const [sceneState, setSceneState] = useState({} as SceneState);
-
-  const [newFile, setNewFile] = useState<string>();
-  const [startVideoStream, setStartVideoStream] = useState(false);
+  const storedProfile = localStorage.getItem("ProfileID") || null;
+  console.log(`Got profile from local storage: ${storedProfile}`);
+  const { disconnect } = useDisconnect();
+  const { address, isConnected } = useAccount();
+  const [sceneState, setSceneState] = useState({
+    profileToLoad: storedProfile ? storedProfile : "",
+    camera: storedProfile? {
+      position: PROFILE_FRAME_VIEW_POSITION,
+      rotation: PROFILE_FRAME_VIEW_ROTATION
+    } : {
+      position: TRENDING_VIEW_POSITION,
+      rotation: TRENDING_VIEW_ROTATION
+    }
+  } as SceneState);
   const [accessToken, setAccessToken] = useState({
     accessToken: localStorage.getItem("ACCESS_TOKEN"),
     refreshToken: localStorage.getItem("REFREH_TOKEN"),
-  } as AccessToken)
-
-  const { disconnect } = useDisconnect();
+  } as AccessToken);
   const { connect, connectors, error, isLoading, pendingConnector } = useConnect();
-  const { address, isConnected } = useAccount()
   const { error: loginError, isLoading: isLoadingLoginMessage, signMessageAsync: signLogin } = useSignMessage();
-
   const { error: contractWriteError, write: lenshubPostWithSig, isLoading: isPostWithSigLoading } = useContractWrite({
     addressOrName: LENS_HUB_CONTRACT,
     contractInterface: LENS_HUB_ABI.abi,
     functionName: 'postWithSig',
     mode: 'recklesslyUnprepared',
-
     onError(error) {
       console.log(error);
     }
   });
-
   const { error: createPostError, isLoading: isLoadingCreatePostMessage, signTypedDataAsync: signCreatePost } = useSignTypedData({
     onError(error) {
       console.log(error)
     },
-  })
+  });
 
   const onSceneReady = (scene: Scene) => {
+
+    ctrlPanelMaker(
+      scene,
+      new Vector3(10, 0, 10), // position
+      {
+        address,
+        connect,
+        connectors,
+        disconnect,
+        error: createPostError,
+        isConnected,
+        isLoading: isLoadingCreatePostMessage,
+        lenshubPostWithSig,
+        pendingConnector,
+        signer: signCreatePost,
+      },
+      sceneState,
+      setSceneState,
+      setAccessToken,
+      {
+        signCreatePost,
+        createPostError,
+        isLoadingCreatePostMessage,
+      },
+    );
 
     const camera = scene.getCameraByName("fpsCamera") as FreeCamera;
     if (camera) {
@@ -94,78 +127,40 @@ export const Home = () => {
       camera.keysDown = [83];
       camera.keysRight = [68];
 
-    }
-    
-    if (sceneState?.newFileToLoad) {
-      console.log("setting camera position and rotation", sceneState.camera)
-      if (camera && sceneState.camera?.position)
+      if (sceneState?.camera?.position) {
+        console.log("setting camera position and rotation", sceneState.camera)
         camera.position = sceneState.camera.position;
-      if (camera && sceneState.camera?.rotation)
         camera.rotation = sceneState.camera.rotation;
+      }
 
+    }
+
+    if (sceneState?.newFileToLoad) {
       createUploadFileView(scene, sceneState.newFileToLoad);
     }
 
     if (sceneState?.videoStream) {
-      console.log("setting camera position and rotation", sceneState.camera)
-      if (camera && sceneState.camera?.position)
-        camera.position = sceneState.camera.position;
-      if (camera && sceneState.camera?.rotation)
-        camera.rotation = sceneState.camera.rotation;
       createVideoStreamDisplay(scene);
     }
 
     try {
       setTimeout(async () => {
+        if (sceneState?.profileToLoad) {
+          console.log(sceneState.profileToLoad);
+          const profilePost = await getPostsByProfile(sceneState.profileToLoad);
+          const profile = await getProfile(sceneState.profileToLoad);
+          const following = await getFollowing(profile.ownedBy);
+          if (profilePost && profile) {
+            profileMaker(scene, PROFILE_FRAME_POSITION, 4, profilePost, profile, following);
+          }
+        }
         const latestPosts = await getPosts(10);
         if (latestPosts) {
-          console.log(latestPosts)
-          // createTrendingCorner(scene, new Vector3(10, 0, 10), latestPosts);
-          galleryMaker(scene, new Vector3(-10, 0, 10), 4, latestPosts);
+          createTrendingCorner(scene, TRENDING_CORNER_POSITION, latestPosts);
         }
       })
     } catch (e) {
       console.log(e);
-    }
-
-    addConnectWalletButton(scene, {
-      isConnected,
-      address: address,
-      connect,
-      connectors,
-      error,
-      isLoading,
-      pendingConnector,
-      disconnect
-    });
-
-    if (isConnected && address) {
-
-      createStartVideoStreamButton(scene, setSceneState);
-      try {
-        setTimeout(async () => {
-          const profileId = (await getProfileByOwner(address))[0]?.id;
-          const myPosts = await getPostsByProfile(profileId);
-          if (myPosts && myPosts.length > 0) {
-            // galleryMaker(scene, new Vector3(10, 0, -10), 4, myPosts);
-          }
-          addLoginButton(scene, setAccessToken, {
-            address,
-            signer: signLogin,
-            error: loginError,
-            isLoading: isLoadingLoginMessage,
-          });
-          addNewPostButton(scene, profileId, {
-            address,
-            signer: signCreatePost,
-            error: createPostError,
-            isLoading: isLoadingCreatePostMessage,
-            lenshubPostWithSig,
-          },  setSceneState);
-        })
-      } catch (e) {
-        console.log(e);
-      }
     }
 
     try {

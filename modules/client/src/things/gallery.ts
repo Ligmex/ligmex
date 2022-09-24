@@ -27,17 +27,17 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   ];
 
   const profile = [
-		new Vector3(-(d), d, 0),
-		new Vector3(-(d), -(d), 0),
-		new Vector3(d, -(d), 0),
-		new Vector3(d, d/2, 0),
-		new Vector3(d/2, d/2, 0),
-		new Vector3(d/2, d, 0)
+    new Vector3(-(d), d, 0),
+    new Vector3(-(d), -(d), 0),
+    new Vector3(d, -(d), 0),
+    new Vector3(d, d / 2, 0),
+    new Vector3(d / 2, d / 2, 0),
+    new Vector3(d / 2, d, 0)
   ];
 
   let originX = Number.MAX_VALUE;
 
-  for(let m = 0; m < profile.length; m++) {
+  for (let m = 0; m < profile.length; m++) {
     originX = Math.min(originX, profile[m].x);
   }
 
@@ -51,16 +51,16 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   path[1].subtractToRef(path[0], line);
   path[2].subtractToRef(path[1], nextLine);
 
-  for(let p = 0; p < nbPoints; p++) {
-    angle = Math.PI - Math.acos(Vector3.Dot(line, nextLine)/(line.length() * nextLine.length()));
+  for (let p = 0; p < nbPoints; p++) {
+    angle = Math.PI - Math.acos(Vector3.Dot(line, nextLine) / (line.length() * nextLine.length()));
     let direction = Vector3.Cross(line, nextLine).normalize().z;
     let lineNormal = new Vector3(line.y, -1 * line.x, 0).normalize();
     line.normalize();
     cornerProfile[(p + 1) % nbPoints] = [] as any;
     //local profile
-    for(let m = 0; m < profile.length; m++) {
+    for (let m = 0; m < profile.length; m++) {
       width = profile[m].x - originX;
-      cornerProfile[(p + 1) % nbPoints].push(path[(p + 1) % nbPoints].subtract(lineNormal.scale(width)).subtract(line.scale(direction * width/Math.tan(angle/2))));
+      cornerProfile[(p + 1) % nbPoints].push(path[(p + 1) % nbPoints].subtract(lineNormal.scale(width)).subtract(line.scale(direction * width / Math.tan(angle / 2))));
     }
     line = nextLine.clone();
     path[(p + 3) % nbPoints].subtractToRef(path[(p + 2) % nbPoints], nextLine);
@@ -69,14 +69,14 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   let frame = [] as any[];
   let extrusionPaths = [] as any[]
 
-  for(let p = 0; p < nbPoints; p++) {
+  for (let p = 0; p < nbPoints; p++) {
     extrusionPaths = [] as any[];
-    for(let m = 0; m < profile.length; m++) {
+    for (let m = 0; m < profile.length; m++) {
       extrusionPaths[m] = [] as any[];
       extrusionPaths[m].push(new Vector3(cornerProfile[p][m].x, cornerProfile[p][m].y, profile[m].y));
       extrusionPaths[m].push(new Vector3(cornerProfile[(p + 1) % nbPoints][m].x, cornerProfile[(p + 1) % nbPoints][m].y, profile[m].y));
     }
-    frame[p] = MeshBuilder.CreateRibbon("frameLeft", {pathArray: extrusionPaths, sideOrientation: Mesh.DOUBLESIDE, updatable: true, closeArray: true}, scene);
+    frame[p] = MeshBuilder.CreateRibbon("frameLeft", { pathArray: extrusionPaths, sideOrientation: Mesh.DOUBLESIDE, updatable: true, closeArray: true }, scene);
   }
 
   const finalMesh = Mesh.MergeMeshes(frame, true)?.convertToFlatShadedMesh();
@@ -85,7 +85,7 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   }
 
   ////////////////////////////////////////
-  
+
   // Add Posts
 
   const count = posts.length > 6 ? 6 : posts.length;
@@ -102,11 +102,13 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   transparentMaterial.alpha = 0.5;
 
   groupMesh.material = transparentMaterial;
-  groupMesh.position = new Vector3(position.x + (groupWidth/2) - w + d*2, position.y, position.z);
+  // groupMesh.position = new Vector3(position.x + (groupWidth / 2) - w + d * 2, position.y, position.z);
+  groupMesh.position = new Vector3((groupWidth / 2) - w + d * 2, position.y - h, 0);
+  console.log(groupMesh.position)
 
   posts.forEach(async (post, i) => {
     const postMesh = await postMaker(scene, new Vector3(
-      -(groupWidth/2) + step * (i + 1), // position.x - w + d + step * (i + 1),
+      -(groupWidth / 2) + step * (i + 1), // position.x - w + d + step * (i + 1),
       0.5, // position.y + 0.5,
       0, // position.z,
     ), post);
@@ -125,6 +127,9 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   });
 
   groupMesh.addBehavior(pointerDrag);
+  if (groupMesh && finalMesh) {
+    groupMesh.parent = finalMesh;
+  } 
 
   /*
   groupMesh.actionManager = new ActionManager(scene);
@@ -134,4 +139,3 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
 
   return finalMesh;
 }
-

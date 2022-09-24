@@ -25,6 +25,11 @@ app.use((req, res, next) => {
 
 app.use(authRouter);
 
+// noop at /auth to test auth
+app.use("/auth", (req, res) => {
+  res.status(200).send("Success");
+});
+
 app.use(bodyParser.json({ type: ["application/json"] }));
 app.use(bodyParser.raw({ limit: env.maxUploadSize, type: [
   "application/octet-stream",
