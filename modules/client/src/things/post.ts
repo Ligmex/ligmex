@@ -81,11 +81,12 @@ export const postMaker = async (
           const utilLayer = new UtilityLayerRenderer(scene);
 
           // Create the gizmo and attach to the box
-          const gizmo = new RotationGizmo(utilLayer);
+          const gizmo = new RotationGizmo(utilLayer, 0, false, 0.5);
 
           // const boundingBox = BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(glbContainer.meshes[0] as Mesh);
           gizmo.attachedMesh = glbContainer.meshes[0] as Mesh;
-      
+          gizmo.updateScale = false;
+          gizmo.scaleRatio = 0.4;
           glbContainer.addAllToScene();
         }
         output.push(createPedestal(`${post.id}-pillar`, pillar_position));

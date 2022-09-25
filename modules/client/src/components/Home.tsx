@@ -24,12 +24,13 @@ import { createUploadFileView, SceneState } from "../utils/babylonUtils";
 import { createVideoStreamDisplay } from "../utils/livepeer";
 import { AccessToken, getPosts, getFollowing, getPostsByProfile, getProfile } from "../utils/lensApi";
 import {
-  PROFILE_FRAME_POSITION,
+  PROFILE_0_POSITION,
   CTRL_PANEL_VIEW_POSITION,
   PROFILE_FRAME_VIEW_ROTATION,
   TRENDING_CORNER_POSITION,
   TRENDING_VIEW_POSITION,
   TRENDING_VIEW_ROTATION,
+  PROFILE_0_ROTATION,
 } from "../utils/constants";
 
 import { SceneComponent } from "./Scene";
@@ -122,7 +123,7 @@ export const Home = () => {
       camera.keysRight = [68];
 
       if (sceneState?.camera?.position) {
-        console.log("setting camera position and rotation", sceneState.camera)
+        // console.log("setting camera position and rotation", sceneState.camera)
         camera.position = sceneState.camera.position;
         camera.rotation = sceneState.camera.rotation;
       }
@@ -140,13 +141,13 @@ export const Home = () => {
     try {
       setTimeout(async () => {
         if (sceneState?.profileToLoad) {
-          console.log(sceneState.profileToLoad);
+          // console.log(sceneState.profileToLoad);
           const profilePost = await getPostsByProfile(sceneState.profileToLoad);
           const profile = await getProfile(sceneState.profileToLoad);
           const following = await getFollowing(profile.ownedBy);
           if (profilePost && profile) {
             profileMaker(
-              scene, PROFILE_FRAME_POSITION, Vector3.Zero(),
+              scene, PROFILE_0_POSITION, PROFILE_0_ROTATION,
               4, profilePost, profile, following, 0
             );
           }
@@ -162,7 +163,7 @@ export const Home = () => {
 
     try {
       if ("xr" in window.navigator) {
-        console.log("creating xr");
+        // console.log("creating xr");
         scene.createDefaultXRExperienceAsync().then(
           (xrexp: any) => {
             if (xrexp.baseExperience) {

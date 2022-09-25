@@ -4,6 +4,7 @@ import {
   Color3,
   ExecuteCodeAction,
   MeshBuilder,
+  Space,
   StandardMaterial,
   Texture,
   Vector3,
@@ -15,7 +16,10 @@ import { getStandardUrl } from "../utils/misc";
 import { getPostsByProfile, getFollowing } from "../utils/lensApi";
 
 import { galleryMaker } from "./gallery";
+import { PROFILE_POSITIONS, PROFILE_ROTATIONS } from "src/utils/constants";
 
+const currentlyViewing: AbstractMesh[] = [];
+let globalIndex = 0;
 export const profileMaker = (
   scene: Scene,
   position: Vector3,
@@ -26,6 +30,7 @@ export const profileMaker = (
   following: any,
   index: number,
 ) => {
+  if (globalIndex > 4) return;
 
   const rootMesh = new AbstractMesh(`${profile?.id}-profileRood`, scene);
 
@@ -87,8 +92,6 @@ export const profileMaker = (
     );
     followingText.parent = rootMesh;
 
-    let currentlyViewing: AbstractMesh;
-
     following.forEach((followingProfile, i) => {
       const profilePicture = createProfilePicture(
         scene,
@@ -111,28 +114,32 @@ export const profileMaker = (
         profilePicture.actionManager = new ActionManager(scene);
         profilePicture.actionManager.registerAction(
           new ExecuteCodeAction(ActionManager.OnPickTrigger, async () => {
-            if (currentlyViewing) {
-              console.log(currentlyViewing);
-              console.log("disposing current gallery");
-              currentlyViewing.dispose();
+            console.log("current index: ", index);
+            if (currentlyViewing?.length === 3) {
+              const lastview = currentlyViewing.pop()
+              if (lastview) {
+                globalIndex -= 1;
+                lastview.dispose();
+              }
             }
             const followingProfilePosts = await getPostsByProfile(followingProfile.profile.id);
             const newFollowing = await getFollowing(followingProfile.profile.ownedBy);
-            console.log(followingProfilePosts);
-            console.log("Viewing followed profile: ", followingProfile.profile.handle);
+            // console.log(followingProfilePosts);
+            // console.log("Viewing followed profile: ", followingProfile.profile.handle);
             let gallery = profileMaker(
               scene,
-              new Vector3(-3, 0, 4),
-              new Vector3(0, Math.PI / 4, 0),
-              4,
+              PROFILE_POSITIONS[globalIndex + 1],
+              PROFILE_ROTATIONS[globalIndex + 1],
+              height,
               followingProfilePosts,
               followingProfile.profile,
               newFollowing,
-              index + 1
+              globalIndex + 1
             )
             if (gallery) {
-              console.log("Setting current gallery");
-              currentlyViewing = gallery;
+              globalIndex += 1;
+              // console.log("Setting current gallery");
+              currentlyViewing.push(gallery);
             }
           })
         )
@@ -143,12 +150,14 @@ export const profileMaker = (
   ////////////////////
 
   // Add profile latest posts
-  console.log("creating gallery")
+  // console.log("creating gallery")
   const galleryMesh = galleryMaker(scene, position, height, posts);
 
   if (galleryMesh)
     galleryMesh.parent = rootMesh;
 
-  rootMesh.rotation = rotation;
+  // console.log(rotation)
+  rootMesh.rotate(rotation, -Math.PI/2, Space.WORLD);
+  // rootMesh.position = position;
   return rootMesh;
 };
