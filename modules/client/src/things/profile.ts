@@ -32,7 +32,12 @@ export const profileMaker = (
 ) => {
   if (globalIndex > 4) return;
 
-  const rootMesh = new AbstractMesh(`${profile?.id}-profileRood`, scene);
+  const galleryMesh = galleryMaker(scene, position, height, posts);
+  if (!galleryMesh) return;
+  
+  // const rootMesh = new AbstractMesh(`${profile?.id}-profileRood`, scene);
+  // if (galleryMesh)
+  //   galleryMesh.parent = rootMesh;
 
   const createProfilePicture = (
     scene: Scene,
@@ -67,7 +72,7 @@ export const profileMaker = (
       new Vector3(position.x - height + 0.5, position.y + height + 0.5, position.z - height / 8),
       new Vector3(-Math.PI / 2, 0, 0)
     )
-    profilePicture.parent = rootMesh;
+    profilePicture.parent = galleryMesh;
   }
 
   // Add profile handle
@@ -79,7 +84,7 @@ export const profileMaker = (
     new Vector3(position.x, position.y + height + 0.5, position.z)
   )
   if (handle)
-    handle.parent = rootMesh;
+    handle.parent = galleryMesh;
 
   if (following?.length) {
     // Show Following data
@@ -90,7 +95,7 @@ export const profileMaker = (
       "Following",
       new Vector3(position.x + height + 1, position.y + height, position.z)
     );
-    followingText.parent = rootMesh;
+    followingText.parent = galleryMesh;
 
     following.forEach((followingProfile, i) => {
       const profilePicture = createProfilePicture(
@@ -108,9 +113,9 @@ export const profileMaker = (
         followingProfile.profile.handle,
         new Vector3(position.x + height + 1, position.y + 7 * height / 8 - i * 0.4, position.z)
       );
-      followingProfileHandle.parent = rootMesh;
+      followingProfileHandle.parent = galleryMesh;
       if (profilePicture) {
-        profilePicture.parent = rootMesh;
+        profilePicture.parent = galleryMesh;
         profilePicture.actionManager = new ActionManager(scene);
         profilePicture.actionManager.registerAction(
           new ExecuteCodeAction(ActionManager.OnPickTrigger, async () => {
@@ -151,13 +156,10 @@ export const profileMaker = (
 
   // Add profile latest posts
   // console.log("creating gallery")
-  const galleryMesh = galleryMaker(scene, position, height, posts);
-
-  if (galleryMesh)
-    galleryMesh.parent = rootMesh;
+ 
 
   // console.log(rotation)
-  rootMesh.rotate(rotation, -Math.PI/2, Space.WORLD);
+  // rootMesh.rotate(rotation, -Math.PI/2, Space.WORLD);
   // rootMesh.position = position;
-  return rootMesh;
+  return galleryMesh;
 };
