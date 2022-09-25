@@ -24,6 +24,7 @@ export const profileMaker = (
   profile: any,
   following: any,
 ) => {
+  const rootMesh = new AbstractMesh(`${profile?.id}-profileRood`, scene);
 
   const createProfilePicture = (
       scene: Scene,
@@ -50,7 +51,7 @@ export const profileMaker = (
   // Add profile Image
   if (profile?.picture?.__typename === "MediaSet") {
     const profileUrl = getStandardUrl(profile?.picture?.original?.url);
-    createProfilePicture(
+    const profilePicture = createProfilePicture(
       scene,
       profile?.id,
       profileUrl,
@@ -58,16 +59,19 @@ export const profileMaker = (
       new Vector3(position.x - height + 0.5, position.y + height + 0.5, position.z - height / 8),
       new Vector3(-Math.PI / 2, 0, 0)
     )
+    profilePicture.parent = rootMesh;
   }
 
   // Add profile handle
-  createTextDisplay(
+  const handle = createTextDisplay(
     scene,
     height,
     profile?.id,
     profile?.handle,
     new Vector3(position.x, position.y + height + 0.5, position.z)
   )
+  if (handle)
+    handle.parent = rootMesh;
 
   if (following?.length) {
     // Show Following data
@@ -131,5 +135,7 @@ export const profileMaker = (
   console.log("creating gallery")
   const galleryMesh = galleryMaker(scene, position, height, posts);
 
-  return galleryMesh;
+  if (galleryMesh)
+    galleryMesh.parent = rootMesh;
+  return rootMesh;
 };
