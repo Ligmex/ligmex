@@ -1,10 +1,12 @@
 import {
   AbstractMesh,
+  Color3,
   // ActionManager,
   Mesh,
   MeshBuilder,
   PointerDragBehavior,
   StandardMaterial,
+  Texture,
   Vector3,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
@@ -81,8 +83,12 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   }
 
   const finalMesh = Mesh.MergeMeshes(frame, true)?.convertToFlatShadedMesh();
+  const frameMaterial = new StandardMaterial("galleryFrameMaterial", scene);
+  frameMaterial.diffuseTexture = new Texture("./Rkh1uFK.png", scene);
+  frameMaterial.emissiveColor = new Color3(1,1,1);
   if (finalMesh) {
     finalMesh.position = new Vector3(position.x, position.y + h, position.z);
+    finalMesh.material = frameMaterial;
   }
 
   ////////////////////////////////////////
@@ -100,7 +106,7 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   }, scene);
 
   const transparentMaterial = new StandardMaterial('boundBoxMaterial', scene);
-  transparentMaterial.alpha = 0.5;
+  transparentMaterial.alpha = 0;
 
   groupMesh.material = transparentMaterial;
   // groupMesh.position = new Vector3(position.x + (groupWidth / 2) - w + d * 2, position.y, position.z);

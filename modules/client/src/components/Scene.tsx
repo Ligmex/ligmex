@@ -8,7 +8,7 @@ import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { Scene, SceneOptions } from "@babylonjs/core/scene";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { DeviceSourceManager, DeviceType, FreeCamera, PointerInput } from "@babylonjs/core";
+import { Color3, CubeTexture, DeviceSourceManager, DeviceType, FreeCamera, PointerInput, StandardMaterial, Texture } from "@babylonjs/core";
 
 import { buildFromPlan } from "../utils/buildFromPlan";
 
@@ -17,13 +17,13 @@ const buildWalls = (scene: Scene) => {
 
   const corners = [] as Vector3[];
   for (let b = 0; b < baseData.length / 2; b++) {
-    corners.push(new Vector3(baseData[2 * b],0, baseData[2 * b + 1]));
+    corners.push(new Vector3(baseData[2 * b], 0, baseData[2 * b + 1]));
   }
 
-  const walls = [] as Array<{corner: Vector3 }>;
+  const walls = [] as Array<{ corner: Vector3 }>;
 
   for (let c = 0; c < corners.length; c++) {
-    walls.push({corner: corners[c]});
+    walls.push({ corner: corners[c] });
   }
 
   const ply = 0.3;
@@ -58,7 +58,7 @@ const setupFPSCameraMovements = (scene: Scene) => {
         }
       });
     }
-    
+
     // POINTER CONFIG
     else if (device.deviceType === DeviceType.Mouse || device.deviceType === DeviceType.Touch) {
       device.onInputChangedObservable.add((deviceData) => {
@@ -124,7 +124,7 @@ export const SceneComponent = (props: {
     scene.collisionsEnabled = true;
 
     setupFPSCameraMovements(scene);
-    
+
     // const camera2 = new ArcRotateCamera(
     //   "camera1",
     //   -Math.PI/2,
@@ -141,11 +141,27 @@ export const SceneComponent = (props: {
     const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
     light.intensity = 1;
 
-    MeshBuilder.CreateGround(
+    const ground = MeshBuilder.CreateGround(
       "ground",
       { height: 50, width: 50, },
       scene
     );
+    const groundMaterial = new StandardMaterial("groundMaterial", scene);
+    groundMaterial.diffuseTexture = new Texture("./wood.jpeg", scene);
+    groundMaterial.emissiveColor = new Color3(0.2, 0.2, 0.2);
+
+    ground.material = groundMaterial;
+
+    // Add skybox
+
+    var skybox = MeshBuilder.CreateBox("skyBox", { size: 50.0 }, scene);
+    var skyboxMaterial = new StandardMaterial("skyBox", scene);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.reflectionTexture = new CubeTexture("./skybox/skybox2", scene);
+    skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
+    skyboxMaterial.disableLighting = true;
+    skybox.material = skyboxMaterial;
+    //////
 
     if (scene.isReady()) {
       onSceneReady(scene);

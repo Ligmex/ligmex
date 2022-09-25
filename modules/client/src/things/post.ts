@@ -1,4 +1,5 @@
 import {
+  Color3,
   MeshBuilder,
   Scene,
   SceneLoader,
@@ -23,6 +24,9 @@ export const postMaker = async (
 ): Promise<Array<AbstractMesh>> => {
 
   const height = 1;
+  const pillarMaterial = new StandardMaterial("pillarMaterial", scene);
+  pillarMaterial.diffuseTexture = new Texture("./marble.jpeg", scene);
+  pillarMaterial.emissiveColor = new Color3(1,1,1);
 
   const createPedestal = (id: string, position: Vector3) => {
     const pillar = MeshBuilder.CreateCylinder(
@@ -31,7 +35,9 @@ export const postMaker = async (
       scene
     )
     pillar.position = position;
-    pillar.checkCollisions = true
+    pillar.checkCollisions = true;
+
+    pillar.material = pillarMaterial;
     return pillar;
   }
 
