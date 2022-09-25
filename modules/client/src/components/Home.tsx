@@ -90,15 +90,15 @@ export const Home = () => {
         isLoading: isLoadingCreatePostMessage,
         lenshubPostWithSig,
         pendingConnector,
-        signer: signCreatePost,
+        signCreatePost,
       },
       sceneState,
       setSceneState,
       setAccessToken,
       {
-        signCreatePost,
         createPostError,
         isLoadingCreatePostMessage,
+        signLogin,
       },
     );
 

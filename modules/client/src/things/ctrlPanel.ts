@@ -33,20 +33,20 @@ export const ctrlPanelMaker = async (
     isLoading: boolean,
     lenshubPostWithSig: any,
     pendingConnector: any
-    signer: any,
+    signCreatePost: any,
   },
   sceneState: any,
   setSceneState: React.Dispatch<React.SetStateAction<SceneState>>,
   setAccessToken: any,
   signOptions: {
-    signCreatePost: any,
     createPostError: any,
     isLoadingCreatePostMessage: any,
+    signLogin: any,
   }
 ): Promise<Array<AbstractMesh>> => {
 
-  const { address, connect, connectors, disconnect, error, isConnected, isLoading, lenshubPostWithSig, pendingConnector, signer } = connectorOptions;
-  const { signCreatePost, createPostError, isLoadingCreatePostMessage } = signOptions;
+  const { address, connect, connectors, disconnect, error, isConnected, isLoading, lenshubPostWithSig, pendingConnector, signCreatePost } = connectorOptions;
+  const { signLogin, createPostError, isLoadingCreatePostMessage } = signOptions;
 
   const id = "ctrlPanel";
   const height = 1;
@@ -139,7 +139,7 @@ export const ctrlPanelMaker = async (
     const loginButton = addLoginButton(scene, setAccessToken, {
       address: address || AddressZero,
       error,
-      signer,
+      signLogin,
       isLoading,
     });
     loginButton.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;

@@ -46,6 +46,15 @@ export const authenticate = (address: string, signature: string) => {
   });
 };
 
+export const generateChallenge = (address: string) => {
+  return apolloClient.query({
+    query: gql(GET_CHALLENGE),
+    variables: { request: {
+      address,
+    } },
+  });
+};
+
 const login = async (address: string, signMessage: any, setAccessToken: any) => {
     // request a challenge from the server
     const challengeResponse = await generateChallenge(address);
@@ -68,7 +77,7 @@ export const addLoginButton = (
     connectorOptions: {
         address: string,
         error: any,
-        signer: any,
+        signLogin: any,
         isLoading: any
     }
 ) => {
@@ -77,7 +86,11 @@ export const addLoginButton = (
     button.height = CTRL_BUTTON_HEIGHT;
     button.color = "white";
     button.background = "red";
-    button.onPointerUpObservable.add(() => login(connectorOptions.address, connectorOptions.signer, setAccessToken));
+    button.onPointerUpObservable.add(() => login(
+      connectorOptions.address,
+      connectorOptions.signLogin,
+      setAccessToken,
+    ));
     return button;
 };
 
@@ -103,15 +116,6 @@ export const getProfileByOwner = async (address: string) => {
     } },
   });
   return response.data?.profiles?.items
-};
-
-export const generateChallenge = (address: string) => {
-  return apolloClient.query({
-    query: gql(GET_CHALLENGE),
-    variables: { request: {
-      address,
-    } },
-  });
 };
 
 export const getPostsByProfile = async (profileId: string): Promise<any> => {
