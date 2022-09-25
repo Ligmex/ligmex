@@ -111,7 +111,6 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   groupMesh.material = transparentMaterial;
   // groupMesh.position = new Vector3(position.x + (groupWidth / 2) - w + d * 2, position.y, position.z);
   groupMesh.position = new Vector3((groupWidth / 2) - w + d * 2, position.y - h, 0);
-  console.log(groupMesh.position)
 
   const postMeshes = [] as AbstractMesh[][];
 
@@ -137,7 +136,7 @@ export const galleryMaker = (scene: Scene, position: Vector3, height: number, po
   const maxX = ((groupWidth / 2) - w ) - groupWidth + height * 2;
 
   pointerDrag.onDragObservable.add((data, state) => {
-    console.log("hi", data.delta.x);
+    // console.log("hi", data.delta.x);
     if (data.delta.x > 0) {
       groupMesh.position.x += step
       if (groupMesh.position.x > maxX)

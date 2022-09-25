@@ -6,14 +6,11 @@ export const wait = (ms: number): Promise<void> => new Promise(res => setTimeout
 
 export const logger = pino({
   level: env.logLevel,
-  transport: {
-    target: "pino-pretty",
-    options: {
-      colorize: true,
-      ignore: "pid,hostname,module",
-      messageFormat: `[{module}] {msg}`,
-      translateTime: true,
-    },
+  prettyPrint: {
+    colorize: true,
+    ignore: "pid,hostname,module",
+    messageFormat: `[{module}] {msg}`,
+    translateTime: true,
   },
 });
 

@@ -50,7 +50,7 @@ start: dev
 	bash ops/start.sh
 
 start-prod:
-	LIGMEX_PROD=true bash ops/start.sh
+	export LIGMEX_PROD=true; bash ops/start.sh
 
 start-agent:
 	bash agent/bin/agent.sh console
@@ -62,7 +62,7 @@ restart: dev stop
 	bash ops/start.sh
 
 restart-prod: stop
-	LIGMEX_PROD=true bash ops/start.sh
+	export LIGMEX_PROD=true; bash ops/start.sh
 
 clean: stop
 	docker container prune -f

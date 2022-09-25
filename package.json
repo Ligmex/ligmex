@@ -1,6 +1,6 @@
 {
   "name": "ligmex",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "registry": "docker.io",
   "license": "GPL-3.0-or-later",
   "repository": {

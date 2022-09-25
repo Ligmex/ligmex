@@ -1,24 +1,24 @@
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import {
-  AssetContainer,
-  Color3,
-  DynamicTexture,
-  Mesh,
-  MeshBuilder,
-  Scene,
-  SceneLoader,
-  StandardMaterial,
-  Vector3,
+    AssetContainer,
+    Color3,
+    DynamicTexture,
+    Mesh,
+    MeshBuilder,
+    Scene,
+    SceneLoader,
+    StandardMaterial,
+    Vector3,
 } from "@babylonjs/core";
 
 export type SceneState = {
-  newFileToLoad?: string;
-  videoStream?: boolean;
-  profileToLoad?: string;
-  camera: {
-    position: Vector3;
-    rotation: Vector3;
-  };
+    newFileToLoad?: string;
+    videoStream?: boolean;
+    profileToLoad?: string;
+    camera: {
+        position: Vector3;
+        rotation: Vector3;
+    };
 };
 
 export const createUploadFileView = (scene: Scene, filname: string | undefined) => {
@@ -117,25 +117,26 @@ export const createTextDisplay = (
     handle: string,
     position: Vector3,
 ) => {
-    const profileHandlePlane = MeshBuilder.CreatePlane(
+    const textPlane = MeshBuilder.CreatePlane(
         `${id}-handlePlane`,
         { height: size / 4, width: size },
         scene
-      );
-      const profileHandleTextue = new DynamicTexture(
+    );
+    const textPlaneTexture = new DynamicTexture(
         `${id}-handleTexture`,
         { width: 512, height: 300 },
         scene,
         true
-      );
-      profileHandleTextue.drawText(handle, null, null, "bold 50px Arial", "white", "#33334c")
-      const profileHandleMaterial = new StandardMaterial(
+    );
+    textPlaneTexture.drawText(handle, null, null, "bold 50px Arial", "white", "#33334c")
+    const textPlaneMaterial = new StandardMaterial(
         `${id}-handleMaterial`,
         scene
-      );
-      profileHandleMaterial.diffuseTexture = profileHandleTextue;
-      profileHandleMaterial.emissiveColor = Color3.White();
-      profileHandlePlane.material = profileHandleMaterial;
-      profileHandlePlane.position = position;
+    );
+    textPlaneMaterial.diffuseTexture = textPlaneTexture;
+    textPlaneMaterial.emissiveColor = Color3.White();
+    textPlane.material = textPlaneMaterial;
+    textPlane.position = position;
 
+    return textPlane;
 };
