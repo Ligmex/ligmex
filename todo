@@ -13,3 +13,6 @@
 
 ## Later Maybe
 - if post is embedded, allow picking it up & throwing it
+
+## Cache troubles
+- yarn doesn't handle symlinked node_modules it seems https://github.com/yarnpkg/yarn/issues/8079#issuecomment-622817604
