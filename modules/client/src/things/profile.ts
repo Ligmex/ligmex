@@ -32,9 +32,13 @@ export const profileMaker = (
 ) => {
   if (globalIndex > 4) return;
 
+  const [h, w, d] = [height/2, height, height/18];
+
   const galleryMesh = galleryMaker(scene, position, height, posts);
   if (!galleryMesh) return;
-  
+
+  galleryMesh.rotation = rotation;
+
   // const rootMesh = new AbstractMesh(`${profile?.id}-profileRood`, scene);
   // if (galleryMesh)
   //   galleryMesh.parent = rootMesh;
@@ -69,7 +73,7 @@ export const profileMaker = (
       profile?.id,
       profileUrl,
       1,
-      new Vector3(position.x - height + 0.5, position.y + height + 0.5, position.z - height / 8),
+      new Vector3(-w + 2*d, h + 3*d, 0),
       new Vector3(-Math.PI / 2, 0, 0)
     )
     profilePicture.parent = galleryMesh;
@@ -81,7 +85,7 @@ export const profileMaker = (
     height,
     profile?.id,
     profile?.handle,
-    new Vector3(position.x, position.y + height + 0.5, position.z)
+    new Vector3(0, 0 + h + 3*d, 0)
   )
   if (handle)
     handle.parent = galleryMesh;
@@ -90,10 +94,10 @@ export const profileMaker = (
     // Show Following data
     const followingText = createTextDisplay(
       scene,
-      height,
+      h,
       profile?.id + "following",
       "Following",
-      new Vector3(position.x + height + 1, position.y + height, position.z)
+      new Vector3(height + 1, h, 0)
     );
     followingText.parent = galleryMesh;
 
@@ -103,7 +107,7 @@ export const profileMaker = (
         followingProfile.profile.id,
         followingProfile.profile?.picture?.original?.url,
         0.3,
-        new Vector3(position.x + height + 0.3, position.y + 7 * height / 8 - i * 0.4, position.z),
+        new Vector3(height + 0.3, -2 * d + h - i * 0.4, 0),
         new Vector3(-Math.PI / 2, 0, 0)
       )
       const followingProfileHandle = createTextDisplay(
@@ -111,7 +115,7 @@ export const profileMaker = (
         height / 3,
         followingProfile.profile.id,
         followingProfile.profile.handle,
-        new Vector3(position.x + height + 1, position.y + 7 * height / 8 - i * 0.4, position.z)
+        new Vector3(height + 1, -2 * d + h - i * 0.4, 0)
       );
       followingProfileHandle.parent = galleryMesh;
       if (profilePicture) {
@@ -156,7 +160,6 @@ export const profileMaker = (
 
   // Add profile latest posts
   // console.log("creating gallery")
- 
 
   // console.log(rotation)
   // rootMesh.rotate(rotation, -Math.PI/2, Space.WORLD);

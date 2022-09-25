@@ -2,23 +2,29 @@ import { Vector3 } from "@babylonjs/core";
 
 const PROFILE_STEP = 25 / 3;
 
+export const INITIAL_VIEW_POSITION = new Vector3(-23, 2, 1);
+export const INITIAL_VIEW_ROTATION = new Vector3(0, Math.PI/2, 0);
 export const CTRL_PANEL_VIEW_POSITION = new Vector3(10, 2, 4);
 export const PROFILE_FRAME_VIEW_POSITION = new Vector3(-8, 2, -6);
 export const PROFILE_FRAME_VIEW_ROTATION = new Vector3(0, 0, 0);
-export const TRENDING_CORNER_POSITION = new Vector3(10, 0, -10);
+export const TRENDING_CORNER_POSITION = new Vector3(-10, 0, -10);
 export const TRENDING_VIEW_POSITION = new Vector3(0, 2, -13);
 export const TRENDING_VIEW_ROTATION = new Vector3(0, Math.PI / 3, 0);
 
-export const PROFILE_0_POSITION = new Vector3(PROFILE_STEP * -2, 0, 0);
-export const PROFILE_0_ROTATION = new Vector3(0, 1, 0);
-export const PROFILE_1_POSITION = new Vector3(PROFILE_STEP * -1, 0, PROFILE_STEP);
-export const PROFILE_1_ROTATION = new Vector3(0, 0, 0);
-export const PROFILE_2_POSITION = new Vector3(0, 0, PROFILE_STEP * 2);
-export const PROFILE_2_ROTATION = new Vector3(0, 0, 0);
-export const PROFILE_3_POSITION = new Vector3(PROFILE_STEP * 1, 0, PROFILE_STEP);
-export const PROFILE_3_ROTATION = new Vector3(0, 0, 0);
-export const PROFILE_4_POSITION = new Vector3(PROFILE_STEP * 2, 0, 0);
-export const PROFILE_4_ROTATION = new Vector3(0, 0, 0);
+export const PROFILE_0_POSITION = new Vector3(PROFILE_STEP * 2, 0, 0);
+export const PROFILE_0_ROTATION = new Vector3(0, Math.PI/2, 0);
+
+export const PROFILE_1_POSITION = new Vector3(PROFILE_STEP * 1.5, 0, PROFILE_STEP * 1);
+export const PROFILE_1_ROTATION = new Vector3(0, Math.PI/4, 0);
+
+export const PROFILE_2_POSITION = new Vector3(PROFILE_STEP * 1.5, 0, PROFILE_STEP * -1);
+export const PROFILE_2_ROTATION = new Vector3(0, -Math.PI/4, 0);
+
+export const PROFILE_3_POSITION = new Vector3(PROFILE_STEP * 1, 0, PROFILE_STEP * 2);
+export const PROFILE_3_ROTATION = new Vector3(0, Math.PI/2, 0);
+
+export const PROFILE_4_POSITION = new Vector3(PROFILE_STEP * 1, 0, PROFILE_STEP * -2);
+export const PROFILE_4_ROTATION = new Vector3(0, -Math.PI/2, 0);
 
 export const PROFILE_POSITIONS = [
     PROFILE_0_POSITION,
