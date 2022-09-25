@@ -25,12 +25,13 @@ import { createVideoStreamDisplay } from "../utils/livepeer";
 import { AccessToken, getPosts, getFollowing, getPostsByProfile, getProfile } from "../utils/lensApi";
 import {
   PROFILE_0_POSITION,
-  CTRL_PANEL_VIEW_POSITION,
+  PROFILE_0_ROTATION,
+  INITIAL_VIEW_POSITION,
+  INITIAL_VIEW_ROTATION,
   PROFILE_FRAME_VIEW_ROTATION,
   TRENDING_CORNER_POSITION,
   TRENDING_VIEW_POSITION,
   TRENDING_VIEW_ROTATION,
-  PROFILE_0_ROTATION,
 } from "../utils/constants";
 
 import { SceneComponent } from "./Scene";
@@ -47,12 +48,9 @@ export const Home = () => {
   const { address, isConnected } = useAccount();
   const [sceneState, setSceneState] = useState({
     profileToLoad: storedProfile ? storedProfile : "",
-    camera: storedProfile ? {
-      position: CTRL_PANEL_VIEW_POSITION,
-      rotation: PROFILE_FRAME_VIEW_ROTATION
-    } : {
-      position: CTRL_PANEL_VIEW_POSITION,
-      rotation: PROFILE_FRAME_VIEW_ROTATION
+    camera: {
+      position: INITIAL_VIEW_POSITION,
+      rotation: INITIAL_VIEW_ROTATION,
     }
   } as SceneState);
   const [accessToken, setAccessToken] = useState({
@@ -80,7 +78,7 @@ export const Home = () => {
 
     ctrlPanelMaker(
       scene,
-      new Vector3(10, 0, 10), // position
+      new Vector3(-10, 0, 10), // position
       {
         address,
         connect,

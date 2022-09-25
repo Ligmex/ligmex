@@ -258,7 +258,6 @@ export const ctrlPanelMaker = async (
     })
     grid.addControl(askProfile);
 
-
     holoslate.content = grid;
 
     return [holoslate];

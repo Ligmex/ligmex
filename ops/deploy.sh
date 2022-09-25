@@ -83,15 +83,13 @@ fi
 # Push updated package versions to prod
 git add .
 git commit --amend --no-edit
+echo "Pushing to origin/prod"
+sleep 2
+git push origin prod --no-verify
 
 # Bring main up-to-date w prod for a cleaner git history
 git checkout main
 git merge prod
-
 echo "Pushing to origin/main"
-sleep 1
+sleep 2
 git push origin main --no-verify
-
-echo "Pushing to origin/prod"
-sleep 1
-git push origin prod --no-verify
