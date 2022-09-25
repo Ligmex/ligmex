@@ -607,6 +607,7 @@ export const GET_FOLLOWING = `
         profile {
           id
           handle
+          ownedBy
           picture {
             ... on NftImage {
               contractAddress

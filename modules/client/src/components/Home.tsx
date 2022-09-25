@@ -145,7 +145,10 @@ export const Home = () => {
           const profile = await getProfile(sceneState.profileToLoad);
           const following = await getFollowing(profile.ownedBy);
           if (profilePost && profile) {
-            profileMaker(scene, PROFILE_FRAME_POSITION, 4, profilePost, profile, following);
+            profileMaker(
+              scene, PROFILE_FRAME_POSITION, Vector3.Zero(),
+              4, profilePost, profile, following, 0
+            );
           }
         }
         const latestPosts = await getPosts(10);
