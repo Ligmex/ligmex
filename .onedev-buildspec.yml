@@ -46,6 +46,10 @@ jobs:
   caches:
   - key: node_modules
     path: node_modules
+  - key: client_node_modules
+    path: modules/client/node_modules
+  - key: server_node_modules
+    path: modules/server/node_modules
   - key: cache
     path: .cache
   timeout: 3600
@@ -105,4 +109,8 @@ jobs:
     path: node_modules
   - key: cache
     path: .cache
+  - key: client_node_modules
+    path: modules/client/node_modules
+  - key: server_node_modules
+    path: modules/server/node_modules
   timeout: 3600
