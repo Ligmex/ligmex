@@ -6,7 +6,7 @@
   "license": "GPL-3.0-or-later",
   "main": "dist/bundle.js",
   "scripts": {
-    "build": "rollup --config rollup.config.js",
+    "build": "ls && ./node_modules/.bin/rollup --config rollup.config.js",
     "test": "echo 'no tests'"
   },
   "dependencies": {
