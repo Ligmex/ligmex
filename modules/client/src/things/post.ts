@@ -1,10 +1,14 @@
 import {
+  BoundingBoxGizmo,
   Color3,
+  Mesh,
   MeshBuilder,
+  RotationGizmo,
   Scene,
   SceneLoader,
   StandardMaterial,
   Texture,
+  UtilityLayerRenderer,
   Vector3,
   Vector4,
   VideoTexture,
@@ -74,6 +78,14 @@ export const postMaker = async (
         );
         if (glbContainer) {
           scaleNewMeshes(glbContainer.meshes, post_position);
+          const utilLayer = new UtilityLayerRenderer(scene);
+
+          // Create the gizmo and attach to the box
+          const gizmo = new RotationGizmo(utilLayer);
+
+          // const boundingBox = BoundingBoxGizmo.MakeNotPickableAndWrapInBoundingBox(glbContainer.meshes[0] as Mesh);
+          gizmo.attachedMesh = glbContainer.meshes[0] as Mesh;
+      
           glbContainer.addAllToScene();
         }
         output.push(createPedestal(`${post.id}-pillar`, pillar_position));

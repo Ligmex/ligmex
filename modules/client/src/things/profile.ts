@@ -149,7 +149,6 @@ export const profileMaker = (
   if (galleryMesh)
     galleryMesh.parent = rootMesh;
 
-  console.log(rootMesh.rotation, rotation)
   rootMesh.rotation = rotation;
   return rootMesh;
 };
