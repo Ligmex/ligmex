@@ -1,4 +1,4 @@
-FROM haproxy:2.6.4-alpine3.16
+FROM haproxy:2.6.6-alpine3.16
 WORKDIR /root
 ENV HOME /root
 USER root

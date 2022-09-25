@@ -4,7 +4,7 @@ import { apolloClient } from './apollo';
 
 const HAS_TX_BEEN_INDEXED = `
   query($request: HasTxHashBeenIndexedRequest!) {
-    hasTxHashBeenIndexed(request: $request) { 
+    hasTxHashBeenIndexed(request: $request) {
 	    ... on TransactionIndexedResult {
             indexed
             txReceipt {

@@ -16,27 +16,21 @@ import {
   useContractWrite
 } from 'wagmi'
 
-import { AccessToken, getFollowing, getPostsByProfile, getProfile, SceneState } from "../utils";
-
 import LENS_HUB_ABI from "../abis/lens-hub-contract-abi.json";
 import { createTrendingCorner } from "../things/trendingCorner";
 import { ctrlPanelMaker } from "../things/ctrlPanel";
-import { galleryMaker } from "../things/gallery";
 import { profileMaker } from "../things/profile";
-import { addNewPostButton } from "../things/newPost";
-import {
-  createUploadFileView,
-  createVideoStreamDisplay,
-  getPosts,
-} from "../utils";
+import { createUploadFileView, SceneState } from "../utils/babylonUtils";
+import { createVideoStreamDisplay } from "../utils/livepeer";
+import { AccessToken, getPosts, getFollowing, getPostsByProfile, getProfile } from "../utils/lensApi";
 import {
   PROFILE_FRAME_POSITION,
-  PROFILE_FRAME_VIEW_POSITION,
+  CTRL_PANEL_VIEW_POSITION,
   PROFILE_FRAME_VIEW_ROTATION,
   TRENDING_CORNER_POSITION,
   TRENDING_VIEW_POSITION,
   TRENDING_VIEW_ROTATION,
-} from "../utils/cameraConstants";
+} from "../utils/constants";
 
 import { SceneComponent } from "./Scene";
 
@@ -52,12 +46,12 @@ export const Home = () => {
   const { address, isConnected } = useAccount();
   const [sceneState, setSceneState] = useState({
     profileToLoad: storedProfile ? storedProfile : "",
-    camera: storedProfile? {
-      position: PROFILE_FRAME_VIEW_POSITION,
+    camera: storedProfile ? {
+      position: CTRL_PANEL_VIEW_POSITION,
       rotation: PROFILE_FRAME_VIEW_ROTATION
     } : {
-      position: TRENDING_VIEW_POSITION,
-      rotation: TRENDING_VIEW_ROTATION
+      position: CTRL_PANEL_VIEW_POSITION,
+      rotation: PROFILE_FRAME_VIEW_ROTATION
     }
   } as SceneState);
   const [accessToken, setAccessToken] = useState({
@@ -96,15 +90,15 @@ export const Home = () => {
         isLoading: isLoadingCreatePostMessage,
         lenshubPostWithSig,
         pendingConnector,
-        signer: signCreatePost,
+        signCreatePost,
       },
       sceneState,
       setSceneState,
       setAccessToken,
       {
-        signCreatePost,
         createPostError,
         isLoadingCreatePostMessage,
+        signLogin,
       },
     );
 

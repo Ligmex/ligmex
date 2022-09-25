@@ -4,8 +4,7 @@ import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
-// import { publicProvider } from 'wagmi/providers/public'
-import { apolloClient } from '../utils';
+import { apolloClient } from '../utils/apollo';
 
 global.Buffer = global.Buffer || require("buffer").Buffer
 // BUG: currently provider fails in case of write contract

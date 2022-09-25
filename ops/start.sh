@@ -88,7 +88,7 @@ else
   webserver_service="webserver:
     image: '$webserver_image'
     $common
-    entrypoint: 'npm start'
+    entrypoint: 'yarn start'
     environment:
       NODE_ENV: 'development'
     volumes:

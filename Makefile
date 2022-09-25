@@ -19,7 +19,8 @@ semver=v$(shell cat package.json | grep '"version":' | awk -F '"' '{print $$4}')
 my_id=$(shell id -u):$(shell id -g)
 id=$(shell if [[ "`uname`" == "Darwin" ]]; then echo 0:0; else echo $(my_id); fi)
 interactive=$(shell if [[ -t 0 && -t 2 ]]; then echo "--interactive"; else echo ""; fi)
-docker_run=docker run --env=CI=${CI} --name=$(project)_builder2 $(interactive) --tty --rm --volume=$(cwd):/root $(project)_builder $(id)
+name=$(shell if [[ -n "${CI}" ]]; then echo builder_ci; else echo builder; fi)
+docker_run=docker run --env=CI=${CI} --name=$(project)_$(name) $(interactive) --tty --rm --volume=$(cwd):/root $(project)_builder $(id)
 
 # Pool of images to pull cached layers from during docker build steps
 image_cache=$(shell if [[ -n "${CI}" || "${CI_SERVER}" == "yes" ]]; then echo "--cache-from=$(project)_builder:latest,$(project)_proxy:latest,$(project)_webserver:latest"; else echo ""; fi)
@@ -37,13 +38,13 @@ $(shell mkdir -p .flags)
 # Command & Control Aliases
 
 default: dev
-dev: proxy server
+dev: proxy server-bundle
 prod: proxy webserver server
 all: dev prod
 
 qs: quickstart
 quickstart: node-modules
-	npm run start
+	yarn start
 
 start: dev
 	bash ops/start.sh
@@ -115,9 +116,9 @@ builder: $(shell find ops/builder $(find_options))
 	docker tag $(project)_builder:latest $(project)_builder:$(commit)
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
-node-modules: builder package.json
+node-modules: builder package.json modules/client/package.json modules/server/package.json
 	$(log_start)
-	$(docker_run) "lerna bootstrap --hoist --no-progress"
+	$(docker_run) "lerna bootstrap --no-progress"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
 ########################################
@@ -125,12 +126,12 @@ node-modules: builder package.json
 
 client-bundle: node-modules $(shell find modules/client/src $(find_options))
 	$(log_start)
-	$(docker_run) "cd modules/client && npm run build"
+	$(docker_run) "cd modules/client && yarn build"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
 server-bundle: node-modules $(shell find modules/server/src $(find_options))
 	$(log_start)
-	$(docker_run) "cd modules/server && npm run build"
+	$(docker_run) "cd modules/server && yarn build"
 	$(log_finish) && mv -f $(totalTime) .flags/$@
 
 ########################################

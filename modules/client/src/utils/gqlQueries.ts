@@ -195,7 +195,7 @@ const ProfileFields = `
 `;
 
 const PublicationStatsFields = `
-  fragment PublicationStatsFields on PublicationStats { 
+  fragment PublicationStatsFields on PublicationStats {
     totalAmountOfMirrors
     totalAmountOfCollects
     totalAmountOfComments
@@ -265,10 +265,10 @@ const MirrorFields = `
     ...MirrorBaseFields
     mirrorOf {
     ... on Post {
-        ...PostFields          
+        ...PostFields
     }
     ... on Comment {
-        ...CommentFields          
+        ...CommentFields
     }
     }
   }
@@ -314,10 +314,10 @@ const CommentFields = `
         ...MirrorBaseFields
         mirrorOf {
           ... on Post {
-            ...PostFields          
+            ...PostFields
           }
           ... on Comment {
-            ...CommentMirrorOfFields        
+            ...CommentMirrorOfFields
           }
         }
       }
@@ -352,7 +352,7 @@ export const GET_CHALLENGE = `
 `;
 
 export const AUTHENTICATION = `
-  mutation($request: SignedAuthChallenge!) { 
+  mutation($request: SignedAuthChallenge!) {
     authenticate(request: $request) {
       accessToken
       refreshToken
@@ -377,7 +377,7 @@ export const GET_PUBLICATION_BY_PROFILE = `
   query($request: PublicationsQueryRequest!) {
     publications(request: $request) {
       items {
-        __typename 
+        __typename
         ... on Post {
           ...PostFields
         }
@@ -411,7 +411,7 @@ export const GET_PUBLICATION_BY_PROFILE = `
 `;
 
 export const CREATE_POST_TYPED_DATA = `
-  mutation($request: CreatePublicPostRequest!) { 
+  mutation($request: CreatePublicPostRequest!) {
     createPostTypedData(request: $request) {
       id
       expiresAt
@@ -540,7 +540,7 @@ export const EXPLORE_PUBLICATIONS = `
   query($request: ExplorePublicationRequest!) {
     explorePublications(request: $request) {
       items {
-        __typename 
+        __typename
         ... on Post {
           ...PostFields
         }

@@ -1,11 +1,18 @@
 import {
   AbstractMesh,
   ActionManager,
+  Color3,
   ExecuteCodeAction,
+  MeshBuilder,
+  StandardMaterial,
+  Texture,
   Vector3,
 } from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
-import { createTextDisplay, createProfilePicture, getStandardUrl, getPostsByProfile } from "../utils";
+
+import { createTextDisplay } from "../utils/babylonUtils";
+import { getStandardUrl } from "../utils/misc";
+import { getPostsByProfile } from "../utils/lensApi";
 
 import { galleryMaker } from "./gallery";
 
@@ -17,6 +24,28 @@ export const profileMaker = (
   profile: any,
   following: any,
 ) => {
+
+  const createProfilePicture = (
+      scene: Scene,
+      id: string,
+      url: string,
+      size: number,
+      position: Vector3,
+      rotation: Vector3
+  ) => {
+      const profilePicture = MeshBuilder.CreateCylinder(
+          `${id}-profileDisc`,
+          { diameter: size, height: 0.05 },
+          scene
+      )
+      const material = new StandardMaterial(`${id}-profilePicture`, scene);
+      material.diffuseTexture = new Texture(url, scene);
+      material.emissiveColor = Color3.White();
+      profilePicture.material = material;
+      profilePicture.position = position;
+      profilePicture.rotation = rotation;
+      return profilePicture;
+  };
 
   // Add profile Image
   if (profile?.picture?.__typename === "MediaSet") {
@@ -40,7 +69,7 @@ export const profileMaker = (
     new Vector3(position.x, position.y + height + 0.5, position.z)
   )
 
-  if (following.length) {
+  if (following?.length) {
     // Show Following data
     createTextDisplay(
       scene,
