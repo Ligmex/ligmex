@@ -5,9 +5,9 @@
     "declaration": false,
     "declarationMap": false,
     "lib": ["es2017", "esnext.asynciterable"],
-    "outDir": "dist",
-    "tsBuildInfoFile": "dist/.ts.cache/tsconfig.tsbuildinfo"
+    "outDir": "build",
+    "tsBuildInfoFile": "build/.ts.cache/tsconfig.tsbuildinfo"
   },
-  "exclude": ["src/**/*.test.ts", "dist", "node_modules"],
+  "exclude": ["src/**/*.test.ts", "build", "node_modules"],
   "include": ["src/**/*.ts"]
 }

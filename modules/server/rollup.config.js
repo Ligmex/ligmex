@@ -10,7 +10,7 @@ import Typescript from "@rollup/plugin-typescript";
 export default {
   input: "./src/index.ts",
   output: [{
-    file: "dist/bundle.js",
+    file: "build/bundle.js",
     format: "cjs",
     sourcemap: true,
   }],

@@ -4,7 +4,7 @@
   "description": "Server-side ligmex logic",
   "author": "Bo & Shiv Hendo",
   "license": "GPL-3.0-or-later",
-  "main": "dist/bundle.js",
+  "main": "build/bundle.js",
   "scripts": {
     "build": "rollup --config rollup.config.js",
     "test": "echo 'no tests'"
