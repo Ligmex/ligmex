@@ -47,7 +47,7 @@ client:
     ln -fs /dev/stdout /var/log/nginx/access.log && \
     ln -fs /dev/stdout /var/log/nginx/error.log
   COPY modules/client/ops/nginx.conf /etc/nginx/nginx.conf
-  COPY modules/client/build /var/www/html
+  COPY +client-bundle/build /var/www/html
   ENTRYPOINT ["nginx"]
   SAVE IMAGE ligmex_client:latest
 
@@ -57,8 +57,8 @@ server:
   ENV HOME /root
   RUN apk add --update --no-cache bash curl git
   RUN curl https://raw.githubusercontent.com/vishnubob/wait-for-it/ed77b63706ea721766a62ff22d3a251d8b4a6a30/wait-for-it.sh > /bin/wait-for && chmod +x /bin/wait-for
-  COPY +server-bundle/build ./build
   COPY modules/server/ops/entry.sh ./entry.sh
+  COPY +server-bundle/build ./build
   ENTRYPOINT ["bash", "entry.sh"]
   SAVE IMAGE ligmex_server:latest
 
