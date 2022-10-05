@@ -11,7 +11,7 @@ commit=$(git rev-parse HEAD | head -c 8)
 registry="$registryRoot/$organization"
 
 default_images=$(
-  echo 'builder webserver proxy server' |\
+  echo 'client proxy server' |\
     sed "s/^/${project}_/g" |\
     sed "s/ / ${project}_/g"
 )
